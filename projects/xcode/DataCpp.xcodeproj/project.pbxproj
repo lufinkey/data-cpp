@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A517B81F23093B7C00897145 /* libDataCpp-macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A53E4EB223063BFC000BB7D8 /* libDataCpp-macOS.a */; };
 		A53E4EB623063C20000BB7D8 /* Common.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A53E4E6623048C5B000BB7D8 /* Common.hpp */; };
 		A53E4EB723063C20000BB7D8 /* BasicStringUtils.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A53E4E6B2304B3A3000BB7D8 /* BasicStringUtils.hpp */; };
 		A53E4EB823063C20000BB7D8 /* BasicString.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A53E4E4823048758000BB7D8 /* BasicString.hpp */; };
@@ -56,6 +57,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A517B81F23093B7C00897145 /* libDataCpp-macOS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
