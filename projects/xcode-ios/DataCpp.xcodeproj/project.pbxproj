@@ -6,24 +6,48 @@
 	objectVersion = 50;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		A53E4EB623063C20000BB7D8 /* Common.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A53E4E6623048C5B000BB7D8 /* Common.hpp */; };
+		A53E4EB723063C20000BB7D8 /* BasicStringUtils.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A53E4E6B2304B3A3000BB7D8 /* BasicStringUtils.hpp */; };
+		A53E4EB823063C20000BB7D8 /* BasicString.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A53E4E4823048758000BB7D8 /* BasicString.hpp */; };
+		A53E4EB923063C20000BB7D8 /* String.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A53E4E472304874A000BB7D8 /* String.hpp */; };
+		A53E4EBA23063C24000BB7D8 /* Error.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A53E4E6A23048DE5000BB7D8 /* Error.hpp */; };
+		A53E4EC923064126000BB7D8 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A53E4EBC230640CD000BB7D8 /* main.cpp */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXCopyFilesBuildPhase section */
-		A578652623007C1D00CDC3E8 /* CopyFiles */ = {
+		A53E4EC02306411F000BB7D8 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
-			dstPath = "include/$(PRODUCT_NAME)";
-			dstSubfolderSpec = 16;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
+			runOnlyForDeploymentPostprocessing = 1;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		A578652823007C1D00CDC3E8 /* libDataCpp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libDataCpp.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		A53E4E472304874A000BB7D8 /* String.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = String.hpp; sourceTree = "<group>"; };
+		A53E4E4823048758000BB7D8 /* BasicString.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = BasicString.hpp; sourceTree = "<group>"; };
+		A53E4E6623048C5B000BB7D8 /* Common.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Common.hpp; sourceTree = "<group>"; };
+		A53E4E6A23048DE5000BB7D8 /* Error.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Error.hpp; sourceTree = "<group>"; };
+		A53E4E6B2304B3A3000BB7D8 /* BasicStringUtils.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = BasicStringUtils.hpp; sourceTree = "<group>"; };
+		A53E4EB223063BFC000BB7D8 /* libDataCpp-macOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libDataCpp-macOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A53E4EBC230640CD000BB7D8 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		A53E4EC22306411F000BB7D8 /* DataCppTest-macOS */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "DataCppTest-macOS"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A53E4ECC230867B5000BB7D8 /* BasicString.impl.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = BasicString.impl.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		A578652523007C1D00CDC3E8 /* Frameworks */ = {
+		A53E4EB023063BFC000BB7D8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A53E4EBF2306411F000BB7D8 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -33,18 +57,64 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A53E4E6723048C5E000BB7D8 /* fgl */ = {
+			isa = PBXGroup;
+			children = (
+				A53E4E6923048D63000BB7D8 /* error */,
+				A53E4E6823048C62000BB7D8 /* data */,
+			);
+			path = fgl;
+			sourceTree = "<group>";
+		};
+		A53E4E6823048C62000BB7D8 /* data */ = {
+			isa = PBXGroup;
+			children = (
+				A53E4E6623048C5B000BB7D8 /* Common.hpp */,
+				A53E4E6B2304B3A3000BB7D8 /* BasicStringUtils.hpp */,
+				A53E4E4823048758000BB7D8 /* BasicString.hpp */,
+				A53E4ECC230867B5000BB7D8 /* BasicString.impl.hpp */,
+				A53E4E472304874A000BB7D8 /* String.hpp */,
+			);
+			path = data;
+			sourceTree = "<group>";
+		};
+		A53E4E6923048D63000BB7D8 /* error */ = {
+			isa = PBXGroup;
+			children = (
+				A53E4E6A23048DE5000BB7D8 /* Error.hpp */,
+			);
+			path = error;
+			sourceTree = "<group>";
+		};
+		A53E4EBB2306407F000BB7D8 /* test */ = {
+			isa = PBXGroup;
+			children = (
+				A53E4EBC230640CD000BB7D8 /* main.cpp */,
+			);
+			path = test;
+			sourceTree = "<group>";
+		};
+		A53E4ECA2306413B000BB7D8 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		A578651F23007C1C00CDC3E8 = {
 			isa = PBXGroup;
 			children = (
 				A578653423007C4800CDC3E8 /* src */,
 				A578652923007C1D00CDC3E8 /* Products */,
+				A53E4ECA2306413B000BB7D8 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
 		A578652923007C1D00CDC3E8 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A578652823007C1D00CDC3E8 /* libDataCpp.a */,
+				A53E4EB223063BFC000BB7D8 /* libDataCpp-macOS.a */,
+				A53E4EC22306411F000BB7D8 /* DataCppTest-macOS */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -52,6 +122,8 @@
 		A578653423007C4800CDC3E8 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				A53E4E6723048C5E000BB7D8 /* fgl */,
+				A53E4EBB2306407F000BB7D8 /* test */,
 			);
 			name = src;
 			path = ../../src;
@@ -59,23 +131,55 @@
 		};
 /* End PBXGroup section */
 
+/* Begin PBXHeadersBuildPhase section */
+		A53E4EAE23063BFC000BB7D8 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A53E4EB723063C20000BB7D8 /* BasicStringUtils.hpp in Headers */,
+				A53E4EBA23063C24000BB7D8 /* Error.hpp in Headers */,
+				A53E4EB623063C20000BB7D8 /* Common.hpp in Headers */,
+				A53E4EB823063C20000BB7D8 /* BasicString.hpp in Headers */,
+				A53E4EB923063C20000BB7D8 /* String.hpp in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
 /* Begin PBXNativeTarget section */
-		A578652723007C1D00CDC3E8 /* DataCpp */ = {
+		A53E4EB123063BFC000BB7D8 /* DataCpp-macOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A578653123007C1D00CDC3E8 /* Build configuration list for PBXNativeTarget "DataCpp" */;
+			buildConfigurationList = A53E4EB323063BFC000BB7D8 /* Build configuration list for PBXNativeTarget "DataCpp-macOS" */;
 			buildPhases = (
-				A578652423007C1D00CDC3E8 /* Sources */,
-				A578652523007C1D00CDC3E8 /* Frameworks */,
-				A578652623007C1D00CDC3E8 /* CopyFiles */,
+				A53E4EAE23063BFC000BB7D8 /* Headers */,
+				A53E4EAF23063BFC000BB7D8 /* Sources */,
+				A53E4EB023063BFC000BB7D8 /* Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = DataCpp;
-			productName = DataCpp;
-			productReference = A578652823007C1D00CDC3E8 /* libDataCpp.a */;
+			name = "DataCpp-macOS";
+			productName = "DataCpp-macOS";
+			productReference = A53E4EB223063BFC000BB7D8 /* libDataCpp-macOS.a */;
 			productType = "com.apple.product-type.library.static";
+		};
+		A53E4EC12306411F000BB7D8 /* DataCppTest-macOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A53E4EC62306411F000BB7D8 /* Build configuration list for PBXNativeTarget "DataCppTest-macOS" */;
+			buildPhases = (
+				A53E4EBE2306411F000BB7D8 /* Sources */,
+				A53E4EBF2306411F000BB7D8 /* Frameworks */,
+				A53E4EC02306411F000BB7D8 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "DataCppTest-macOS";
+			productName = "DataCppTest-macOS";
+			productReference = A53E4EC22306411F000BB7D8 /* DataCppTest-macOS */;
+			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
 
@@ -86,8 +190,11 @@
 				LastUpgradeCheck = 1020;
 				ORGANIZATIONNAME = "Luis Finke";
 				TargetAttributes = {
-					A578652723007C1D00CDC3E8 = {
-						CreatedOnToolsVersion = 10.2.1;
+					A53E4EB123063BFC000BB7D8 = {
+						CreatedOnToolsVersion = 10.3;
+					};
+					A53E4EC12306411F000BB7D8 = {
+						CreatedOnToolsVersion = 10.3;
 					};
 				};
 			};
@@ -103,29 +210,88 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				A578652723007C1D00CDC3E8 /* DataCpp */,
+				A53E4EB123063BFC000BB7D8 /* DataCpp-macOS */,
+				A53E4EC12306411F000BB7D8 /* DataCppTest-macOS */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
-		A578652423007C1D00CDC3E8 /* Sources */ = {
+		A53E4EAF23063BFC000BB7D8 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A53E4EBE2306411F000BB7D8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A53E4EC923064126000BB7D8 /* main.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		A53E4EB423063BFC000BB7D8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				EXECUTABLE_PREFIX = lib;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		A53E4EB523063BFC000BB7D8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				EXECUTABLE_PREFIX = lib;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		A53E4EC72306411F000BB7D8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		A53E4EC82306411F000BB7D8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
 		A578652F23007C1D00CDC3E8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -184,7 +350,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -231,47 +397,32 @@
 			};
 			name = Release;
 		};
-		A578653223007C1D00CDC3E8 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
-				CODE_SIGN_STYLE = Automatic;
-				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		A578653323007C1D00CDC3E8 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
-				CODE_SIGN_STYLE = Automatic;
-				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		A53E4EB323063BFC000BB7D8 /* Build configuration list for PBXNativeTarget "DataCpp-macOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A53E4EB423063BFC000BB7D8 /* Debug */,
+				A53E4EB523063BFC000BB7D8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A53E4EC62306411F000BB7D8 /* Build configuration list for PBXNativeTarget "DataCppTest-macOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A53E4EC72306411F000BB7D8 /* Debug */,
+				A53E4EC82306411F000BB7D8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		A578652323007C1C00CDC3E8 /* Build configuration list for PBXProject "DataCpp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A578652F23007C1D00CDC3E8 /* Debug */,
 				A578653023007C1D00CDC3E8 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		A578653123007C1D00CDC3E8 /* Build configuration list for PBXNativeTarget "DataCpp" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				A578653223007C1D00CDC3E8 /* Debug */,
-				A578653323007C1D00CDC3E8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
