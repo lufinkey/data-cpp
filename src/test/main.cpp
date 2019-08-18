@@ -6,7 +6,7 @@
 //  Copyright © 2019 Luis Finke. All rights reserved.
 //
 
-#include "String.hpp"
+#include <fgl/data.hpp>
 
 using namespace fgl;
 

@@ -13,6 +13,9 @@
 		A53E4EB923063C20000BB7D8 /* String.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A53E4E472304874A000BB7D8 /* String.hpp */; };
 		A53E4EBA23063C24000BB7D8 /* Error.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A53E4E6A23048DE5000BB7D8 /* Error.hpp */; };
 		A53E4EC923064126000BB7D8 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A53E4EBC230640CD000BB7D8 /* main.cpp */; };
+		A564E02E230934A10018787F /* Error.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A564E02D230934A10018787F /* Error.cpp */; };
+		A564E037230935B30018787F /* data.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A564E01923091D590018787F /* data.hpp */; };
+		A564E038230935B30018787F /* BasicString.impl.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A53E4ECC230867B5000BB7D8 /* BasicString.impl.hpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -37,6 +40,8 @@
 		A53E4EBC230640CD000BB7D8 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		A53E4EC22306411F000BB7D8 /* DataCppTest-macOS */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "DataCppTest-macOS"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A53E4ECC230867B5000BB7D8 /* BasicString.impl.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = BasicString.impl.hpp; sourceTree = "<group>"; };
+		A564E01923091D590018787F /* data.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = data.hpp; sourceTree = "<group>"; };
+		A564E02D230934A10018787F /* Error.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Error.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +65,7 @@
 		A53E4E6723048C5E000BB7D8 /* fgl */ = {
 			isa = PBXGroup;
 			children = (
+				A564E01923091D590018787F /* data.hpp */,
 				A53E4E6923048D63000BB7D8 /* error */,
 				A53E4E6823048C62000BB7D8 /* data */,
 			);
@@ -82,6 +88,7 @@
 			isa = PBXGroup;
 			children = (
 				A53E4E6A23048DE5000BB7D8 /* Error.hpp */,
+				A564E02D230934A10018787F /* Error.cpp */,
 			);
 			path = error;
 			sourceTree = "<group>";
@@ -136,10 +143,12 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A53E4EB723063C20000BB7D8 /* BasicStringUtils.hpp in Headers */,
+				A564E037230935B30018787F /* data.hpp in Headers */,
 				A53E4EBA23063C24000BB7D8 /* Error.hpp in Headers */,
 				A53E4EB623063C20000BB7D8 /* Common.hpp in Headers */,
+				A53E4EB723063C20000BB7D8 /* BasicStringUtils.hpp in Headers */,
 				A53E4EB823063C20000BB7D8 /* BasicString.hpp in Headers */,
+				A564E038230935B30018787F /* BasicString.impl.hpp in Headers */,
 				A53E4EB923063C20000BB7D8 /* String.hpp in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -221,6 +230,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A564E02E230934A10018787F /* Error.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -241,6 +251,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				EXECUTABLE_PREFIX = lib;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../../src";
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -254,6 +265,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				EXECUTABLE_PREFIX = lib;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../../src";
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -267,6 +279,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../../src";
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -279,6 +292,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../../src";
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;

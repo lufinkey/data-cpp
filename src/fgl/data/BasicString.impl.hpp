@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "BasicString.hpp"
+#include <fgl/data/BasicString.hpp>
 #include <memory>
 
 namespace fgl {
@@ -35,7 +35,7 @@ namespace fgl {
 	
 	template<typename Char>
 	BasicString<Char>::BasicString(const Char* str)
-	: BasicString(str, BasicStringUtils::strlen(str)) {
+	: BasicString(str, BasicStringUtils::strlen<Char>(str)) {
 		//
 	}
 	
@@ -177,7 +177,7 @@ namespace fgl {
 	template<typename OtherChar,
 		typename BasicStringUtils::same_size_convertable_strings<Char,OtherChar>::null_type>
 	BasicString<Char>::BasicString(const OtherChar* str)
-	: BasicString((const Char*)str, BasicString<OtherChar>::strlen(str)) {
+	: BasicString((const Char*)str, BasicStringUtils::strlen<OtherChar>(str)) {
 		// same char size
 	}
 	
@@ -185,7 +185,7 @@ namespace fgl {
 	template<typename OtherChar,
 		typename BasicStringUtils::diff_size_convertable_strings<Char,OtherChar>::null_type>
 	BasicString<Char>::BasicString(const OtherChar* str)
-	: BasicString(str, BasicString<OtherChar>::strlen(str)) {
+	: BasicString(str, BasicStringUtils::strlen<OtherChar>(str)) {
 		// different char size
 	}
 	
@@ -484,7 +484,7 @@ namespace fgl {
 		typename BasicStringUtils::same_size_convertable_strings<Char, OtherChar>::null_type>
 	BasicString<Char>& BasicString<Char>::operator=(const OtherChar* str) {
 		// same char size
-		assign((const Char*)str, BasicString<OtherChar>::strlen(str));
+		assign((const Char*)str, BasicStringUtils::strlen<OtherChar>(str));
 		return *this;
 	}
 	
@@ -493,7 +493,7 @@ namespace fgl {
 		typename BasicStringUtils::diff_size_convertable_strings<Char, OtherChar>::null_type>
 	BasicString<Char>& BasicString<Char>::operator=(const OtherChar* str) {
 		// different char size
-		auto output = BasicStringUtils::convert<Char,OtherChar>(str, BasicString<OtherChar>::strlen(str));
+		auto output = BasicStringUtils::convert<Char,OtherChar>(str, BasicStringUtils::strlen<OtherChar>(str));
 		assign(output.c_str(), output.length());
 		return *this;
 	}
@@ -558,7 +558,7 @@ namespace fgl {
 	
 	template<typename Char>
 	void BasicString<Char>::append(const Char* str) {
-		append(str, BasicStringUtils::strlen(str));
+		append(str, BasicStringUtils::strlen<Char>(str));
 	}
 	
 	template<typename Char>
@@ -668,7 +668,7 @@ namespace fgl {
 	template<typename OtherChar, typename BasicStringUtils::same_size_convertable_strings<Char,OtherChar>::null_type>
 	BasicString<Char>& BasicString<Char>::operator+=(const OtherChar* str) {
 		// same char size
-		append((const Char*)str, BasicString<OtherChar>::strlen(str));
+		append((const Char*)str, BasicStringUtils::strlen<OtherChar>(str));
 		return *this;
 	}
 	
@@ -735,11 +735,6 @@ namespace fgl {
 	
 	
 	template<typename Char>
-	int BasicString<Char>::compare(const Char* cmp, size_t length) const {
-		return compare(cmp, length, std::locale());
-	}
-	
-	template<typename Char>
 	int BasicString<Char>::compare(const Char* cmp, size_t length, const std::locale& locale) const {
 		return std::use_facet<std::collate<Char>>(locale).compare(characters, characters+size, cmp, cmp+length);
 	}
@@ -747,11 +742,6 @@ namespace fgl {
 	template<typename Char>
 	int BasicString<Char>::compare(const Char* cmp, const std::locale& locale) const {
 		return compare(cmp, BasicStringUtils::strlen<Char>(cmp), locale);
-	}
-	
-	template<typename Char>
-	int BasicString<Char>::compare(const BasicString<Char>& cmp) const {
-		return compare(cmp.characters, cmp.size);
 	}
 	
 	template<typename Char>
@@ -1346,8 +1336,8 @@ namespace fgl {
 	}
 	
 	template<typename Char>
-	std::list<BasicString<Char> > BasicString<Char>::split(Char delim) const {
-		std::list<BasicString<Char>> elements;
+	LinkedList<BasicString<Char>> BasicString<Char>::split(Char delim) const {
+		LinkedList<BasicString<Char>> elements;
 		size_t lastStart = 0;
 		for(size_t i=0; i<size; i++) {
 			if(characters[i] == delim) {
@@ -1360,14 +1350,14 @@ namespace fgl {
 	}
 	
 	template<typename Char>
-	std::list<BasicString<Char>> BasicString<Char>::split(const Char* delim) const {
+	LinkedList<BasicString<Char>> BasicString<Char>::split(const Char* delim) const {
 		size_t delim_size = BasicStringUtils::strlen<Char>(delim);
 		if(delim_size == 0 || delim_size > size) {
-			std::vector<BasicString<Char> > elements;
+			LinkedList<BasicString<Char>> elements;
 			elements.push_back(*this);
 			return elements;
 		}
-		std::vector<BasicString<Char> > elements;
+		LinkedList<BasicString<Char>> elements;
 		size_t lastStart = 0;
 		size_t finish = size - delim_size;
 		for(size_t i=0; i<=finish; i++) {
@@ -1391,13 +1381,13 @@ namespace fgl {
 	}
 	
 	template<typename Char>
-	std::list<BasicString<Char> > BasicString<Char>::split(const BasicString<Char>& delim) const {
+	LinkedList<BasicString<Char>> BasicString<Char>::split(const BasicString<Char>& delim) const {
 		if(delim.size == 0 || delim.size > size) {
-			std::vector<BasicString<Char> > elements;
+			LinkedList<BasicString<Char> > elements;
 			elements.push_back(*this);
 			return elements;
 		}
-		std::vector<BasicString<Char> > elements;
+		LinkedList<BasicString<Char> > elements;
 		size_t lastStart = 0;
 		size_t finish = size - delim.size;
 		for(size_t i=0; i<=finish; i++) {
@@ -1502,5 +1492,207 @@ namespace fgl {
 			throw std::logic_error("BasicString does not represent an arithmetic value");
 		}
 		return numVal;
+	}
+	
+	
+	
+	
+	template<typename Char, typename OtherChar,
+		typename BasicStringUtils::can_convert_string_types<Char, OtherChar>::null_type>
+	BasicString<Char> operator+(const BasicString<Char>& left, const BasicString<OtherChar>& right) {
+		return BasicStringUtils::concat(left, right);
+	}
+	
+	template<typename Char, typename OtherChar,
+		typename BasicStringUtils::can_convert_string_types<Char, OtherChar>::null_type>
+	BasicString<Char> operator+(const BasicString<Char>& left, const OtherChar* right) {
+		return BasicStringUtils::concat(left, right);
+	}
+	
+	template<typename Char, typename OtherChar,
+		typename BasicStringUtils::can_convert_string_types<Char, OtherChar>::null_type>
+	BasicString<Char> operator+(const Char* left, const BasicString<OtherChar>& right) {
+		return BasicStringUtils::concat(left, right);
+	}
+	
+	template<typename Char, typename OtherChar,
+		typename BasicStringUtils::can_convert_string_types<Char, OtherChar>::null_type>
+	BasicString<Char> operator+(const BasicString<Char>& left, const std::basic_string<OtherChar>& right) {
+		return BasicStringUtils::concat(left, right);
+	}
+	
+	template<typename Char, typename OtherChar,
+		typename BasicStringUtils::can_convert_string_types<Char, OtherChar>::null_type>
+	BasicString<Char> operator+(const std::basic_string<Char>& left, const BasicString<OtherChar>& right) {
+		return BasicStringUtils::concat(left, right);
+	}
+	
+	#ifdef __OBJC__
+	
+	template<typename Char,
+		typename BasicStringUtils::can_convert_string_types<Char, unichar>::null_type>
+	BasicString<Char> operator+(const BasicString<Char>& left, NSString* right) {
+		return BasicStringUtils::concat(left, right);
+	}
+	
+	template<typename Char,
+		typename BasicStringUtils::can_convert_string_types<Char, unichar>::null_type>
+	BasicString<Char> operator+(NSString* left, const BasicString<Char>& right) {
+		return BasicStringUtils::concat(left, right);
+	}
+	
+	#endif
+	
+	template<typename Char, typename OtherChar,
+		typename BasicStringUtils::string_type_convertable_with_char_type<Char, OtherChar>::null_type>
+	BasicString<Char> operator+(const BasicString<Char>& left, const OtherChar& right) {
+		return BasicStringUtils::concat(left, right);
+	}
+	
+	template<typename Char, typename OtherChar,
+		typename BasicStringUtils::string_type_convertable_with_char_type<OtherChar, Char>::null_type>
+	BasicString<Char> operator+(const Char& left, const BasicString<OtherChar>& right) {
+		return BasicStringUtils::concat(left, right);
+	}
+	
+	template<typename Char, typename Bool,
+		typename BasicStringUtils::string_type_convertable_with_bool<Char,Bool>::null_type>
+	BasicString<Char> operator+(const BasicString<Char>& left, Bool right) {
+		return BasicStringUtils::concat(left, right);
+	}
+	
+	template<typename Char, typename Bool,
+		typename BasicStringUtils::string_type_convertable_with_bool<Char,Bool>::null_type>
+	BasicString<Char> operator+(Bool left, const BasicString<Char>& right) {
+		return BasicStringUtils::concat(left, right);
+	}
+	
+	template<typename Char, typename Num,
+		typename BasicStringUtils::string_type_convertable_with_number_or_enum<Char,Num>::null_type>
+	BasicString<Char> operator+(const BasicString<Char>& left, Num right) {
+		return BasicStringUtils::concat(left, right);
+	}
+	
+	template<typename Char, typename Num,
+		typename BasicStringUtils::string_type_convertable_with_number_or_enum<Char,Num>::null_type>
+	BasicString<Char> operator+(Num left, const BasicString<Char>& right) {
+		return BasicStringUtils::concat(left, right);
+	}
+	
+	
+	
+	
+	template<typename Char>
+	bool operator==(const BasicString<Char>& left, const BasicString<Char>& right) {
+		return left.equals(right);
+	}
+	
+	template<typename Char>
+	bool operator==(const BasicString<Char>& left, const Char* right) {
+		return left.equals(right);
+	}
+	
+	template<typename Char>
+	bool operator==(const Char* left, const BasicString<Char>& right) {
+		return right.equals(left);
+	}
+	
+	template<typename Char>
+	bool operator==(const BasicString<Char>& left, Char right) {
+		Char right_arr[] = {right, NULLCHAR};
+		return left.equals(right_arr, 1);
+	}
+	
+	template<typename Char>
+	bool operator==(Char left, const BasicString<Char>& right) {
+		Char left_arr[] = {left, NULLCHAR};
+		return right.equals(left_arr, 1);
+	}
+	
+	template<typename Char>
+	bool operator!=(const BasicString<Char>& left, const BasicString<Char>& right) {
+		return !left.equals(right);
+	}
+	
+	template<typename Char>
+	bool operator!=(const BasicString<Char>& left, const Char* right) {
+		return !left.equals(right);
+	}
+	
+	template<typename Char>
+	bool operator!=(const Char* left, const BasicString<Char>& right) {
+		return !right.equals(left);
+	}
+	
+	template<typename Char>
+	bool operator!=(const BasicString<Char>& left, const Char& right) {
+		Char right_arr[] = {right, NULLCHAR};
+		return !left.equals(right_arr, 1);
+	}
+	
+	template<typename Char>
+	bool operator!=(const Char& left, const BasicString<Char>& right) {
+		Char left_arr[] = {left, NULLCHAR};
+		return right.equals(left_arr, 1);
+	}
+	
+	template<typename Char>
+	bool operator<(const BasicString<Char>& left, const BasicString<Char>& right) {
+		return (left.compare(right) < 0);
+	}
+	
+	template<typename Char>
+	bool operator<(const BasicString<Char>& left, const Char* right) {
+		return (left.compare(right) < 0);
+	}
+	
+	template<typename Char>
+	bool operator<(const Char* left, const BasicString<Char>& right) {
+		return (right.compare(left) > 0);
+	}
+	
+	template<typename Char>
+	bool operator<=(const BasicString<Char>& left, const BasicString<Char>& right) {
+		return (left.compare(right) <= 0);
+	}
+	
+	template<typename Char>
+	bool operator<=(const BasicString<Char>& left, const Char* right) {
+		return (left.compare(right) <= 0);
+	}
+	
+	template<typename Char>
+	bool operator<=(const Char* left, const BasicString<Char>& right) {
+		return (right.compare(left) >= 0);
+	}
+	
+	template<typename Char>
+	bool operator>(const BasicString<Char>& left, const BasicString<Char>& right) {
+		return (left.compare(right) > 0);
+	}
+	
+	template<typename Char>
+	bool operator>(const BasicString<Char>& left, const Char* right) {
+		return (left.compare(right) > 0);
+	}
+	
+	template<typename Char>
+	bool operator>(const Char* left, const BasicString<Char>& right) {
+		return (right.compare(left) < 0);
+	}
+	
+	template<typename Char>
+	bool operator>=(const BasicString<Char>& left, const BasicString<Char>& right) {
+		return (left.compare(right) >= 0);
+	}
+	
+	template<typename Char>
+	bool operator>=(const BasicString<Char>& left, const Char* right) {
+		return (left.compare(right) >= 0);
+	}
+	
+	template<typename Char>
+	bool operator>=(const Char* left, const BasicString<Char>& right) {
+		return (right.compare(left) <= 0);
 	}
 }

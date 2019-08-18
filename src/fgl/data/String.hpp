@@ -8,5 +8,5 @@
 
 #pragma once
 
-#include "BasicString.hpp"
-#include "BasicString.impl.hpp"
+#include <fgl/data/BasicString.hpp>
+#include <fgl/data/BasicString.impl.hpp>

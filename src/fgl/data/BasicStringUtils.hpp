@@ -17,7 +17,7 @@
 #ifdef __OBJC__
 	#import <Foundation/Foundation.h>
 #endif
-#include "Common.hpp"
+#include <fgl/data/Common.hpp>
 
 namespace fgl {
 	#define NULLCHAR 0
