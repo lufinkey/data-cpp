@@ -17,6 +17,13 @@
 		A564E02E230934A10018787F /* Error.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A564E02D230934A10018787F /* Error.cpp */; };
 		A564E037230935B30018787F /* data.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A564E01923091D590018787F /* data.hpp */; };
 		A564E038230935B30018787F /* BasicString.impl.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A53E4ECC230867B5000BB7D8 /* BasicString.impl.hpp */; };
+		A58B32B82310B32400E80ECB /* data.hpp in CopyFiles */ = {isa = PBXBuildFile; fileRef = A564E01923091D590018787F /* data.hpp */; };
+		A58B32B92310B32400E80ECB /* Error.hpp in CopyFiles */ = {isa = PBXBuildFile; fileRef = A53E4E6A23048DE5000BB7D8 /* Error.hpp */; };
+		A58B32BA2310B32400E80ECB /* Common.hpp in CopyFiles */ = {isa = PBXBuildFile; fileRef = A53E4E6623048C5B000BB7D8 /* Common.hpp */; };
+		A58B32BB2310B32400E80ECB /* BasicStringUtils.hpp in CopyFiles */ = {isa = PBXBuildFile; fileRef = A53E4E6B2304B3A3000BB7D8 /* BasicStringUtils.hpp */; };
+		A58B32BC2310B32400E80ECB /* BasicString.hpp in CopyFiles */ = {isa = PBXBuildFile; fileRef = A53E4E4823048758000BB7D8 /* BasicString.hpp */; };
+		A58B32BD2310B32400E80ECB /* BasicString.impl.hpp in CopyFiles */ = {isa = PBXBuildFile; fileRef = A53E4ECC230867B5000BB7D8 /* BasicString.impl.hpp */; };
+		A58B32BE2310B32400E80ECB /* String.hpp in CopyFiles */ = {isa = PBXBuildFile; fileRef = A53E4E472304874A000BB7D8 /* String.hpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -28,6 +35,22 @@
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 1;
+		};
+		A58B327E2310B0DF00E80ECB /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+				A58B32B82310B32400E80ECB /* data.hpp in CopyFiles */,
+				A58B32B92310B32400E80ECB /* Error.hpp in CopyFiles */,
+				A58B32BA2310B32400E80ECB /* Common.hpp in CopyFiles */,
+				A58B32BB2310B32400E80ECB /* BasicStringUtils.hpp in CopyFiles */,
+				A58B32BC2310B32400E80ECB /* BasicString.hpp in CopyFiles */,
+				A58B32BD2310B32400E80ECB /* BasicString.impl.hpp in CopyFiles */,
+				A58B32BE2310B32400E80ECB /* String.hpp in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
@@ -43,6 +66,7 @@
 		A53E4ECC230867B5000BB7D8 /* BasicString.impl.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = BasicString.impl.hpp; sourceTree = "<group>"; };
 		A564E01923091D590018787F /* data.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = data.hpp; sourceTree = "<group>"; };
 		A564E02D230934A10018787F /* Error.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Error.cpp; sourceTree = "<group>"; };
+		A58B32802310B0DF00E80ECB /* libDataCpp-iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libDataCpp-iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +82,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				A517B81F23093B7C00897145 /* libDataCpp-macOS.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A58B327D2310B0DF00E80ECB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -124,6 +155,7 @@
 			children = (
 				A53E4EB223063BFC000BB7D8 /* libDataCpp-macOS.a */,
 				A53E4EC22306411F000BB7D8 /* DataCppTest-macOS */,
+				A58B32802310B0DF00E80ECB /* libDataCpp-iOS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -192,6 +224,23 @@
 			productReference = A53E4EC22306411F000BB7D8 /* DataCppTest-macOS */;
 			productType = "com.apple.product-type.tool";
 		};
+		A58B327F2310B0DF00E80ECB /* DataCpp-iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A58B32882310B0DF00E80ECB /* Build configuration list for PBXNativeTarget "DataCpp-iOS" */;
+			buildPhases = (
+				A58B327C2310B0DF00E80ECB /* Sources */,
+				A58B327D2310B0DF00E80ECB /* Frameworks */,
+				A58B327E2310B0DF00E80ECB /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "DataCpp-iOS";
+			productName = "DataCpp-iOS";
+			productReference = A58B32802310B0DF00E80ECB /* libDataCpp-iOS.a */;
+			productType = "com.apple.product-type.library.static";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -205,6 +254,9 @@
 						CreatedOnToolsVersion = 10.3;
 					};
 					A53E4EC12306411F000BB7D8 = {
+						CreatedOnToolsVersion = 10.3;
+					};
+					A58B327F2310B0DF00E80ECB = {
 						CreatedOnToolsVersion = 10.3;
 					};
 				};
@@ -223,6 +275,7 @@
 			targets = (
 				A53E4EB123063BFC000BB7D8 /* DataCpp-macOS */,
 				A53E4EC12306411F000BB7D8 /* DataCppTest-macOS */,
+				A58B327F2310B0DF00E80ECB /* DataCpp-iOS */,
 			);
 		};
 /* End PBXProject section */
@@ -241,6 +294,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				A53E4EC923064126000BB7D8 /* main.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A58B327C2310B0DF00E80ECB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -413,6 +473,32 @@
 			};
 			name = Release;
 		};
+		A58B32862310B0DF00E80ECB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CODE_SIGN_STYLE = Automatic;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		A58B32872310B0DF00E80ECB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CODE_SIGN_STYLE = Automatic;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -439,6 +525,15 @@
 			buildConfigurations = (
 				A578652F23007C1D00CDC3E8 /* Debug */,
 				A578653023007C1D00CDC3E8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A58B32882310B0DF00E80ECB /* Build configuration list for PBXNativeTarget "DataCpp-iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A58B32862310B0DF00E80ECB /* Debug */,
+				A58B32872310B0DF00E80ECB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
