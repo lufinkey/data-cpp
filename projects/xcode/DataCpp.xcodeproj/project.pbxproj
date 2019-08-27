@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		A517B81F23093B7C00897145 /* libDataCpp-macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A53E4EB223063BFC000BB7D8 /* libDataCpp-macOS.a */; };
+		A5224A342315E8100006D213 /* Error.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A564E02D230934A10018787F /* Error.cpp */; };
 		A53E4EB623063C20000BB7D8 /* Common.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A53E4E6623048C5B000BB7D8 /* Common.hpp */; };
 		A53E4EB723063C20000BB7D8 /* BasicStringUtils.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A53E4E6B2304B3A3000BB7D8 /* BasicStringUtils.hpp */; };
 		A53E4EB823063C20000BB7D8 /* BasicString.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A53E4E4823048758000BB7D8 /* BasicString.hpp */; };
@@ -301,6 +302,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A5224A342315E8100006D213 /* Error.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -313,7 +315,6 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				EXECUTABLE_PREFIX = lib;
-				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../../src";
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -327,7 +328,6 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				EXECUTABLE_PREFIX = lib;
-				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../../src";
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -341,7 +341,6 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
-				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../../src";
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -354,7 +353,6 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
-				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../../src";
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -412,6 +410,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../../src";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -465,6 +464,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../../src";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -476,7 +476,7 @@
 		A58B32862310B0DF00E80ECB /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CODE_SIGN_STYLE = Automatic;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				OTHER_LDFLAGS = "-ObjC";
@@ -489,7 +489,7 @@
 		A58B32872310B0DF00E80ECB /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CODE_SIGN_STYLE = Automatic;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				OTHER_LDFLAGS = "-ObjC";

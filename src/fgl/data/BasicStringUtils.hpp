@@ -790,7 +790,6 @@ namespace fgl {
 		size_t right_size = (size_t)right_length;
 		size_t size_new = get_safe_resize<Char>(left.size, right_size);
 		BasicString<Char> newStr;
-		size_t size_new = left.size + right_size;
 		Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size_new+1)*sizeof(Char));
 		if(newStr_characters_new == nullptr) {
 			throw std::bad_alloc();
@@ -814,7 +813,6 @@ namespace fgl {
 		size_t right_size = (size_t)right_length;
 		size_t size_new = get_safe_resize<Char>(left.size, right_size);
 		BasicString<Char> newStr;
-		size_t size_new = left.size + right_size;
 		Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size_new+1)*sizeof(Char));
 		if(newStr_characters_new == nullptr) {
 			throw std::bad_alloc();
@@ -841,13 +839,12 @@ namespace fgl {
 		NSUInteger right_length = right.length;
 		auto buffer = std::make_unique<unichar[]>((size_t)right.length);
 		NSRange range = NSMakeRange(0, right_length);
-		[right getCharacters:buffer range:range];
+		[right getCharacters:buffer.get() range:range];
 		std::basic_string<Char> right_str = convert<Char,unichar>(buffer.get(), (size_t)right_length);
 		buffer = nullptr;
 		size_t right_size = right_str.length();
 		size_t size_new = get_safe_resize<Char>(left.size, right_size);
 		BasicString<Char> newStr;
-		size_t size_new = left.size + right_size;
 		Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size_new+1)*sizeof(Char));
 		if(newStr_characters_new == nullptr) {
 			throw std::bad_alloc();
@@ -874,7 +871,6 @@ namespace fgl {
 		size_t left_size = (size_t)left.length;
 		size_t size_new = get_safe_resize<Char>(left_size, right.size);
 		BasicString<Char> newStr;
-		size_t size_new = left_size + right.size;
 		Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size_new+1)*sizeof(Char));
 		if(newStr_characters_new == nullptr) {
 			throw std::bad_alloc();
@@ -900,7 +896,6 @@ namespace fgl {
 		size_t left_size = (size_t)left_length;
 		size_t size_new = get_safe_resize<Char>(left_size, right.size);
 		BasicString<Char> newStr;
-		size_t size_new = left_size + right.size;
 		Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size_new+1)*sizeof(Char));
 		if(newStr_characters_new == nullptr) {
 			throw std::bad_alloc();
@@ -927,13 +922,12 @@ namespace fgl {
 		NSUInteger left_length = left.length;
 		auto buffer = std::make_unique<unichar[]>((size_t)left.length);
 		NSRange range = NSMakeRange(0, left_length);
-		[left getCharacters:buffer range:range];
+		[left getCharacters:buffer.get() range:range];
 		std::basic_string<Char> left_str = convert<Char,unichar>(buffer.get(), (size_t)left_length);
 		buffer = nullptr;
 		size_t left_size = left_str.length();
 		size_t size_new = get_safe_resize<Char>(left_size, right.size);
 		BasicString<Char> newStr;
-		size_t size_new = left_size + right.size;
 		Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size_new+1)*sizeof(Char));
 		if(newStr_characters_new == nullptr) {
 			throw std::bad_alloc();

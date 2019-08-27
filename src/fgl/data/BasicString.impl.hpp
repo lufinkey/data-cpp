@@ -630,12 +630,12 @@ namespace fgl {
 		typename std::enable_if<(BasicStringUtils::can_convert_string_type<_Char>::value
 			&& sizeof(unichar)!=sizeof(_Char) && sizeof(_Char)!=sizeof(char)), std::nullptr_t>::type>
 	BasicString<Char>& BasicString<Char>::operator+=(NSString* nsString) {
-		size_t nsString_length = nsString.length;
+		NSUInteger nsString_length = nsString.length;
 		auto buffer = std::make_unique<unichar[]>((size_t)nsString_length);
 		auto buffer_data = buffer.get();
 		NSRange range = NSMakeRange(0, nsString_length);
 		[nsString getCharacters:buffer_data range:range];
-		buffer_data[nsLength] = NULLCHAR;
+		buffer_data[nsString_length] = NULLCHAR;
 		auto output = BasicStringUtils::convert<Char,unichar>(buffer_data, (size_t)nsString_length);
 		buffer = nullptr;
 		append(output.c_str(), output.length());
