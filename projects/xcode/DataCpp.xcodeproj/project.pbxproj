@@ -18,13 +18,6 @@
 		A564E02E230934A10018787F /* Error.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A564E02D230934A10018787F /* Error.cpp */; };
 		A564E037230935B30018787F /* data.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A564E01923091D590018787F /* data.hpp */; };
 		A564E038230935B30018787F /* BasicString.impl.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A53E4ECC230867B5000BB7D8 /* BasicString.impl.hpp */; };
-		A58B32B82310B32400E80ECB /* data.hpp in CopyFiles */ = {isa = PBXBuildFile; fileRef = A564E01923091D590018787F /* data.hpp */; };
-		A58B32B92310B32400E80ECB /* Error.hpp in CopyFiles */ = {isa = PBXBuildFile; fileRef = A53E4E6A23048DE5000BB7D8 /* Error.hpp */; };
-		A58B32BA2310B32400E80ECB /* Common.hpp in CopyFiles */ = {isa = PBXBuildFile; fileRef = A53E4E6623048C5B000BB7D8 /* Common.hpp */; };
-		A58B32BB2310B32400E80ECB /* BasicStringUtils.hpp in CopyFiles */ = {isa = PBXBuildFile; fileRef = A53E4E6B2304B3A3000BB7D8 /* BasicStringUtils.hpp */; };
-		A58B32BC2310B32400E80ECB /* BasicString.hpp in CopyFiles */ = {isa = PBXBuildFile; fileRef = A53E4E4823048758000BB7D8 /* BasicString.hpp */; };
-		A58B32BD2310B32400E80ECB /* BasicString.impl.hpp in CopyFiles */ = {isa = PBXBuildFile; fileRef = A53E4ECC230867B5000BB7D8 /* BasicString.impl.hpp */; };
-		A58B32BE2310B32400E80ECB /* String.hpp in CopyFiles */ = {isa = PBXBuildFile; fileRef = A53E4E472304874A000BB7D8 /* String.hpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -43,13 +36,6 @@
 			dstPath = "include/$(PRODUCT_NAME)";
 			dstSubfolderSpec = 16;
 			files = (
-				A58B32B82310B32400E80ECB /* data.hpp in CopyFiles */,
-				A58B32B92310B32400E80ECB /* Error.hpp in CopyFiles */,
-				A58B32BA2310B32400E80ECB /* Common.hpp in CopyFiles */,
-				A58B32BB2310B32400E80ECB /* BasicStringUtils.hpp in CopyFiles */,
-				A58B32BC2310B32400E80ECB /* BasicString.hpp in CopyFiles */,
-				A58B32BD2310B32400E80ECB /* BasicString.impl.hpp in CopyFiles */,
-				A58B32BE2310B32400E80ECB /* String.hpp in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
