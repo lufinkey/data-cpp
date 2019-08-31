@@ -463,12 +463,12 @@ namespace fgl {
 	#ifdef __OBJC__
 	
 	template<typename Storage>
-	typename BasicArrayList<Storage>::size_type BasicArrayList<Storage>::indexWhere(BOOL(^predicate)(const T&)) const {
+	typename BasicArrayList<Storage>::size_type BasicArrayList<Storage>::indexWhere(BOOL(^predicate)(const ValueType&)) const {
 		return findWhere(predicate) - this->begin();
 	}
 	
 	template<typename Storage>
-	typename BasicArrayList<Storage>::size_type BasicArrayList<Storage>::lastIndexWhere(BOOL(^predicate)(const T&)) const {
+	typename BasicArrayList<Storage>::size_type BasicArrayList<Storage>::lastIndexWhere(BOOL(^predicate)(const ValueType&)) const {
 		return findLastWhere(predicate) - this->begin();
 	}
 	

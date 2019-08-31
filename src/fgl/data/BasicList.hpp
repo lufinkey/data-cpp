@@ -34,28 +34,28 @@ namespace fgl {
 		
 		Storage storage;
 		
-		BasicList();
-		BasicList(const BasicList<Storage>&);
-		BasicList(BasicList<Storage>&&);
-		BasicList(const Storage&);
-		BasicList(Storage&&);
-		BasicList(std::initializer_list<ValueType>);
-		BasicList(const ValueType* data, size_t size);
+		inline BasicList();
+		inline BasicList(const BasicList<Storage>&);
+		inline BasicList(BasicList<Storage>&&);
+		inline BasicList(const Storage&);
+		inline BasicList(Storage&&);
+		inline BasicList(std::initializer_list<ValueType>);
+		inline BasicList(const ValueType* data, size_t size);
 		template<typename InputIterator, typename = IsInputIterator<InputIterator>>
-		BasicList(InputIterator begin, InputIterator end);
+		inline BasicList(InputIterator begin, InputIterator end);
 		
 		template<typename Container, typename = IsTypeContainer<ValueType,Container>>
-		BasicList(const Container&);
+		inline BasicList(const Container&);
 		template<typename Container, typename = IsTypeContainer<ValueType,Container>>
-		BasicList(Container&&);
+		inline BasicList(Container&&);
 		
-		BasicList<Storage>& operator=(const BasicList<Storage>&);
-		BasicList<Storage>& operator=(BasicList<Storage>&&);
+		inline BasicList<Storage>& operator=(const BasicList<Storage>&);
+		inline BasicList<Storage>& operator=(BasicList<Storage>&&);
 		template<typename Container, typename = IsTypeContainer<ValueType,Container>>
-		BasicList<Storage>& operator=(const Container&);
+		inline BasicList<Storage>& operator=(const Container&);
 		template<typename Container, typename = IsTypeContainer<ValueType,Container>>
-		BasicList<Storage>& operator=(Container&&);
-		BasicList<Storage>& operator=(std::initializer_list<ValueType> list);
+		inline BasicList<Storage>& operator=(Container&&);
+		inline BasicList<Storage>& operator=(std::initializer_list<ValueType> list);
 		
 		inline iterator begin();
 		inline const_iterator begin() const;
@@ -408,17 +408,17 @@ namespace fgl {
 	#ifdef __OBJC__
 	
 	template<typename Storage>
-	typename BasicList<Storage>::iterator BasicList<Storage>::findWhere(BOOL(^predicate)(const T&)) {
+	typename BasicList<Storage>::iterator BasicList<Storage>::findWhere(BOOL(^predicate)(const ValueType&)) {
 		return std::find_if(begin(), end(), predicate);
 	}
 	
 	template<typename Storage>
-	typename BasicList<Storage>::const_iterator BasicList<Storage>::findWhere(BOOL(^predicate)(const T&)) const {
+	typename BasicList<Storage>::const_iterator BasicList<Storage>::findWhere(BOOL(^predicate)(const ValueType&)) const {
 		return std::find_if(begin(), end(), predicate);
 	}
 	
 	template<typename Storage>
-	typename BasicList<Storage>::iterator BasicList<Storage>::findLastWhere(BOOL(^predicate)(const T&)) {
+	typename BasicList<Storage>::iterator BasicList<Storage>::findLastWhere(BOOL(^predicate)(const ValueType&)) {
 		auto it = std::find_if(rbegin(), rend(), predicate);
 		if(it == rend()) {
 			return end();
@@ -427,7 +427,7 @@ namespace fgl {
 	}
 	
 	template<typename Storage>
-	typename BasicList<Storage>::const_iterator BasicList<Storage>::findLastWhere(BOOL(^predicate)(const T&)) const {
+	typename BasicList<Storage>::const_iterator BasicList<Storage>::findLastWhere(BOOL(^predicate)(const ValueType&)) const {
 		auto it = std::find_if(rbegin(), rend(), predicate);
 		if(it == rend()) {
 			return end();
@@ -499,7 +499,7 @@ namespace fgl {
 	#ifdef __OBJC__
 	
 	template<typename Storage>
-	typename BasicList<Storage>::ValueType& firstWhere(BOOL(^predicate)(const ValueType&), const ValueType& defaultValue) {
+	typename BasicList<Storage>::ValueType& BasicList<Storage>::firstWhere(BOOL(^predicate)(const ValueType&), const ValueType& defaultValue) {
 		auto it = findWhere(predicate);
 		if(it == end()) {
 			return defaultValue;
@@ -508,7 +508,7 @@ namespace fgl {
 	}
 	
 	template<typename Storage>
-	const typename BasicList<Storage>::ValueType& firstWhere(BOOL(^predicate)(const ValueType&), const ValueType& defaultValue) const {
+	const typename BasicList<Storage>::ValueType& BasicList<Storage>::firstWhere(BOOL(^predicate)(const ValueType&), const ValueType& defaultValue) const {
 		auto it = findWhere(predicate);
 		if(it == end()) {
 			return defaultValue;
@@ -517,7 +517,7 @@ namespace fgl {
 	}
 	
 	template<typename Storage>
-	typename BasicList<Storage>::ValueType& lastWhere(BOOL(^predicate)(const ValueType&), const ValueType& defaultValue) {
+	typename BasicList<Storage>::ValueType& BasicList<Storage>::lastWhere(BOOL(^predicate)(const ValueType&), const ValueType& defaultValue) {
 		auto it = findLastWhere(predicate);
 		if(it == end()) {
 			return defaultValue;
@@ -526,7 +526,7 @@ namespace fgl {
 	}
 	
 	template<typename Storage>
-	const typename BasicList<Storage>::ValueType& lastWhere(BOOL(^predicate)(const ValueType&), const ValueType& defaultValue) const {
+	const typename BasicList<Storage>::ValueType& BasicList<Storage>::lastWhere(BOOL(^predicate)(const ValueType&), const ValueType& defaultValue) const {
 		auto it = findLastWhere(predicate);
 		if(it == end()) {
 			return defaultValue;
@@ -551,7 +551,7 @@ namespace fgl {
 	#ifdef __OBJC__
 	
 	template<typename Storage>
-	bool BasicList<Storage>::containsWhere(BOOL(^predicate)(const T&)) const {
+	bool BasicList<Storage>::containsWhere(BOOL(^predicate)(const ValueType&)) const {
 		return findWhere(predicate) != end();
 	}
 	
@@ -572,7 +572,7 @@ namespace fgl {
 	#ifdef __OBJC__
 	
 	template<typename Storage>
-	void BasicList<Storage>::sort(BOOL(^predicate)(const T&)) {
+	void BasicList<Storage>::sort(BOOL(^predicate)(const ValueType&)) {
 		std::sort(begin(), end(), predicate);
 	}
 	
