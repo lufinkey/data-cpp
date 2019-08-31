@@ -53,6 +53,10 @@
 		A53E4ECC230867B5000BB7D8 /* BasicString.impl.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = BasicString.impl.hpp; sourceTree = "<group>"; };
 		A564E01923091D590018787F /* data.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = data.hpp; sourceTree = "<group>"; };
 		A564E02D230934A10018787F /* Error.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Error.cpp; sourceTree = "<group>"; };
+		A567C15E2319A6CF00BB5398 /* BasicList.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = BasicList.hpp; sourceTree = "<group>"; };
+		A567C1602319B0A600BB5398 /* Traits.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Traits.hpp; sourceTree = "<group>"; };
+		A567C1612319D69400BB5398 /* ArrayList.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = ArrayList.hpp; sourceTree = "<group>"; };
+		A567C1622319D6A100BB5398 /* LinkedList.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = LinkedList.hpp; sourceTree = "<group>"; };
 		A58B32802310B0DF00E80ECB /* libDataCpp-iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libDataCpp-iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -100,6 +104,10 @@
 				A53E4E4823048758000BB7D8 /* BasicString.hpp */,
 				A53E4ECC230867B5000BB7D8 /* BasicString.impl.hpp */,
 				A53E4E472304874A000BB7D8 /* String.hpp */,
+				A567C15E2319A6CF00BB5398 /* BasicList.hpp */,
+				A567C1612319D69400BB5398 /* ArrayList.hpp */,
+				A567C1622319D6A100BB5398 /* LinkedList.hpp */,
+				A567C1602319B0A600BB5398 /* Traits.hpp */,
 			);
 			path = data;
 			sourceTree = "<group>";

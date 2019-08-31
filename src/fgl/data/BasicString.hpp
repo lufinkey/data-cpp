@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <list>
 #include <locale>
 #include <regex>
 #include <string>
@@ -18,6 +19,11 @@
 #include <fgl/data/BasicStringUtils.hpp>
 
 namespace fgl {
+	template<typename Storage>
+	class BasicLinkedList;
+	template<typename T>
+	using LinkedList = BasicLinkedList<std::list<T>>;
+	
 	template<typename Char>
 	class BasicString {
 		template<typename OtherChar>

@@ -8,5 +8,7 @@
 
 #pragma once
 
+#include <fgl/data/ArrayList.hpp>
+#include <fgl/data/LinkedList.hpp>
 #include <fgl/data/String.hpp>
 #include <fgl/error/Error.hpp>

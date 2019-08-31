@@ -9,6 +9,7 @@
 #pragma once
 
 #include <fgl/data/BasicString.hpp>
+#include <fgl/data/LinkedList.hpp>
 #include <memory>
 
 namespace fgl {

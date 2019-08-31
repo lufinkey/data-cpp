@@ -18,10 +18,6 @@
 namespace fgl {
 	template<typename T>
 	using Function = std::function<T>;
-	template<typename T>
-	using ArrayList = std::vector<T>;
-	template<typename T>
-	using LinkedList = std::list<T>;
 	using Any = std::any;
 	
 	#ifndef FGL_ASSERT
