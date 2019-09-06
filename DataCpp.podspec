@@ -7,9 +7,9 @@
 #
 
 Pod::Spec.new do |s|
-  s.name             = 'DataCpp'
-  s.version          = '0.1.0'
-  s.summary          = 'A small data library for C++.'
+	s.name             = 'DataCpp'
+	s.version          = '0.1.0'
+	s.summary          = 'A small data library for C++.'
 
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
@@ -17,28 +17,31 @@ Pod::Spec.new do |s|
 #   * Write the description between the DESC delimiters below.
 #   * Finally, don't worry about the indent, CocoaPods strips it!
 
-  s.description      = <<-DESC
-  A small data library for C++.
-                       DESC
+	s.description      = <<-DESC
+	A small data library for C++.
+							DESC
 
-  s.homepage         = 'https://github.com/lufinkey/data-cpp'
-  # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
-  # s.license          = { :type => 'MIT', :file => 'LICENSE' }
-  s.author           = { 'Luis Finke' => 'luisfinke@gmail.com' }
-  s.source           = { :git => 'https://github.com/lufinkey/data-cpp.git', :tag => s.version.to_s }
-  # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
+	s.homepage         = 'https://github.com/lufinkey/data-cpp'
+	# s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
+	# s.license          = { :type => 'MIT', :file => 'LICENSE' }
+	s.author           = { 'Luis Finke' => 'luisfinke@gmail.com' }
+	s.source           = { :git => 'https://github.com/lufinkey/data-cpp.git', :tag => s.version.to_s }
+	# s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
-  s.ios.deployment_target = '9.0'
+	s.ios.deployment_target = '9.0'
 
-  s.source_files = 'src/fgl/**/*'
+	s.source_files = 'src/fgl/**/*'
   
-  # s.resource_bundles = {
-  #   'DataCpp' => ['DataCpp/Assets/*.png']
-  # }
+	# s.resource_bundles = {
+	#   'DataCpp' => ['DataCpp/Assets/*.png']
+	# }
 
-  s.public_header_files = 'src/fgl/**/*.hpp'
-  s.header_mappings_dir = 'src/fgl'
-  s.xcconfig = { 'HEADER_SEARCH_PATHS' => '"${PODS_ROOT}/DataCpp/src"' }
-  # s.frameworks = 'UIKit', 'MapKit'
-  # s.dependency 'AFNetworking', '~> 2.3'
+	s.public_header_files = 'src/fgl/**/*.hpp'
+	s.header_mappings_dir = 'src/fgl'
+	s.xcconfig = {
+		'HEADER_SEARCH_PATHS' => '"${PODS_ROOT}/DataCpp/src"',
+		'CLANG_CXX_LANGUAGE_STANDARD' = 'gnu++17'
+	}
+	# s.frameworks = 'UIKit', 'MapKit'
+	# s.dependency 'AFNetworking', '~> 2.3'
 end
