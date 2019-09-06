@@ -36,7 +36,6 @@ Pod::Spec.new do |s|
   #   'DataCpp' => ['DataCpp/Assets/*.png']
   # }
 
-  s.header_dir = 'fgl'
   s.public_header_files = 'src/fgl/**/*.hpp'
   s.header_mappings_dir = 'src/fgl'
   # s.frameworks = 'UIKit', 'MapKit'
