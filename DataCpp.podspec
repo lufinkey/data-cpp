@@ -36,7 +36,7 @@ Pod::Spec.new do |s|
   #   'DataCpp' => ['DataCpp/Assets/*.png']
   # }
 
-  s.public_header_files = 'src/fgl/**/*.h'
+  s.header_mappings_dir = 'src/'
   # s.frameworks = 'UIKit', 'MapKit'
   # s.dependency 'AFNetworking', '~> 2.3'
 end
