@@ -1,8 +1,8 @@
-#Make
-/build
+# Make
+build/
 /bin
 
-#Visual Studio
+# Visual Studio
 /projects/visualstudio/*.VC.db
 /projects/visualstudio/*.opendb
 /projects/visualstudio/*.sdf
@@ -15,8 +15,25 @@
 /projects/visualstudio/packages
 /projects/visualstudio/test/build
 
-#Xcode
+# Xcode
 .DS_Store
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata/
+*.xccheckout
+profile
+*.moved-aside
+DerivedData
+*.hmap
+*.ipa
+.bundle
+Carthage/Build
 /**/*.xcodeproj/*.xcworkspace
 /**/*.xcodeproj/xcshareddata
 /**/*.xcodeproj/xcuserdata
@@ -26,7 +43,7 @@
 /projects/xcode*/DerivedData
 /projects/xcode*/Pods
 
-#Code::Blocks
+# Code::Blocks
 /projects/codeblocks/*.layout
 /projects/codeblocks/*.depend
 /projects/codeblocks/obj
@@ -36,7 +53,7 @@
 /projects/codeblocks/test/obj
 /projects/codeblocks/test/bin
 
-#CodeLite
+# CodeLite
 /projects/codelite/.*
 /projects/codelite/Debug
 /projects/codelite/Release
