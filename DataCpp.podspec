@@ -37,6 +37,7 @@ Pod::Spec.new do |s|
   # }
 
   s.header_dir = 'fgl'
+  s.public_header_files = 'src/fgl/**/*.hpp'
   s.header_mappings_dir = 'src/fgl'
   # s.frameworks = 'UIKit', 'MapKit'
   # s.dependency 'AFNetworking', '~> 2.3'
