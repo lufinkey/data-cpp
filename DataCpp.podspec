@@ -38,9 +38,9 @@ Pod::Spec.new do |s|
 
 	s.public_header_files = 'src/fgl/**/*.hpp'
 	s.header_mappings_dir = 'src/fgl'
-	s.xcconfig = { \
-		'HEADER_SEARCH_PATHS' => '"${PODS_ROOT}/DataCpp/src"', \
-		'CLANG_CXX_LANGUAGE_STANDARD' = 'gnu++17' \
+	s.xcconfig = {
+		'HEADER_SEARCH_PATHS' => '"${PODS_ROOT}/DataCpp/src"',
+		'CLANG_CXX_LANGUAGE_STANDARD' => 'gnu++17'
 	}
 	# s.frameworks = 'UIKit', 'MapKit'
 	# s.dependency 'AFNetworking', '~> 2.3'
