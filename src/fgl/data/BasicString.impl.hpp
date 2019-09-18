@@ -293,27 +293,23 @@ namespace fgl {
 	#endif
 	
 	template<typename Char>
-	template<typename OtherChar,
-		typename BasicStringUtils::same_size_convertable_strings<Char,OtherChar>::null_type>
+	template<typename OtherChar>
 	std::basic_string<OtherChar> BasicString<Char>::toStdString() const {
-		// same char size
-		return std::basic_string<OtherChar>((const OtherChar*)characters, size);
-	}
-	
-	template<typename Char>
-	template<typename OtherChar,
-		typename BasicStringUtils::diff_size_convertable_strings<Char,OtherChar>::null_type>
-	std::basic_string<OtherChar> BasicString<Char>::toStdString() const {
-		// different char size
-		return BasicStringUtils::convert<OtherChar,Char>(characters, size);
-	}
-	
-	template<typename Char>
-	template<typename SameChar,
-		typename BasicStringUtils::is_same<Char,SameChar>::null_type>
-	std::basic_string<SameChar> BasicString<Char>::toStdString() const {
-		// same char
-		return std::basic_string<SameChar>(characters, size);
+		static_assert(
+			(BasicStringUtils::same_size_convertable_strings<Char,OtherChar>::value
+			&& BasicStringUtils::diff_size_convertable_strings<Char,OtherChar>::value
+			&& BasicStringUtils::is_same<Char,OtherChar>::value),
+			"Invalid char type");
+		if constexpr(BasicStringUtils::same_size_convertable_strings<Char,OtherChar>::value) {
+			// same char size
+			return std::basic_string<OtherChar>((const OtherChar*)characters, size);
+		} else if constexpr(BasicStringUtils::diff_size_convertable_strings<Char,OtherChar>::value) {
+			// different char size
+			return BasicStringUtils::convert<OtherChar,Char>(characters, size);
+		} else if constexpr(BasicStringUtils::is_same<Char,OtherChar>::value) {
+			// same char
+			return std::basic_string<Char>(characters, size);
+		}
 	}
 	
 	template<typename Char>
