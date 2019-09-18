@@ -1498,6 +1498,38 @@ namespace fgl {
 	
 	
 	
+	template<typename Char>
+	template<typename ListStorage,
+		typename std::enable_if<std::is_same<BasicString<Char>,typename ListStorage::value_type>::value,std::nullptr_t>::type>
+	BasicString<Char> BasicString<Char>::join(BasicList<ListStorage>& list, const BasicString<Char>& separator) {
+		if(list.size() == 0) {
+			return BasicString<Char>();
+		}
+		size_t listSize = 0;
+		size_t listIndex = 0;
+		for(auto& str : list) {
+			listSize = BasicStringUtils::get_safe_resize<Char>(listSize, str.length());
+			if(listIndex != (list.size()-1)) {
+				listSize = BasicStringUtils::get_safe_resize<Char>(listSize, separator.size());
+			}
+			listIndex++;
+		}
+		std::basic_string<Char> joined;
+		joined.reserve(listSize);
+		listIndex = 0;
+		for(auto& str : list) {
+			joined += str;
+			if(listIndex != (list.size()-1)) {
+				joined += separator;
+			}
+			listIndex++;
+		}
+		return joined;
+	}
+	
+	
+	
+	
 	template<typename Char, typename OtherChar,
 		typename BasicStringUtils::can_convert_string_types<Char, OtherChar>::null_type>
 	BasicString<Char> operator+(const BasicString<Char>& left, const BasicString<OtherChar>& right) {

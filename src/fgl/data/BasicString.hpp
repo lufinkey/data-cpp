@@ -20,6 +20,8 @@
 
 namespace fgl {
 	template<typename Storage>
+	class BasicList;
+	template<typename Storage>
 	class BasicLinkedList;
 	template<typename T>
 	using LinkedList = BasicLinkedList<std::list<T>>;
@@ -331,6 +333,12 @@ namespace fgl {
 		template<typename Num,
 			typename BasicStringUtils::string_type_convertable_with_number<Char,Num>::null_type = nullptr>
 		Num toArithmeticValue(const std::locale& locale = std::locale()) const;
+		
+		
+		
+		template<typename ListStorage,
+			typename std::enable_if<std::is_same<BasicString<Char>,typename ListStorage::value_type>::value,std::nullptr_t>::type = nullptr>
+		static BasicString<Char> join(BasicList<ListStorage>& list, const BasicString<Char>& separator = BasicString<Char>());
 		
 		
 		
