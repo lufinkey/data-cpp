@@ -12,3 +12,4 @@
 #include <fgl/data/LinkedList.hpp>
 #include <fgl/data/String.hpp>
 #include <fgl/error/Error.hpp>
+#include <fgl/util/PlatformChecks.hpp>

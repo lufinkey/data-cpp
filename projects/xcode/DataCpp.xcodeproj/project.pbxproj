@@ -91,8 +91,9 @@
 			isa = PBXGroup;
 			children = (
 				A564E01923091D590018787F /* data.hpp */,
-				A53E4E6923048D63000BB7D8 /* error */,
 				A53E4E6823048C62000BB7D8 /* data */,
+				A53E4E6923048D63000BB7D8 /* error */,
+				A571E1372332C9D600603E14 /* util */,
 			);
 			path = fgl;
 			sourceTree = "<group>";
@@ -109,7 +110,6 @@
 				A567C1612319D69400BB5398 /* ArrayList.hpp */,
 				A567C1622319D6A100BB5398 /* LinkedList.hpp */,
 				A567C1602319B0A600BB5398 /* Traits.hpp */,
-				A571E1362332C7A700603E14 /* PlatformChecks.hpp */,
 			);
 			path = data;
 			sourceTree = "<group>";
@@ -136,6 +136,14 @@
 			children = (
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A571E1372332C9D600603E14 /* util */ = {
+			isa = PBXGroup;
+			children = (
+				A571E1362332C7A700603E14 /* PlatformChecks.hpp */,
+			);
+			path = util;
 			sourceTree = "<group>";
 		};
 		A578651F23007C1C00CDC3E8 = {
