@@ -1499,9 +1499,9 @@ namespace fgl {
 	
 	
 	template<typename Char>
-	template<typename ListStorage,
-		typename std::enable_if<std::is_same<BasicString<Char>,typename ListStorage::value_type>::value,std::nullptr_t>::type>
-	BasicString<Char> BasicString<Char>::join(BasicList<ListStorage>& list, const BasicString<Char>& separator) {
+	template<typename ListType,
+		typename std::enable_if<std::is_same<BasicString<Char>,typename ListType::value_type>::value, std::nullptr_t>::type>
+	BasicString<Char> BasicString<Char>::join(ListType& list, const BasicString<Char>& separator) {
 		if(list.size() == 0) {
 			return BasicString<Char>();
 		}

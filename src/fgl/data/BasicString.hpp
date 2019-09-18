@@ -336,9 +336,9 @@ namespace fgl {
 		
 		
 		
-		template<typename ListStorage,
-			typename std::enable_if<std::is_same<BasicString<Char>,typename ListStorage::value_type>::value,std::nullptr_t>::type = nullptr>
-		static BasicString<Char> join(BasicList<ListStorage>& list, const BasicString<Char>& separator = BasicString<Char>());
+		template<typename ListType,
+			typename std::enable_if<std::is_same<BasicString<Char>,typename ListType::value_type>::value, std::nullptr_t>::type = nullptr>
+		static BasicString<Char> join(ListType& list, const BasicString<Char>& separator = BasicString<Char>());
 		
 		
 		
