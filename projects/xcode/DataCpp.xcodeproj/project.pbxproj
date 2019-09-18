@@ -57,6 +57,7 @@
 		A567C1602319B0A600BB5398 /* Traits.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Traits.hpp; sourceTree = "<group>"; };
 		A567C1612319D69400BB5398 /* ArrayList.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = ArrayList.hpp; sourceTree = "<group>"; };
 		A567C1622319D6A100BB5398 /* LinkedList.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = LinkedList.hpp; sourceTree = "<group>"; };
+		A571E1362332C7A700603E14 /* PlatformChecks.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = PlatformChecks.hpp; sourceTree = "<group>"; };
 		A58B32802310B0DF00E80ECB /* libDataCpp-iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libDataCpp-iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -108,6 +109,7 @@
 				A567C1612319D69400BB5398 /* ArrayList.hpp */,
 				A567C1622319D6A100BB5398 /* LinkedList.hpp */,
 				A567C1602319B0A600BB5398 /* Traits.hpp */,
+				A571E1362332C7A700603E14 /* PlatformChecks.hpp */,
 			);
 			path = data;
 			sourceTree = "<group>";
