@@ -11,6 +11,10 @@
 #ifndef _DATACPP_OBJECTIVECPP_H
 #define _DATACPP_OBJECTIVECPP_H
 
+#ifdef __OBJC__
+#import <Foundation/Foundation.h>
+#endif
+
 #ifndef OBJCPP_PTR
 	#ifdef __OBJC__
 		#define OBJCPP_PTR(type) type*

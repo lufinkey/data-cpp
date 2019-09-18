@@ -14,6 +14,9 @@
 #include <iostream>
 #include <list>
 #include <vector>
+#ifdef __OBJC__
+#import <Foundation/Foundation.h>
+#endif
 
 namespace fgl {
 	template<typename T>
