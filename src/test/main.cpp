@@ -11,6 +11,7 @@
 using namespace fgl;
 
 int main(int argc, char* argv[]) {
-	BasicString<char> str;
+	BasicString<char> str = String::join(std::vector<String>{ String("hello"), String(" "), String("world") });
+	
 	return 0;
 }

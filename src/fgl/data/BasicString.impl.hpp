@@ -293,23 +293,27 @@ namespace fgl {
 	#endif
 	
 	template<typename Char>
-	template<typename OtherChar>
+	template<typename OtherChar,
+		typename BasicStringUtils::same_size_convertable_strings<Char,OtherChar>::null_type>
 	std::basic_string<OtherChar> BasicString<Char>::toStdString() const {
-		static_assert(
-			(BasicStringUtils::same_size_convertable_strings<Char,OtherChar>::value
-			&& BasicStringUtils::diff_size_convertable_strings<Char,OtherChar>::value
-			&& BasicStringUtils::is_same<Char,OtherChar>::value),
-			"Invalid char type");
-		if constexpr(BasicStringUtils::same_size_convertable_strings<Char,OtherChar>::value) {
-			// same char size
-			return std::basic_string<OtherChar>((const OtherChar*)characters, size);
-		} else if constexpr(BasicStringUtils::diff_size_convertable_strings<Char,OtherChar>::value) {
-			// different char size
-			return BasicStringUtils::convert<OtherChar,Char>(characters, size);
-		} else if constexpr(BasicStringUtils::is_same<Char,OtherChar>::value) {
-			// same char
-			return std::basic_string<Char>(characters, size);
-		}
+		// same char size
+		return std::basic_string<OtherChar>((const OtherChar*)characters, size);
+	}
+	
+	template<typename Char>
+	template<typename OtherChar,
+		typename BasicStringUtils::diff_size_convertable_strings<Char,OtherChar>::null_type>
+	std::basic_string<OtherChar> BasicString<Char>::toStdString() const {
+		// different char size
+		return BasicStringUtils::convert<OtherChar,Char>(characters, size);
+	}
+	
+	template<typename Char>
+	template<typename SameChar,
+		typename BasicStringUtils::is_same<Char,SameChar>::null_type>
+	std::basic_string<SameChar> BasicString<Char>::toStdString() const {
+		// same char
+		return std::basic_string<SameChar>(characters, size);
 	}
 	
 	template<typename Char>
@@ -1497,7 +1501,7 @@ namespace fgl {
 	template<typename Char>
 	template<typename ListType,
 		typename std::enable_if<std::is_same<BasicString<Char>,typename ListType::value_type>::value, std::nullptr_t>::type>
-	BasicString<Char> BasicString<Char>::join(ListType& list, const BasicString<Char>& separator) {
+	BasicString<Char> BasicString<Char>::join(const ListType& list, const BasicString<Char>& separator) {
 		if(list.size() == 0) {
 			return BasicString<Char>();
 		}
@@ -1506,7 +1510,7 @@ namespace fgl {
 		for(auto& str : list) {
 			listSize = BasicStringUtils::get_safe_resize<Char>(listSize, str.length());
 			if(listIndex != (list.size()-1)) {
-				listSize = BasicStringUtils::get_safe_resize<Char>(listSize, separator.size());
+				listSize = BasicStringUtils::get_safe_resize<Char>(listSize, separator.length());
 			}
 			listIndex++;
 		}
@@ -1514,9 +1518,9 @@ namespace fgl {
 		joined.reserve(listSize);
 		listIndex = 0;
 		for(auto& str : list) {
-			joined += str;
+			joined += str.template toStdString<Char>();
 			if(listIndex != (list.size()-1)) {
-				joined += separator;
+				joined += separator.template toStdString<Char>();
 			}
 			listIndex++;
 		}

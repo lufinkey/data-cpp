@@ -130,8 +130,15 @@ namespace fgl {
 		explicit operator NSString*() const;
 		#endif
 		
-		template<typename OtherChar = Char>
+		template<typename OtherChar,
+			typename BasicStringUtils::same_size_convertable_strings<Char,OtherChar>::null_type = nullptr>
 		std::basic_string<OtherChar> toStdString() const;
+		template<typename OtherChar,
+			typename BasicStringUtils::diff_size_convertable_strings<Char,OtherChar>::null_type = nullptr>
+		std::basic_string<OtherChar> toStdString() const;
+		template<typename SameChar,
+			typename BasicStringUtils::is_same<Char,SameChar>::null_type = nullptr>
+		std::basic_string<SameChar> toStdString() const;
 		
 		template<typename SomeChar,
 			typename BasicStringUtils::can_convert_string_types<Char,SomeChar>::null_type = nullptr>
@@ -331,7 +338,7 @@ namespace fgl {
 		
 		template<typename ListType,
 			typename std::enable_if<std::is_same<BasicString<Char>,typename ListType::value_type>::value, std::nullptr_t>::type = nullptr>
-		static BasicString<Char> join(ListType& list, const BasicString<Char>& separator = BasicString<Char>());
+		static BasicString<Char> join(const ListType& list, const BasicString<Char>& separator = BasicString<Char>());
 		
 		
 		
