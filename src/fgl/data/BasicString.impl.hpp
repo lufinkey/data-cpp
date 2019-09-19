@@ -1101,7 +1101,7 @@ namespace fgl {
 		else if(find.size > size) {
 			return *this;
 		}
-		std::list<size_t> indexes;
+		LinkedList<size_t> indexes;
 		size_t finish = size - find.size;
 		for(size_t i=0; i<=finish; i++) {
 			if(characters[i] == find.characters[0]) {
@@ -1113,7 +1113,7 @@ namespace fgl {
 					}
 				}
 				if(match) {
-					indexes.push_back(i);
+					indexes.pushBack(i);
 					i += (find.size-1);
 				}
 			}
@@ -1342,11 +1342,11 @@ namespace fgl {
 		size_t lastStart = 0;
 		for(size_t i=0; i<size; i++) {
 			if(characters[i] == delim) {
-				elements.push_back(substring(lastStart, i));
+				elements.pushBack(substring(lastStart, i));
 				lastStart = i+1;
 			}
 		}
-		elements.push_back(substring(lastStart, size));
+		elements.pushBack(substring(lastStart, size));
 		return elements;
 	}
 	
@@ -1355,7 +1355,7 @@ namespace fgl {
 		size_t delim_size = BasicStringUtils::strlen<Char>(delim);
 		if(delim_size == 0 || delim_size > size) {
 			LinkedList<BasicString<Char>> elements;
-			elements.push_back(*this);
+			elements.pushBack(*this);
 			return elements;
 		}
 		LinkedList<BasicString<Char>> elements;
@@ -1371,13 +1371,13 @@ namespace fgl {
 					}
 				}
 				if(match) {
-					elements.push_back(substring(lastStart, i));
+					elements.pushBack(substring(lastStart, i));
 					lastStart = i+delim_size;
 					i = lastStart-1;
 				}
 			}
 		}
-		elements.push_back(substring(lastStart, size));
+		elements.pushBack(substring(lastStart, size));
 		return elements;
 	}
 	
@@ -1385,7 +1385,7 @@ namespace fgl {
 	LinkedList<BasicString<Char>> BasicString<Char>::split(const BasicString<Char>& delim) const {
 		if(delim.size == 0 || delim.size > size) {
 			LinkedList<BasicString<Char> > elements;
-			elements.push_back(*this);
+			elements.pushBack(*this);
 			return elements;
 		}
 		LinkedList<BasicString<Char> > elements;
@@ -1401,13 +1401,13 @@ namespace fgl {
 					}
 				}
 				if(match) {
-					elements.push_back(substring(lastStart, i));
+					elements.pushBack(substring(lastStart, i));
 					lastStart = i+delim.size;
 					i = lastStart-1;
 				}
 			}
 		}
-		elements.push_back(substring(lastStart, size));
+		elements.pushBack(substring(lastStart, size));
 		return elements;
 	}
 	
