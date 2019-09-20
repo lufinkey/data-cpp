@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <initializer_list>
 #include <list>
 #include <locale>
 #include <regex>
@@ -30,15 +31,26 @@ namespace fgl {
 	public:
 		typedef Char CharType;
 		typedef BasicString<Char> StringType;
-		static constexpr size_t NOT_FOUND = (size_t)-1;
+		typedef std::basic_string<Char> StorageType;
 		
-		BasicString();
-		BasicString(const Char* str, size_t length);
-		BasicString(const Char* str);
-		BasicString(const BasicString<Char>& str);
-		BasicString(BasicString<Char>&& str);
-		BasicString(const std::basic_string<Char>& str);
-		BasicString(Char c);
+		typedef Char char_type;
+		typedef typename StorageType::size_type size_type;
+		
+		static const size_type npos = StorageType::npos;
+		static const size_type NOT_FOUND = StorageType::npos;
+		
+		std::basic_string<Char> storage;
+		
+		inline BasicString() noexcept;
+		inline BasicString(size_type count, Char c);
+		inline BasicString(const Char* str, size_type length);
+		inline BasicString(const Char* str);
+		inline BasicString(const std::basic_string<Char>& str);
+		inline BasicString(std::basic_string<Char>&& str) noexcept;
+		inline BasicString(Char c);
+		inline BasicString(std::initializer_list<Char>);
+		template<typename InputIt>
+		inline BasicString(InputIt first, InputIt last);
 		
 		#ifdef __OBJC__
 		template<typename _Char=Char,
@@ -60,100 +72,113 @@ namespace fgl {
 		
 		template<typename OtherChar,
 			typename BasicStringUtils::same_size_convertable_with_char_type<Char,OtherChar>::null_type = nullptr>
-		BasicString(OtherChar c);
+		inline explicit BasicString(OtherChar c);
 		template<typename OtherChar,
 			typename BasicStringUtils::diff_size_convertable_with_char_type<Char,OtherChar>::null_type = nullptr>
-		BasicString(OtherChar c);
+		inline explicit BasicString(OtherChar c);
 		
 		template<typename OtherChar,
 			typename BasicStringUtils::same_size_convertable_strings<Char,OtherChar>::null_type = nullptr>
-		BasicString(const OtherChar* str, size_t length);
+		inline BasicString(const OtherChar* str, size_type length);
 		template<typename OtherChar,
 			typename BasicStringUtils::diff_size_convertable_strings<Char,OtherChar>::null_type = nullptr>
-		BasicString(const OtherChar* str, size_t length);
+		inline BasicString(const OtherChar* str, size_type length);
 		
 		template<typename OtherChar,
 			typename BasicStringUtils::same_size_convertable_strings<Char,OtherChar>::null_type = nullptr>
-		explicit BasicString(const OtherChar* str);
+		inline explicit BasicString(const OtherChar* str);
 		template<typename OtherChar,
 			typename BasicStringUtils::diff_size_convertable_strings<Char,OtherChar>::null_type = nullptr>
-		explicit BasicString(const OtherChar* str);
+		inline explicit BasicString(const OtherChar* str);
 		
 		template<typename OtherChar,
 			typename BasicStringUtils::same_size_convertable_strings<Char,OtherChar>::null_type = nullptr>
-		explicit BasicString(const BasicString<OtherChar>& str);
+		inline explicit BasicString(const BasicString<OtherChar>& str);
 		template<typename OtherChar,
 			typename BasicStringUtils::same_size_convertable_strings<Char,OtherChar>::null_type = nullptr>
-		explicit BasicString(BasicString<OtherChar>&& str);
+		inline explicit BasicString(BasicString<OtherChar>&& str);
 		template<typename OtherChar,
 			typename BasicStringUtils::diff_size_convertable_strings<Char,OtherChar>::null_type = nullptr>
-		explicit BasicString(const BasicString<OtherChar>& str);
+		inline explicit BasicString(const BasicString<OtherChar>& str);
 		
 		template<typename OtherChar,
 			typename BasicStringUtils::same_size_convertable_strings<Char,OtherChar>::null_type = nullptr>
-		explicit BasicString(const std::basic_string<OtherChar>& str);
+		inline explicit BasicString(const std::basic_string<OtherChar>& str);
+		template<typename OtherChar,
+			typename BasicStringUtils::same_size_convertable_strings<Char,OtherChar>::null_type = nullptr>
+		inline explicit BasicString(std::basic_string<OtherChar>&& str);
 		template<typename OtherChar,
 			typename BasicStringUtils::diff_size_convertable_strings<Char,OtherChar>::null_type = nullptr>
-		explicit BasicString(const std::basic_string<OtherChar>& str);
-		
-		~BasicString();
+		inline explicit BasicString(const std::basic_string<OtherChar>& str);
 		
 		
 		
-		operator const Char*() const;
-		operator std::basic_string<Char>() const;
+		inline operator const Char*() const noexcept;
+		inline operator std::basic_string<Char>&() noexcept;
+		inline operator const std::basic_string<Char>&() const noexcept;
+		inline operator const std::basic_string_view<Char>() const noexcept;
+		
 		
 		#ifdef __OBJC__
 		template<typename _Char=Char,
 			typename BasicStringUtils::is_same<_Char,Char>::null_type = nullptr,
 			typename std::enable_if<(BasicStringUtils::can_convert_string_type<_Char>::value
 				&& sizeof(unichar)==sizeof(_Char) && sizeof(_Char)!=sizeof(char)), std::nullptr_t>::type = nullptr>
-		NSString* toNSString() const;
+		inline NSString* toNSString() const;
 		template<typename _Char=Char,
 			typename BasicStringUtils::is_same<_Char,Char>::null_type = nullptr,
 			typename std::enable_if<(BasicStringUtils::can_convert_string_type<_Char>::value
 				&& sizeof(_Char)==sizeof(char)), std::nullptr_t>::type = nullptr>
-		NSString* toNSString() const;
+		inline NSString* toNSString() const;
 		template<typename _Char=Char,
 			typename BasicStringUtils::is_same<_Char,Char>::null_type = nullptr,
 			typename std::enable_if<(BasicStringUtils::can_convert_string_type<_Char>::value
 				&& sizeof(unichar)!=sizeof(_Char) && sizeof(_Char)!=sizeof(char)), std::nullptr_t>::type = nullptr>
-		NSString* toNSString() const;
+		inline NSString* toNSString() const;
 		
 		template<typename _Char=Char,
 			typename BasicStringUtils::is_same<_Char,Char>::null_type = nullptr,
 			typename BasicStringUtils::can_convert_string_type<_Char>::null_type = nullptr>
-		explicit operator NSString*() const;
+		inline explicit operator NSString*() const;
 		#endif
 		
 		template<typename OtherChar,
 			typename BasicStringUtils::same_size_convertable_strings<Char,OtherChar>::null_type = nullptr>
-		std::basic_string<OtherChar> toStdString() const;
+		inline std::basic_string<OtherChar> toStdString() const;
 		template<typename OtherChar,
 			typename BasicStringUtils::diff_size_convertable_strings<Char,OtherChar>::null_type = nullptr>
-		std::basic_string<OtherChar> toStdString() const;
+		inline std::basic_string<OtherChar> toStdString() const;
 		template<typename SameChar,
 			typename BasicStringUtils::is_same<Char,SameChar>::null_type = nullptr>
-		std::basic_string<SameChar> toStdString() const;
+		inline std::basic_string<SameChar> toStdString() const;
 		
 		template<typename SomeChar,
 			typename BasicStringUtils::can_convert_string_types<Char,SomeChar>::null_type = nullptr>
-		BasicString<SomeChar> toBasicString() const;
+		inline BasicString<SomeChar> toBasicString() const;
+		
 		template<typename _Char=Char,
 			typename BasicStringUtils::is_same<_Char,Char>::null_type = nullptr,
 			typename BasicStringUtils::can_convert_string_type<Char>::null_type = nullptr>
-		BasicString<char> toString() const;
+		inline BasicString<char> toString() const;
 		
 		
 		
-		void assign(const Char* str, size_t length);
-		void assign(const Char* str);
+		inline BasicString<Char>& assign(const BasicString<Char>& str);
+		inline BasicString<Char>& assign(BasicString<Char>&& str);
+		inline BasicString<Char>& assign(const std::basic_string<Char>& str);
+		inline BasicString<Char>& assign(std::basic_string<Char>&& str) noexcept;
+		inline BasicString<Char>& assign(const Char* str, size_type length);
+		inline BasicString<Char>& assign(const Char* str);
+		inline BasicString<Char>& assign(size_type count, Char c);
+		template<typename InputIt>
+		inline BasicString<Char>& assign(InputIt first, InputIt last);
+		inline BasicString<Char>& assign(std::initializer_list<Char>);
 		
-		BasicString<Char>& operator=(const Char* str);
-		BasicString<Char>& operator=(const BasicString<Char>& str);
-		BasicString<Char>& operator=(BasicString<Char>&& str);
-		BasicString<Char>& operator=(const std::basic_string<Char>& str);
-		BasicString<Char>& operator=(Char c);
+		inline BasicString<Char>& operator=(const std::basic_string<Char>& str);
+		inline BasicString<Char>& operator=(std::basic_string<Char>&& str) noexcept;
+		inline BasicString<Char>& operator=(const Char* str);
+		inline BasicString<Char>& operator=(Char c);
+		inline BasicString<Char>& operator=(std::initializer_list<Char>);
 		
 		#ifdef __OBJC__
 		template<typename _Char=Char,
@@ -175,37 +200,43 @@ namespace fgl {
 		
 		template<typename OtherChar,
 			typename BasicStringUtils::same_size_convertable_with_char_type<Char, OtherChar>::null_type = nullptr>
-		BasicString<Char>& operator=(OtherChar c);
+		inline BasicString<Char>& operator=(OtherChar c);
 		template<typename OtherChar,
 			typename BasicStringUtils::diff_size_convertable_with_char_type<Char, OtherChar>::null_type = nullptr>
-		BasicString<Char>& operator=(OtherChar c);
+		inline BasicString<Char>& operator=(OtherChar c);
 		
 		template<typename OtherChar,
 			typename BasicStringUtils::same_size_convertable_strings<Char, OtherChar>::null_type = nullptr>
-		BasicString<Char>& operator=(const OtherChar* str);
+		inline BasicString<Char>& operator=(const OtherChar* str);
 		template<typename OtherChar,
 			typename BasicStringUtils::diff_size_convertable_strings<Char, OtherChar>::null_type = nullptr>
-		BasicString<Char>& operator=(const OtherChar* str);
+		inline BasicString<Char>& operator=(const OtherChar* str);
 		
 		template<typename OtherChar, typename BasicStringUtils::same_size_convertable_strings<Char, OtherChar>::null_type = nullptr>
-		BasicString<Char>& operator=(const BasicString<OtherChar>& str);
+		inline BasicString<Char>& operator=(const BasicString<OtherChar>& str);
 		template<typename OtherChar, typename BasicStringUtils::diff_size_convertable_strings<Char, OtherChar>::null_type = nullptr>
-		BasicString<Char>& operator=(const BasicString<OtherChar>& str);
+		inline BasicString<Char>& operator=(const BasicString<OtherChar>& str);
 		template<typename OtherChar, typename BasicStringUtils::same_size_convertable_strings<Char, OtherChar>::null_type = nullptr>
-		BasicString<Char>& operator=(const std::basic_string<OtherChar>& str);
+		inline BasicString<Char>& operator=(const std::basic_string<OtherChar>& str);
 		template<typename OtherChar, typename BasicStringUtils::diff_size_convertable_strings<Char, OtherChar>::null_type = nullptr>
-		BasicString<Char>& operator=(const std::basic_string<OtherChar>& str);
+		inline BasicString<Char>& operator=(const std::basic_string<OtherChar>& str);
 		
 		
 		
-		void append(const Char* str, size_t length);
-		void append(const Char* str);
-		void append(Char c);
+		inline BasicString<Char>& append(const BasicString<Char>& str);
+		inline BasicString<Char>& append(const std::basic_string<Char>& str);
+		inline BasicString<Char>& append(const Char* str, size_type length);
+		inline BasicString<Char>& append(const Char* str);
+		inline BasicString<Char>& append(size_type count, Char c);
+		template<typename InputIt>
+		inline BasicString<Char>& append(InputIt first, InputIt last);
+		inline BasicString<Char>& append(std::initializer_list<Char>);
 		
-		BasicString<Char>& operator+=(const Char* str);
-		BasicString<Char>& operator+=(const BasicString<Char>& str);
-		BasicString<Char>& operator+=(const std::basic_string<Char>& str);
-		BasicString<Char>& operator+=(Char c);
+		inline BasicString<Char>& operator+=(const BasicString<Char>& str);
+		inline BasicString<Char>& operator+=(const std::basic_string<Char>& str);
+		inline BasicString<Char>& operator+=(const Char* str);
+		inline BasicString<Char>& operator+=(Char c);
+		inline BasicString<Char>& operator+=(std::initializer_list<Char>);
 		
 		#ifdef __OBJC__
 		template<typename _Char=Char,
@@ -227,90 +258,104 @@ namespace fgl {
 		
 		template<typename OtherChar,
 			typename BasicStringUtils::same_size_convertable_with_char_type<Char,OtherChar>::null_type = nullptr>
-		BasicString<Char>& operator+=(OtherChar c);
+		inline BasicString<Char>& operator+=(OtherChar c);
 		template<typename OtherChar,
 			typename BasicStringUtils::diff_size_convertable_with_char_type<Char,OtherChar>::null_type = nullptr>
-		BasicString<Char>& operator+=(OtherChar c);
+		inline BasicString<Char>& operator+=(OtherChar c);
 		
 		template<typename OtherChar,
 			typename BasicStringUtils::same_size_convertable_strings<Char,OtherChar>::null_type = nullptr>
-		BasicString<Char>& operator+=(const OtherChar* str);
+		inline BasicString<Char>& operator+=(const OtherChar* str);
 		template<typename OtherChar,
 			typename BasicStringUtils::diff_size_convertable_strings<Char,OtherChar>::null_type = nullptr>
-		BasicString<Char>& operator+=(const OtherChar* str);
+		inline BasicString<Char>& operator+=(const OtherChar* str);
 		
 		template<typename OtherChar,
 			typename BasicStringUtils::same_size_convertable_strings<Char,OtherChar>::null_type = nullptr>
-		BasicString<Char>& operator+=(const BasicString<OtherChar>& str);
+		inline BasicString<Char>& operator+=(const BasicString<OtherChar>& str);
 		template<typename OtherChar,
 			typename BasicStringUtils::diff_size_convertable_strings<Char,OtherChar>::null_type = nullptr>
-		BasicString<Char>& operator+=(const BasicString<OtherChar>& str);
+		inline BasicString<Char>& operator+=(const BasicString<OtherChar>& str);
 		template<typename OtherChar,
 			typename BasicStringUtils::same_size_convertable_strings<Char,OtherChar>::null_type = nullptr>
-		BasicString<Char>& operator+=(const std::basic_string<OtherChar>& str);
+		inline BasicString<Char>& operator+=(const std::basic_string<OtherChar>& str);
 		template<typename OtherChar,
 			typename BasicStringUtils::diff_size_convertable_strings<Char,OtherChar>::null_type = nullptr>
-		BasicString<Char>& operator+=(const std::basic_string<OtherChar>& str);
+		inline BasicString<Char>& operator+=(const std::basic_string<OtherChar>& str);
 		
 		template<typename Bool,
 			typename BasicStringUtils::string_type_convertable_with_bool<Char,Bool>::null_type = nullptr>
-		BasicString<Char>& operator+=(Bool);
+		inline BasicString<Char>& operator+=(Bool);
 		template<typename Num,
 			typename BasicStringUtils::string_type_convertable_with_number_or_enum<Char,Num>::null_type = nullptr>
-		BasicString<Char>& operator+=(Num);
+		inline BasicString<Char>& operator+=(Num);
 		
 		
 		
-		int compare(const Char* cmp, size_t length, const std::locale& locale = std::locale()) const;
-		int compare(const Char* cmp, const std::locale& locale = std::locale()) const;
-		int compare(const BasicString<Char>& cmp, const std::locale& locale = std::locale()) const;
+		inline int compare(const Char* cmp, size_type length) const noexcept;
+		inline int compare(const Char* cmp) const noexcept;
+		inline int compare(const BasicString<Char>& cmp) const noexcept;
+		inline int compare(const std::basic_string<Char>& cmp) const noexcept;
 		
-		bool equals(const Char* str, size_t length) const;
-		bool equals(const Char* str) const;
-		bool equals(const BasicString<Char>& str) const;
+		inline int compare(const Char* cmp, size_type length, const std::locale& locale) const;
+		inline int compare(const Char* cmp, const std::locale& locale) const;
+		inline int compare(const BasicString<Char>& cmp, const std::locale& locale) const;
+		inline int compare(const std::basic_string<Char>& cmp, const std::locale& locale) const;
 		
-		
-		
-		const Char* data() const;
-		size_t length() const;
-		void clear();
-		void resize(size_t size);
-		Char& charAt(size_t index);
-		Char& operator[](size_t index);
-		const Char& charAt(size_t index) const;
-		const Char& operator[](size_t index) const;
-		
-		size_t indexOf(Char find, size_t startIndex=0) const;
-		size_t indexOf(const BasicString<Char>& find, size_t startIndex=0) const;
-		size_t indexOf(const Char* find, size_t startIndex=0) const;
-		size_t lastIndexOf(Char find, size_t startIndex) const;
-		size_t lastIndexOf(Char find) const;
-		size_t lastIndexOf(const BasicString<Char>& find, size_t startIndex) const;
-		size_t lastIndexOf(const BasicString<Char>& find) const;
-		size_t lastIndexOf(const Char* find, size_t startIndex) const;
-		size_t lastIndexOf(const Char* find) const;
-		
-		bool startsWith(const Char* str) const;
-		bool startsWith(const Char* str, size_t length) const;
-		bool startsWith(const BasicString<Char>& str) const;
-		bool endsWith(const Char* str) const;
-		bool endsWith(const Char* str, size_t length) const;
-		bool endsWith(const BasicString<Char>& str) const;
+		bool equals(const Char* str, size_type length) const;
+		inline bool equals(const Char* str) const;
+		inline bool equals(const BasicString<Char>& str) const;
 		
 		
 		
-		BasicString<Char> replace(const Char& find, const Char& replace) const;
-		BasicString<Char> replace(const BasicString<Char>& find, const BasicString<Char>& replace) const;
-		BasicString<Char> replace(const std::basic_regex<Char>& find, const BasicString<Char>& replace) const;
-		BasicString<Char> replace(size_t startIndex, size_t endIndex, const Char* replace) const;
-		BasicString<Char> replace(size_t startIndex, size_t endIndex, const BasicString<Char>& replace) const;
+		inline Char* data() noexcept;
+		inline const Char* data() const noexcept;
+		inline const Char* c_str() const noexcept;
+		inline size_type size() const noexcept;
+		inline size_type length() const noexcept;
+		inline size_type maxSize() const noexcept;
+		inline void clear();
+		inline void resize(size_type size);
+		inline void resize(size_type size, Char c);
+		inline void reserve(size_type capacity);
+		inline Char& charAt(size_type index);
+		inline Char& operator[](size_type index);
+		inline const Char& charAt(size_type index) const;
+		inline const Char& operator[](size_type index) const;
 		
-		BasicString<Char> substring(size_t startIndex, size_t endIndex) const;
-		BasicString<Char> substring(size_t startIndex) const;
+		inline size_type indexOf(Char find, size_type startIndex=0) const noexcept;
+		inline size_type indexOf(const std::basic_string<Char>& find, size_type startIndex=0) const noexcept;
+		inline size_type indexOf(const BasicString<Char>& find, size_type startIndex=0) const noexcept;
+		inline size_type indexOf(const Char* find, size_type startIndex=0) const;
+		inline size_type lastIndexOf(Char find, size_type startIndex = npos) const noexcept;
+		inline size_type lastIndexOf(const std::basic_string<Char>& find, size_type startIndex = npos) const noexcept;
+		inline size_type lastIndexOf(const BasicString<Char>& find, size_type startIndex = npos) const noexcept;
+		inline size_type lastIndexOf(const Char* find, size_type startIndex = npos) const;
+		
+		bool startsWith(const Char* str, size_type length) const;
+		inline bool startsWith(const Char* str) const;
+		inline bool startsWith(const std::basic_string<Char>& str) const;
+		inline bool startsWith(const BasicString<Char>& str) const;
+		bool endsWith(const Char* str, size_type length) const;
+		inline bool endsWith(const Char* str) const;
+		inline bool endsWith(const std::basic_string<Char>& str) const;
+		inline bool endsWith(const BasicString<Char>& str) const;
+		
+		
+		
+		BasicString<Char> replacing(Char find, Char replace) const;
+		BasicString<Char> replacing(const std::basic_string<Char>& find, const std::basic_string<Char>& replace) const;
+		inline BasicString<Char> replacing(const std::basic_regex<Char>& find, const std::basic_string<Char>& replace, std::regex_constants::match_flag_type flags = std::regex_constants::match_default) const;
+		template<typename InputIt>
+		BasicString<Char> replacing(size_type startIndex, size_type count, InputIt first, InputIt last) const;
+		inline BasicString<Char> replacing(size_type startIndex, size_type count, const std::basic_string<Char>& replace) const;
+		
+		inline BasicString<Char> substring(size_type startIndex = 0, size_type count = npos) const;
 		
 		LinkedList<BasicString<Char>,std::list> split(Char delim) const;
 		LinkedList<BasicString<Char>,std::list> split(const Char* delim) const;
-		LinkedList<BasicString<Char>,std::list> split(const BasicString<Char>& delim) const;
+		LinkedList<BasicString<Char>,std::list> split(const std::basic_string<Char>& delim) const;
+		inline LinkedList<BasicString<Char>,std::list> split(const BasicString<Char>& delim) const;
 		
 		template<typename _Char=Char,
 			typename BasicStringUtils::is_same<_Char,Char>::null_type = nullptr,
@@ -335,12 +380,6 @@ namespace fgl {
 		template<typename ListType,
 			typename std::enable_if<std::is_same<BasicString<Char>,typename ListType::value_type>::value, std::nullptr_t>::type = nullptr>
 		static BasicString<Char> join(const ListType& list, const BasicString<Char>& separator = BasicString<Char>());
-		
-		
-		
-	private:
-		Char* characters;
-		size_t size;
 	};
 	
 	

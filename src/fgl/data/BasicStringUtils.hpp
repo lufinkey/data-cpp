@@ -250,9 +250,9 @@ namespace fgl {
 		// functions
 		
 		template<typename Char>
-		static size_t strlen(const Char* str);
+		static size_t strlen(const Char* str) noexcept;
 		template<typename Char>
-		static bool streq(const Char* left, const Char* right);
+		static bool streq(const Char* left, const Char* right) noexcept;
 		
 		template<typename Char,
 			typename InputChar,
@@ -437,7 +437,7 @@ namespace fgl {
 #pragma mark BasicStringUtils implementation
 	
 	template<typename Char>
-	size_t BasicStringUtils::strlen(const Char* str) {
+	size_t BasicStringUtils::strlen(const Char* str) noexcept {
 		size_t size = 0;
 		while(str[size] != NULLCHAR) {
 			size++;
@@ -446,7 +446,7 @@ namespace fgl {
 	}
 	
 	template<typename Char>
-	bool BasicStringUtils::streq(const Char* left, const Char* right) {
+	bool BasicStringUtils::streq(const Char* left, const Char* right) noexcept {
 		size_t counter = 0;
 		do {
 			Char c1 = left[counter];
@@ -466,7 +466,7 @@ namespace fgl {
 		typename InputChar,
 		typename std::enable_if<(sizeof(Char) == sizeof(InputChar)), std::nullptr_t>::type>
 	std::basic_string<Char>&& BasicStringUtils::cast(std::basic_string<InputChar>&& str) {
-		std::basic_string<InputChar>& str_left = str;
+		auto& str_left = str;
 		return std::move(*((std::basic_string<Char>*)&str_left));
 	}
 	
@@ -628,155 +628,72 @@ namespace fgl {
 	
 	template<typename Char>
 	BasicString<Char> BasicStringUtils::concat(const BasicString<Char>& left, const BasicString<Char>& right) {
-		size_t size_new = get_safe_resize<Char>(left.size, right.size);
+		size_t size_new = get_safe_resize<Char>(left.size(), right.size());
 		BasicString<Char> newStr;
-		Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size_new+1)*sizeof(Char));
-		if(newStr_characters_new == nullptr) {
-			throw std::bad_alloc();
-		}
-		newStr.characters = newStr_characters_new;
-		newStr.size = size_new;
-		for(size_t i=0; i<left.size; i++) {
-			newStr.characters[i] = left.characters[i];
-		}
-		size_t counter = 0;
-		for(size_t i=left.size; i<size_new; i++) {
-			newStr.characters[i] = right.characters[counter];
-			counter++;
-		}
-		newStr.characters[size_new] = NULLCHAR;
+		newStr.reserve(size_new);
+		newStr.append(left);
+		newStr.append(right);
 		return newStr;
 	}
 	
 	template<typename Char>
 	BasicString<Char> BasicStringUtils::concat(const BasicString<Char>& left, const Char* right) {
 		size_t right_size = strlen<Char>(right);
-		size_t size_new = get_safe_resize<Char>(left.size, right_size);
+		size_t size_new = get_safe_resize<Char>(left.size(), right_size);
 		BasicString<Char> newStr;
-		Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size_new+1)*sizeof(Char));
-		if(newStr_characters_new == nullptr) {
-			throw std::bad_alloc();
-		}
-		newStr.characters = newStr_characters_new;
-		newStr.size = size_new;
-		for(size_t i=0; i<left.size; i++) {
-			newStr.characters[i] = left.characters[i];
-		}
-		size_t counter = 0;
-		for(size_t i=left.size; i<size_new; i++) {
-			newStr.characters[i] = right[counter];
-			counter++;
-		}
-		newStr.characters[size_new] = NULLCHAR;
+		newStr.reserve(size_new);
+		newStr.append(left);
+		newStr.append(right, right_size);
 		return newStr;
 	}
 	
 	template<typename Char>
 	BasicString<Char> BasicStringUtils::concat(const Char* left, const BasicString<Char>& right) {
 		size_t left_size = strlen<Char>(left);
-		size_t size_new = get_safe_resize<Char>(left_size, right.size);
+		size_t size_new = get_safe_resize<Char>(left_size, right.size());
 		BasicString<Char> newStr;
-		Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size_new+1)*sizeof(Char));
-		if(newStr_characters_new == nullptr) {
-			throw std::bad_alloc();
-		}
-		newStr.characters = newStr_characters_new;
-		newStr.size = size_new;
-		for(size_t i=0; i<left_size; i++) {
-			newStr.characters[i] = left[i];
-		}
-		size_t counter = 0;
-		for(size_t i=left_size; i<size_new; i++) {
-			newStr.characters[i] = right.characters[counter];
-			counter++;
-		}
-		newStr.characters[size_new] = NULLCHAR;
+		newStr.reserve(size_new);
+		newStr.append(left, left_size);
+		newStr.append(right);
 		return newStr;
 	}
 	
 	template<typename Char>
 	BasicString<Char> BasicStringUtils::concat(const BasicString<Char>& left, const std::basic_string<Char>& right) {
-		size_t right_size = right.length();
-		size_t size_new = get_safe_resize<Char>(left.size, right_size);
+		size_t size_new = get_safe_resize<Char>(left.size(), right.size());
 		BasicString<Char> newStr;
-		Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size_new+1)*sizeof(Char));
-		if(newStr_characters_new == nullptr) {
-			throw std::bad_alloc();
-		}
-		newStr.characters = newStr_characters_new;
-		newStr.size = size_new;
-		for(size_t i=0; i<left.size; i++) {
-			newStr.characters[i] = left.characters[i];
-		}
-		size_t counter = 0;
-		const Char* right_chars = right.data();
-		for(size_t i=left.size; i<size_new; i++) {
-			newStr.characters[i] = right_chars[counter];
-			counter++;
-		}
-		newStr.characters[size_new] = NULLCHAR;
+		newStr.reserve(size_new);
+		newStr.append(left);
+		newStr.append(right);
 		return newStr;
 	}
 	
 	template<typename Char>
 	BasicString<Char> BasicStringUtils::concat(const std::basic_string<Char>& left, const BasicString<Char>& right) {
-		size_t left_size = left.length();
-		size_t size_new = get_safe_resize<Char>(left_size, right.size);
+		size_t size_new = get_safe_resize<Char>(left.size(), right.size());
 		BasicString<Char> newStr;
-		Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size_new+1)*sizeof(Char));
-		if(newStr_characters_new == nullptr) {
-			throw std::bad_alloc();
-		}
-		newStr.characters = newStr_characters_new;
-		newStr.size = size_new;
-		const Char* left_chars = left.data();
-		for(size_t i=0; i<left_size; i++) {
-			newStr.characters[i] = left_chars[i];
-		}
-		size_t counter = 0;
-		for(size_t i=left.size; i<size_new; i++) {
-			newStr.characters[i] = right.characters[counter];
-			counter++;
-		}
-		newStr.characters[size_new] = NULLCHAR;
+		newStr.reserve(size_new);
+		newStr.append(left);
+		newStr.append(right);
 		return newStr;
 	}
 	
 	template<typename Char>
 	BasicString<Char> BasicStringUtils::concat(const BasicString<Char>& left, Char right) {
-		size_t size_new = get_safe_resize<Char>(left.size, 1);
+		size_t size_new = get_safe_resize<Char>(left.size(), 1);
 		BasicString<Char> newStr;
-		Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size_new+1)*sizeof(Char));
-		if(newStr_characters_new == nullptr) {
-			throw std::bad_alloc();
-		}
-		newStr.characters = newStr_characters_new;
-		newStr.size = size_new;
-		for(size_t i=0; i<left.size; i++) {
-			newStr.characters[i] = left.characters[i];
-		}
-		newStr.characters[left.size] = right;
-		newStr.characters[size_new] = NULLCHAR;
-		return newStr;
+		newStr.reserve(size_new);
+		newStr.append(left);
+		newStr.append(1, right);
 	}
 	
 	template<typename Char>
 	BasicString<Char> BasicStringUtils::concat(Char left, const BasicString<Char>& right) {
-		size_t size_new = get_safe_resize<Char>(1, right.size);
+		size_t size_new = get_safe_resize<Char>(1, right.size());
 		BasicString<Char> newStr;
-		Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size_new+1)*sizeof(Char));
-		if(newStr_characters_new == nullptr) {
-			throw std::bad_alloc();
-		}
-		newStr.characters = newStr_characters_new;
-		newStr.size = size_new;
-		newStr.characters[0] = left;
-		size_t counter = 0;
-		for(size_t i=1; i<size_new; i++) {
-			newStr.characters[i] = right.characters[counter];
-			counter++;
-		}
-		newStr.characters[size_new] = NULLCHAR;
+		newStr.reserve(size_new);
+		newStr.append(1, left);
+		newStr.append(right);
 		return newStr;
 	}
 	
@@ -788,20 +705,13 @@ namespace fgl {
 	BasicString<Char> BasicStringUtils::concat(const BasicString<Char>& left, NSString* right) {
 		NSUInteger right_length = right.length;
 		size_t right_size = (size_t)right_length;
-		size_t size_new = get_safe_resize<Char>(left.size, right_size);
+		size_t size_new = get_safe_resize<Char>(left.size(), right_size);
 		BasicString<Char> newStr;
-		Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size_new+1)*sizeof(Char));
-		if(newStr_characters_new == nullptr) {
-			throw std::bad_alloc();
-		}
-		newStr.characters = newStr_characters_new;
-		newStr.size = size_new;
-		for(size_t i=0; i<left.size; i++) {
-			newStr.characters[i] = left.characters[i];
-		}
+		newStr.reserve(size_new);
+		newStr.append(left);
+		newStr.resize(size_new);
 		NSRange range = NSMakeRange(0, right_length);
-		[right getCharacters:(unichar*)(newStr.characters+left.size) range:range];
-		newStr.characters[size_new] = NULLCHAR;
+		[right getCharacters:(unichar*)(newStr.data()+left.size()) range:range];
 		return newStr;
 	}
 	
@@ -811,24 +721,12 @@ namespace fgl {
 	BasicString<Char> BasicStringUtils::concat(const BasicString<Char>& left, NSString* right) {
 		NSUInteger right_length = [right lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
 		size_t right_size = (size_t)right_length;
-		size_t size_new = get_safe_resize<Char>(left.size, right_size);
+		size_t size_new = get_safe_resize<Char>(left.size(), right_size);
 		BasicString<Char> newStr;
-		Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size_new+1)*sizeof(Char));
-		if(newStr_characters_new == nullptr) {
-			throw std::bad_alloc();
-		}
-		newStr.characters = newStr_characters_new;
-		newStr.size = size_new;
-		for(size_t i=0; i<left.size; i++) {
-			newStr.characters[i] = left.characters[i];
-		}
-		size_t counter = 0;
+		newStr.reserve(size_new);
+		newStr.append(left);
 		const Char* right_chars = (const Char*)[right UTF8String];
-		for(size_t i=left.size; i<size_new; i++) {
-			newStr.characters[i] = right_chars[counter];
-			counter++;
-		}
-		newStr.characters[size_new] = NULLCHAR;
+		newStr.append(right_chars, right_size);
 		return newStr;
 	}
 	
@@ -840,27 +738,13 @@ namespace fgl {
 		auto buffer = std::make_unique<unichar[]>((size_t)right.length);
 		NSRange range = NSMakeRange(0, right_length);
 		[right getCharacters:buffer.get() range:range];
-		std::basic_string<Char> right_str = convert<Char,unichar>(buffer.get(), (size_t)right_length);
+		auto right_str = convert<Char,unichar>(buffer.get(), (size_t)right_length);
 		buffer = nullptr;
-		size_t right_size = right_str.length();
-		size_t size_new = get_safe_resize<Char>(left.size, right_size);
+		size_t size_new = get_safe_resize<Char>(left.size(), right_str.length());
 		BasicString<Char> newStr;
-		Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size_new+1)*sizeof(Char));
-		if(newStr_characters_new == nullptr) {
-			throw std::bad_alloc();
-		}
-		newStr.characters = newStr_characters_new;
-		newStr.size = size_new;
-		for(size_t i=0; i<left.size; i++) {
-			newStr.characters[i] = left.characters[i];
-		}
-		size_t counter = 0;
-		const Char* right_chars = right_str.data();
-		for(size_t i=left.size; i<size_new; i++) {
-			newStr.characters[i] = right_chars[counter];
-			counter++;
-		}
-		newStr.characters[size_new] = NULLCHAR;
+		newStr.reserve(size_new);
+		newStr.append(left);
+		newStr.append(right_str);
 		return newStr;
 	}
 	
@@ -869,22 +753,13 @@ namespace fgl {
 			&& sizeof(unichar)==sizeof(Char) && sizeof(Char)!=sizeof(char)), std::nullptr_t>::type>
 	BasicString<Char> BasicStringUtils::concat(NSString* left, const BasicString<Char>& right) {
 		size_t left_size = (size_t)left.length;
-		size_t size_new = get_safe_resize<Char>(left_size, right.size);
+		size_t size_new = get_safe_resize<Char>(left_size, right.size());
 		BasicString<Char> newStr;
-		Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size_new+1)*sizeof(Char));
-		if(newStr_characters_new == nullptr) {
-			throw std::bad_alloc();
-		}
-		newStr.characters = newStr_characters_new;
-		newStr.size = size_new;
+		newStr.reserve(size_new);
+		newStr.resize(left_size);
 		NSRange range = NSMakeRange(0, (NSUInteger)left_size);
-		[left getCharacters:(unichar*)newStr.characters range:range];
-		size_t counter = 0;
-		for(size_t i=left_size; i<size_new; i++) {
-			newStr.characters[i] = right.characters[counter];
-			counter++;
-		}
-		newStr.characters[size_new] = NULLCHAR;
+		[left getCharacters:(unichar*)newStr.data() range:range];
+		newStr.append(right);
 		return newStr;
 	}
 	
@@ -894,24 +769,11 @@ namespace fgl {
 	BasicString<Char> BasicStringUtils::concat(NSString* left, const BasicString<Char>& right) {
 		NSUInteger left_length = [left lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
 		size_t left_size = (size_t)left_length;
-		size_t size_new = get_safe_resize<Char>(left_size, right.size);
+		size_t size_new = get_safe_resize<Char>(left_size, right.size());
 		BasicString<Char> newStr;
-		Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size_new+1)*sizeof(Char));
-		if(newStr_characters_new == nullptr) {
-			throw std::bad_alloc();
-		}
-		newStr.characters = newStr_characters_new;
-		newStr.size = size_new;
-		const Char* left_chars = (const Char*)[left UTF8String];
-		for(size_t i=0; i<left_size; i++) {
-			newStr.characters[i] = left_chars[i];
-		}
-		size_t counter = 0;
-		for(size_t i=left_size; i<size_new; i++) {
-			newStr.characters[i] = right.characters[counter];
-			counter++;
-		}
-		newStr.characters[size_new] = NULLCHAR;
+		newStr.reserve(size_new);
+		newStr.append((const Char*)[left UTF8String], left_size);
+		newStr.append(right);
 		return newStr;
 	}
 	
@@ -923,27 +785,14 @@ namespace fgl {
 		auto buffer = std::make_unique<unichar[]>((size_t)left.length);
 		NSRange range = NSMakeRange(0, left_length);
 		[left getCharacters:buffer.get() range:range];
-		std::basic_string<Char> left_str = convert<Char,unichar>(buffer.get(), (size_t)left_length);
+		auto left_str = convert<Char,unichar>(buffer.get(), (size_type)left_length);
 		buffer = nullptr;
-		size_t left_size = left_str.length();
-		size_t size_new = get_safe_resize<Char>(left_size, right.size);
+		size_type left_size = left_str.length();
+		size_type size_new = get_safe_resize<Char>(left_size, right.size());
 		BasicString<Char> newStr;
-		Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size_new+1)*sizeof(Char));
-		if(newStr_characters_new == nullptr) {
-			throw std::bad_alloc();
-		}
-		newStr.characters = newStr_characters_new;
-		newStr.size = size_new;
-		const Char* left_chars = left_str.data();
-		for(size_t i=0; i<left_size; i++) {
-			newStr.characters[i] = left_chars[i];
-		}
-		size_t counter = 0;
-		for(size_t i=left_size; i<size_new; i++) {
-			newStr.characters[i] = right.characters[counter];
-			counter++;
-		}
-		newStr.characters[size_new] = NULLCHAR;
+		newStr.reserve(size_new);
+		newStr.append(left_str);
+		newStr.append(right);
 		return newStr;
 	}
 	
@@ -954,49 +803,23 @@ namespace fgl {
 	BasicString<Char> BasicStringUtils::concat(const BasicString<Char>& left, const OtherChar* right) {
 		const Char* right_chars = (const Char*)right;
 		size_t right_size = strlen<Char>(right_chars);
-		size_t size_new = get_safe_resize<Char>(left.size, right_size);
+		size_t size_new = get_safe_resize<Char>(left.size(), right_size);
 		BasicString<Char> newStr;
-		Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size_new+1)*sizeof(Char));
-		if(newStr_characters_new == nullptr) {
-			throw std::bad_alloc();
-		}
-		newStr.characters = newStr_characters_new;
-		newStr.size = size_new;
-		for(size_t i=0; i<left.size; i++) {
-			newStr.characters[i] = left.characters[i];
-		}
-		size_t counter = 0;
-		for(size_t i=left.size; i<size_new; i++) {
-			newStr.characters[i] = right_chars[counter];
-			counter++;
-		}
-		newStr.characters[size_new] = NULLCHAR;
+		newStr.reserve(size_new);
+		newStr.append(left);
+		newStr.append(right_chars, right_size);
 		return newStr;
 	}
 	
 	template<typename Char, typename OtherChar,
 		typename BasicStringUtils::diff_size_convertable_strings<Char,OtherChar>::null_type>
 	BasicString<Char> BasicStringUtils::concat(const BasicString<Char>& left, const OtherChar* right) {
-		std::basic_string<Char> right_str = convert<Char,OtherChar>(right, strlen<OtherChar>(right));
-		size_t right_size = right_str.length();
-		size_t size_new = get_safe_resize<Char>(left.size, right_size);
+		auto right_str = convert<Char,OtherChar>(right, strlen<OtherChar>(right));
+		size_t size_new = get_safe_resize<Char>(left.size(), right_str.size());
 		BasicString<Char> newStr;
-		Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size_new+1)*sizeof(Char));
-		if(newStr_characters_new == nullptr) {
-			throw std::bad_alloc();
-		}
-		newStr.characters = newStr_characters_new;
-		newStr.size = size_new;
-		for(size_t i=0; i<left.size; i++) {
-			newStr.characters[i] = left.characters[i];
-		}
-		size_t counter = 0;
-		const Char* right_chars = right_str.data();
-		for(size_t i=left.size; i<size_new; i++) {
-			newStr.characters[i] = right_chars[counter];
-			counter++;
-		}
-		newStr.characters[size_new] = NULLCHAR;
+		newStr.reserve(size_new);
+		newStr.append(left);
+		newStr.append(right_str);
 		return newStr;
 	}
 	
@@ -1004,24 +827,11 @@ namespace fgl {
 		typename BasicStringUtils::same_size_convertable_strings<Char,OtherChar>::null_type>
 	BasicString<Char> BasicStringUtils::concat(const Char* left, const BasicString<OtherChar>& right) {
 		size_t left_size = strlen<Char>(left);
-		size_t size_new = get_safe_resize<Char>(left_size, right.size);
+		size_t size_new = get_safe_resize<Char>(left_size, right.size());
 		BasicString<Char> newStr;
-		Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size_new+1)*sizeof(Char));
-		if(newStr_characters_new == nullptr) {
-			throw std::bad_alloc();
-		}
-		newStr.characters = newStr_characters_new;
-		newStr.size = size_new;
-		for(size_t i=0; i<left_size; i++) {
-			newStr.characters[i] = left[i];
-		}
-		size_t counter = 0;
-		const Char* right_chars = (const Char*)right.characters;
-		for(size_t i=left_size; i<size_new; i++) {
-			newStr.characters[i] = right_chars[counter];
-			counter++;
-		}
-		newStr.characters[size_new] = NULLCHAR;
+		newStr.reserve(size_new);
+		newStr.append(left, left_size);
+		newStr.append(right);
 		return newStr;
 	}
 	
@@ -1029,373 +839,177 @@ namespace fgl {
 		typename BasicStringUtils::diff_size_convertable_strings<Char,OtherChar>::null_type>
 	BasicString<Char> BasicStringUtils::concat(const Char* left, const BasicString<OtherChar>& right) {
 		size_t left_size = strlen<Char>(left);
-		std::basic_string<Char> right_str = convert<Char,OtherChar>(right.characters, right.size);
-		size_t right_size = right_str.length();
-		size_t size_new = get_safe_resize<Char>(left_size, right_size);
+		auto right_str = convert<Char,OtherChar>(right.data(), right.size());\
+		size_t size_new = get_safe_resize<Char>(left_size, right_str.size());
 		BasicString<Char> newStr;
-		Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size_new+1)*sizeof(Char));
-		if(newStr_characters_new == nullptr) {
-			throw std::bad_alloc();
-		}
-		newStr.characters = newStr_characters_new;
-		newStr.size = size_new;
-		for(size_t i=0; i<left_size; i++) {
-			newStr.characters[i] = left[i];
-		}
-		size_t counter = 0;
-		const Char* right_chars = right_str.data();
-		for(size_t i=left_size; i<size_new; i++) {
-			newStr.characters[i] = right_chars[counter];
-			counter++;
-		}
-		newStr.characters[size_new] = NULLCHAR;
+		newStr.reserve(size_new);
+		newStr.append(left, left_size);
+		newStr.append(right);
 		return newStr;
 	}
 	
 	template<typename Char, typename OtherChar,
 		typename BasicStringUtils::same_size_convertable_with_char_type<Char,OtherChar>::null_type>
 	BasicString<Char> BasicStringUtils::concat(const BasicString<Char>& left, OtherChar right) {
-		size_t size_new = get_safe_resize<Char>(left.size, 1);
+		size_t size_new = get_safe_resize<Char>(left.size(), 1);
 		BasicString<Char> newStr;
-		Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size_new+1)*sizeof(Char));
-		if(newStr_characters_new == nullptr) {
-			throw std::bad_alloc();
-		}
-		newStr.characters = newStr_characters_new;
-		newStr.size = size_new;
-		for(size_t i=0; i<left.size; i++) {
-			newStr.characters[i] = left.characters[i];
-		}
-		newStr.characters[left.size] = (Char)right;
-		newStr.characters[size_new] = NULLCHAR;
+		newStr.reserve(size_new);
+		newStr.append(left);
+		newStr.append(1,(Char)right);
 		return newStr;
 	}
 	
 	template<typename Char, typename OtherChar,
 		typename BasicStringUtils::diff_size_convertable_with_char_type<Char,OtherChar>::null_type>
 	BasicString<Char> BasicStringUtils::concat(const BasicString<Char>& left, OtherChar right) {
-		OtherChar right_arr[2] = {right, NULLCHAR};
-		std::basic_string<Char> right_str = convert<Char,OtherChar>(right_arr, 1);
+		auto right_str = convert<Char,OtherChar>(std::basic_string<OtherChar>(1,right).data(), 1);
 		size_t right_size = right_str.length();
-		size_t size_new = get_safe_resize<Char>(left.size, right_size);
+		size_t size_new = get_safe_resize<Char>(left.size(), right_size);
 		BasicString<Char> newStr;
-		Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size_new+1)*sizeof(Char));
-		if(newStr_characters_new == nullptr) {
-			throw std::bad_alloc();
-		}
-		newStr.characters = newStr_characters_new;
-		newStr.size = size_new;
-		for(size_t i=0; i<left.size; i++) {
-			newStr.characters[i] = left.characters[i];
-		}
-		size_t counter = 0;
-		const Char* right_chars = right_str.data();
-		for(size_t i=left.size; i<size_new; i++) {
-			newStr.characters[i] = right_chars[counter];
-			counter++;
-		}
-		newStr.characters[size_new] = NULLCHAR;
+		newStr.reserve(size_new);
+		newStr.append(left);
+		newStr.append(right_str);
 		return newStr;
 	}
 	
 	template<typename Char, typename OtherChar,
 		typename BasicStringUtils::same_size_convertable_with_char_type<Char,OtherChar>::null_type>
 	BasicString<Char> BasicStringUtils::concat(Char left, const BasicString<OtherChar>& right) {
-		size_t size_new = get_safe_resize<Char>(1, right.size);
+		size_t size_new = get_safe_resize<Char>(1, right.size());
 		BasicString<Char> newStr;
-		Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size_new+1)*sizeof(Char));
-		if(newStr_characters_new == nullptr) {
-			throw std::bad_alloc();
-		}
-		newStr.characters = newStr_characters_new;
-		newStr.size = size_new;
-		newStr.characters[0] = left;
-		size_t counter = 0;
-		const Char* right_chars = (const Char*)right.characters;
-		for(size_t i=1; i<size_new; i++) {
-			newStr.characters[i] = right_chars[counter];
-			counter++;
-		}
-		newStr.characters[size_new] = NULLCHAR;
+		newStr.reserve(size_new);
+		newStr.append(1,left);
+		newStr.append(right);
 		return newStr;
 	}
 	
 	template<typename Char, typename OtherChar,
 		typename BasicStringUtils::diff_size_convertable_with_char_type<Char,OtherChar>::null_type>
 	BasicString<Char> BasicStringUtils::concat(Char left, const BasicString<OtherChar>& right) {
-		std::basic_string<Char> right_str = convert<Char,OtherChar>(right.characters, right.size);
-		size_t right_size = right_str.length();
-		size_t size_new = get_safe_resize<Char>(1, right_size);
+		auto right_str = convert<Char,OtherChar>(right.data(), right.size());
+		size_t size_new = get_safe_resize<Char>(1, right_str.size());
 		BasicString<Char> newStr;
-		Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size_new+1)*sizeof(Char));
-		if(newStr_characters_new == nullptr) {
-			throw std::bad_alloc();
-		}
-		newStr.characters = newStr_characters_new;
-		newStr.size = size_new;
-		newStr.characters[0] = left;
-		size_t counter = 0;
-		const Char* right_chars = right_str.data();
-		for(size_t i=1; i<size_new; i++) {
-			newStr.characters[i] = right_chars[counter];
-			counter++;
-		}
-		newStr.characters[size_new] = NULLCHAR;
+		newStr.reserve(size_new);
+		newStr.append(1,left);
+		newStr.append(right);
 		return newStr;
 	}
 	
 	template<typename Char, typename Bool,
 		typename BasicStringUtils::string_type_convertable_with_bool<Char,Bool>::null_type>
 	BasicString<Char> BasicStringUtils::concat(const BasicString<Char>& left, Bool right) {
-		BasicString<Char> right_str = fromBool<Char>(right);
-		size_t size_new = get_safe_resize<Char>(left.size, right_str.size);
+		auto right_str = fromBool<Char>(right);
+		size_t size_new = get_safe_resize<Char>(left.size(), right_str.size());
 		BasicString<Char> newStr;
-		Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size_new+1)*sizeof(Char));
-		if(newStr_characters_new == nullptr) {
-			throw std::bad_alloc();
-		}
-		newStr.characters = newStr_characters_new;
-		newStr.size = size_new;
-		for(size_t i=0; i<left.size; i++) {
-			newStr.characters[i] = left.characters[i];
-		}
-		size_t counter = 0;
-		for(size_t i=left.size; i<size_new; i++) {
-			newStr.characters[i] = right_str.characters[counter];
-			counter++;
-		}
-		newStr.characters[size_new] = NULLCHAR;
+		newStr.reserve(size_new);
+		newStr.append(left);
+		newStr.append(right_str);
 		return newStr;
 	}
 	
 	template<typename Char, typename Bool,
 		typename BasicStringUtils::string_type_convertable_with_bool<Char,Bool>::null_type>
 	BasicString<Char> BasicStringUtils::concat(Bool left, const BasicString<Char>& right) {
-		BasicString<Char> left_str = fromBool<Char>(left);
-		size_t size_new = get_safe_resize<Char>(left_str.size, right.size);
+		auto left_str = fromBool<Char>(left);
+		size_t size_new = get_safe_resize<Char>(left_str.size(), right.size());
 		BasicString<Char> newStr;
-		Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size_new+1)*sizeof(Char));
-		if(newStr_characters_new == nullptr) {
-			throw std::bad_alloc();
-		}
-		newStr.characters = newStr_characters_new;
-		newStr.size = size_new;
-		for(size_t i=0; i<left_str.size; i++) {
-			newStr.characters[i] = left_str.characters[i];
-		}
-		size_t counter = 0;
-		for(size_t i=left_str.size; i<right.size; i++) {
-			newStr.characters[i] = right.characters[counter];
-			counter++;
-		}
-		newStr.characters[size_new] = NULLCHAR;
+		newStr.reserve(size_new);
+		newStr.append(left_str);
+		newStr.append(right);
 		return newStr;
 	}
 	
 	template<typename Char, typename Num,
 		typename BasicStringUtils::string_type_convertable_with_number_or_enum<Char,Num>::null_type>
 	BasicString<Char> BasicStringUtils::concat(const BasicString<Char>& left, Num right) {
-		std::basic_string<Char> right_str = fromNumber<Char,Num>(right);
-		size_t right_size = right_str.length();
-		size_t size_new = get_safe_resize<Char>(left.size, right_size);
+		auto right_str = fromNumber<Char,Num>(right);
+		size_t size_new = get_safe_resize<Char>(left.size(), right_str.size());
 		BasicString<Char> newStr;
-		Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size_new+1)*sizeof(Char));
-		if(newStr_characters_new == nullptr) {
-			throw std::bad_alloc();
-		}
-		newStr.characters = newStr_characters_new;
-		newStr.size = size_new;
-		for(size_t i=0; i<left.size; i++) {
-			newStr.characters[i] = left.characters[i];
-		}
-		size_t counter = 0;
-		const Char* right_chars = right_str.data();
-		for(size_t i=left.size; i<size_new; i++) {
-			newStr.characters[i] = right_chars[counter];
-			counter++;
-		}
-		newStr.characters[size_new] = NULLCHAR;
+		newStr.reserve(size_new);
+		newStr.append(left);
+		newStr.append(right_str);
 		return newStr;
 	}
 	
 	template<typename Char, typename Num,
 		typename BasicStringUtils::string_type_convertable_with_number_or_enum<Char,Num>::null_type>
 	BasicString<Char> BasicStringUtils::concat(Num left, const BasicString<Char>& right) {
-		std::basic_string<Char> left_str = fromNumber<Char,Num>(left);
-		size_t left_size = left.length();
-		size_t size_new = get_safe_resize<Char>(left_size, right.size);
+		auto left_str = fromNumber<Char,Num>(left);
+		size_t size_new = get_safe_resize<Char>(left_str.size(), right.size());
 		BasicString<Char> newStr;
-		Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size_new+1)*sizeof(Char));
-		if(newStr_characters_new == nullptr) {
-			throw std::bad_alloc();
-		}
-		newStr.characters = newStr_characters_new;
-		newStr.size = size_new;
-		const Char* left_chars = left_str.data();
-		for(size_t i=0; i<left_size; i++) {
-			newStr.characters[i] = left_chars[i];
-		}
-		size_t counter = 0;
-		for(size_t i=left_size; i<size_new; i++) {
-			newStr.characters[i] = right.characters[counter];
-			counter++;
-		}
-		newStr.characters[size_new] = NULLCHAR;
+		newStr.reserve(size_new);
+		newStr.append(left_str);
+		newStr.append(right);
 		return newStr;
 	}
 	
 	template<typename Char, typename OtherChar,
 		typename BasicStringUtils::same_size_convertable_strings<Char, OtherChar>::null_type>
 	BasicString<Char> BasicStringUtils::concat(const BasicString<Char>& left, const BasicString<OtherChar>& right) {
-		size_t size_new = get_safe_resize<Char>(left.size, right.size);
+		size_t size_new = get_safe_resize<Char>(left.size(), right.size());
 		BasicString<Char> newStr;
-		Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size_new+1)*sizeof(Char));
-		if(newStr_characters_new == nullptr) {
-			throw std::bad_alloc();
-		}
-		newStr.characters = newStr_characters_new;
-		newStr.size = size_new;
-		for(size_t i=0; i<left.size; i++) {
-			newStr.characters[i] = left.characters[i];
-		}
-		size_t counter = 0;
-		const Char* right_chars = (const Char*)right.characters;
-		for(size_t i=left.size; i<size_new; i++) {
-			newStr.characters[i] = right_chars[counter];
-			counter++;
-		}
-		newStr.characters[size_new] = NULLCHAR;
+		newStr.reserve(size_new);
+		newStr.append(left);
+		newStr.append(right);
 		return newStr;
 	}
 	
 	template<typename Char, typename OtherChar,
 		typename BasicStringUtils::diff_size_convertable_strings<Char, OtherChar>::null_type>
 	BasicString<Char> BasicStringUtils::concat(const BasicString<Char>& left, const BasicString<OtherChar>& right) {
-		std::basic_string<Char> right_str = convert<Char,OtherChar>(right.characters, right.size);
-		size_t right_size = right_str.length();
-		size_t size_new = get_safe_resize<Char>(left.size, right_size);
+		auto right_str = convert<Char,OtherChar>(right.characters, right.size);
+		size_t size_new = get_safe_resize<Char>(left.size(), right_str.size());
 		BasicString<Char> newStr;
-		Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size_new+1)*sizeof(Char));
-		if(newStr_characters_new == nullptr) {
-			throw std::bad_alloc();
-		}
-		newStr.characters = newStr_characters_new;
-		newStr.size = size_new;
-		for(size_t i=0; i<left.size; i++) {
-			newStr.characters[i] = left.characters[i];
-		}
-		size_t counter = 0;
-		const Char* right_chars = right_str.data();
-		for(size_t i=left.size; i<size_new; i++) {
-			newStr.characters[i] = right_chars[counter];
-			counter++;
-		}
-		newStr.characters[size_new] = NULLCHAR;
+		newStr.reserve(size_new);
+		newStr.append(left);
+		newStr.append(right_str);
 		return newStr;
 	}
 	
 	template<typename Char, typename OtherChar,
 		typename BasicStringUtils::same_size_convertable_strings<Char, OtherChar>::null_type>
 	BasicString<Char> BasicStringUtils::concat(const BasicString<Char>& left, const std::basic_string<OtherChar>& right) {
-		size_t right_size = right.length();
-		size_t size_new = get_safe_resize<Char>(left.size, right_size);
+		size_t right_size = right.size();
+		size_t size_new = get_safe_resize<Char>(left.size(), right_size);
 		BasicString<Char> newStr;
-		Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size_new+1)*sizeof(Char));
-		if(newStr_characters_new == nullptr) {
-			throw std::bad_alloc();
-		}
-		newStr.characters = newStr_characters_new;
-		newStr.size = size_new;
-		for(size_t i=0; i<left.size; i++) {
-			newStr.characters[i] = left.characters[i];
-		}
-		size_t counter = 0;
-		const Char* right_chars = (const Char*)right.data();
-		for(size_t i=left.size; i<size_new; i++) {
-			newStr.characters[i] = right_chars[counter];
-			counter++;
-		}
-		newStr.characters[size_new] = NULLCHAR;
+		newStr.reserve(size_new);
+		newStr.append(left);
+		newStr.append((const Char*)right.data(), right_size);
 		return newStr;
 	}
 	
 	template<typename Char, typename OtherChar,
 		typename BasicStringUtils::diff_size_convertable_strings<Char, OtherChar>::null_type>
 	BasicString<Char> BasicStringUtils::concat(const BasicString<Char>& left, const std::basic_string<OtherChar>& right) {
-		std::basic_string<Char> right_str = convert<Char,OtherChar>(right.data(), right.length());
-		size_t right_size = right_str.length();
-		size_t size_new = get_safe_resize<Char>(left.size, right_size);
+		auto right_str = convert<Char,OtherChar>(right.data(), right.length());
+		size_t size_new = get_safe_resize<Char>(left.size(), right_str.size());
 		BasicString<Char> newStr;
-		Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size_new+1)*sizeof(Char));
-		if(newStr_characters_new == nullptr) {
-			throw std::bad_alloc();
-		}
-		newStr.characters = newStr_characters_new;
-		newStr.size = size_new;
-		for(size_t i=0; i<left.size; i++) {
-			newStr.characters[i] = left.characters[i];
-		}
-		size_t counter = 0;
-		const Char* right_chars = right_str.data();
-		for(size_t i=left.size; i<size_new; i++) {
-			newStr.characters[i] = right_chars[counter];
-			counter++;
-		}
-		newStr.characters[size_new] = NULLCHAR;
+		newStr.reserve(size_new);
+		newStr.append(left);
+		newStr.append(right_str);
 		return newStr;
 	}
 	
 	template<typename Char, typename OtherChar,
 		typename BasicStringUtils::same_size_convertable_strings<Char, OtherChar>::null_type>
 	BasicString<Char> BasicStringUtils::concat(const std::basic_string<Char>& left, const BasicString<OtherChar>& right) {
-		size_t left_size = left.length();
-		size_t size_new = get_safe_resize<Char>(left_size, right.size);
+		size_t size_new = get_safe_resize<Char>(left.size(), right.size());
 		BasicString<Char> newStr;
-		Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size_new+1)*sizeof(Char));
-		if(newStr_characters_new == nullptr) {
-			throw std::bad_alloc();
-		}
-		newStr.characters = newStr_characters_new;
-		newStr.size = size_new;
-		const Char* left_chars = left.data();
-		for(size_t i=0; i<left_size; i++) {
-			newStr.characters[i] = left_chars[i];
-		}
-		size_t counter = 0;
-		const Char* right_chars = (const Char*)right.characters;
-		for(size_t i=left_size; i<size_new; i++) {
-			newStr.characters[i] = right_chars[counter];
-			counter++;
-		}
-		newStr.characters[size_new] = NULLCHAR;
+		newStr.reserve(size_new);
+		newStr.append(left);
+		newStr.append((const Char*)right.data(), right.size());
 		return newStr;
 	}
 	
 	template<typename Char, typename OtherChar,
 		typename BasicStringUtils::diff_size_convertable_strings<Char, OtherChar>::null_type>
 	BasicString<Char> BasicStringUtils::concat(const std::basic_string<Char>& left, const BasicString<OtherChar>& right) {
-		size_t left_size = left.length();
-		std::basic_string<Char> right_str = convert<Char,OtherChar>(right.characters, right.size);
-		size_t right_size = right_str.length();
-		size_t size_new = get_safe_resize<Char>(left_size, right_size);
+		auto right_str = convert<Char,OtherChar>(right.data(), right.size());
+		size_t size_new = get_safe_resize<Char>(left.size(), right_str.size());
 		BasicString<Char> newStr;
-		Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size_new+1)*sizeof(Char));
-		if(newStr_characters_new == nullptr) {
-			throw std::bad_alloc();
-		}
-		newStr.characters = newStr_characters_new;
-		newStr.size = size_new;
-		const Char* left_chars = left.data();
-		for(size_t i=0; i<left_size; i++) {
-			newStr.characters[i] = left_chars[i];
-		}
-		size_t counter = 0;
-		const Char* right_chars = right_str.data();
-		for(size_t i=left_size; i<size_new; i++) {
-			newStr.characters[i] = right_chars[counter];
-			counter++;
-		}
-		newStr.characters[size_new] = NULLCHAR;
+		newStr.reserve(size_new);
+		newStr.append(left);
+		newStr.append(right_str);
 		return newStr;
 	}
 }

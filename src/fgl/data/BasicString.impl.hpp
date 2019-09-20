@@ -10,64 +10,62 @@
 
 #include <fgl/data/BasicString.hpp>
 #include <fgl/data/LinkedList.hpp>
+#include <iterator>
 #include <memory>
 
 namespace fgl {
 	template<typename Char>
-	BasicString<Char>::BasicString()
-	: characters((Char*)std::calloc(1, sizeof(Char))), size(0) {
-		if(characters == nullptr) {
-			throw std::bad_alloc();
-		}
-		characters[0] = NULLCHAR;
+	BasicString<Char>::BasicString() noexcept {
+		//
 	}
 	
 	template<typename Char>
-	BasicString<Char>::BasicString(const Char* str, size_t length)
-	: characters((Char*)std::calloc(BasicStringUtils::get_safe_resize<Char>(length,0)+1, sizeof(Char))), size(length) {
-		if(characters == nullptr) {
-			throw std::bad_alloc();
-		}
-		for(size_t i=0; i<size; i++) {
-			characters[i] = str[i];
-		}
-		characters[size] = NULLCHAR;
+	BasicString<Char>::BasicString(size_type count, Char c)
+	: storage(count, c) {
+		//
+	}
+	
+	template<typename Char>
+	BasicString<Char>::BasicString(const Char* str, size_type length)
+	: storage(str, length) {
+		//
 	}
 	
 	template<typename Char>
 	BasicString<Char>::BasicString(const Char* str)
-	: BasicString(str, BasicStringUtils::strlen<Char>(str)) {
+	: storage(str) {
 		//
-	}
-	
-	template<typename Char>
-	BasicString<Char>::BasicString(const BasicString<Char>& str)
-	: BasicString(str.characters, str.size) {
-		//
-	}
-	
-	template<typename Char>
-	BasicString<Char>::BasicString(BasicString<Char>&& str)
-	: characters(str.characters), size(str.size) {
-		str.size = 0;
-		str.characters = nullptr;
 	}
 	
 	template<typename Char>
 	BasicString<Char>::BasicString(const std::basic_string<Char>& str)
-	: BasicString(str.c_str(), str.length()) {
+	: storage(str) {
+		//
+	}
+	
+	template<typename Char>
+	BasicString<Char>::BasicString(std::basic_string<Char>&& str) noexcept
+	: storage(str) {
 		//
 	}
 	
 	template<typename Char>
 	BasicString<Char>::BasicString(Char c)
-	: characters((Char*)std::calloc(2, sizeof(Char))), size(1) {
-		//same char
-		if(characters == nullptr) {
-			throw std::bad_alloc();
-		}
-		characters[0] = c;
-		characters[size] = NULLCHAR;
+	: storage(1, c) {
+		//
+	}
+	
+	template<typename Char>
+	BasicString<Char>::BasicString(std::initializer_list<Char> list)
+	: storage(list) {
+		//
+	}
+	
+	template<typename Char>
+	template<typename InputIt>
+	BasicString<Char>::BasicString(InputIt first, InputIt last)
+	: storage(first, last) {
+		//
 	}
 	
 	#ifdef __OBJC__
@@ -77,19 +75,12 @@ namespace fgl {
 		typename BasicStringUtils::is_same<_Char,Char>::null_type,
 		typename std::enable_if<(BasicStringUtils::can_convert_string_type<_Char>::value
 			&& sizeof(unichar)==sizeof(_Char) && sizeof(_Char)!=sizeof(char)), std::nullptr_t>::type>
-	BasicString<Char>::BasicString(NSString* nsString)
-	: characters(nullptr), size(0) {
+	BasicString<Char>::BasicString(NSString* nsString) {
 		NSUInteger nsString_length = nsString.length;
 		size_t size_new = BasicStringUtils::get_safe_resize<Char>((size_t)nsString_length, 0);
 		NSRange range = NSMakeRange(0, nsString_length);
-		Char* characters_new = (Char*)std::calloc(size_new+1, sizeof(Char));
-		if(characters_new == nullptr) {
-			throw std::bad_alloc();
-		}
-		characters = characters_new;
-		size = size_new;
-		[nsString getCharacters:(unichar*)characters range:range];
-		characters[size_new] = NULLCHAR;
+		storage.resize(size_new);
+		[nsString getCharacters:(unichar*)((Char*)storage.data()) range:range];
 	}
 	
 	template<typename Char>
@@ -98,7 +89,7 @@ namespace fgl {
 		typename std::enable_if<(BasicStringUtils::can_convert_string_type<_Char>::value
 			&& sizeof(_Char)==sizeof(char)), std::nullptr_t>::type>
 	BasicString<Char>::BasicString(NSString* nsString)
-	: BasicString((const Char*)[nsString UTF8String]) {
+	: storage((const Char*)[nsString UTF8String]) {
 		//
 	}
 	
@@ -107,27 +98,12 @@ namespace fgl {
 		typename BasicStringUtils::is_same<_Char,Char>::null_type,
 		typename std::enable_if<(BasicStringUtils::can_convert_string_type<_Char>::value
 			&& sizeof(unichar)!=sizeof(_Char) && sizeof(_Char)!=sizeof(char)), std::nullptr_t>::type>
-	BasicString<Char>::BasicString(NSString* nsString)
-	: characters(nullptr), size(0) {
+	BasicString<Char>::BasicString(NSString* nsString) {
 		NSUInteger nsString_length = nsString.length;
 		auto buffer = std::make_unique<unichar[]>((size_t)nsString_length);
 		NSRange range = NSMakeRange(0, nsString_length);
 		[nsString getCharacters:buffer.get() range:range];
-		/*printf("old(");
-		for(size_t i=0; i<(size_t)nsLength; i++) {
-			int c = (int)buffer[i];
-			printf("%i, ", c);
-		}
-		printf(") ");*/
-		auto output = BasicStringUtils::convert<Char,unichar>(buffer.get(), (size_t)nsString_length);
-		buffer = nullptr;
-		/*printf("new(");
-		for(size_t i=0; i<output.length(); i++) {
-			int c = (int)output[i];
-			printf("%i, ", c);
-		}
-		printf(") ");*/
-		assign(output.c_str(), output.length());
+		storage = BasicStringUtils::convert<Char,unichar>(buffer.get(), (size_t)nsString_length);
 	}
 	
 	#endif
@@ -136,49 +112,39 @@ namespace fgl {
 	template<typename OtherChar,
 		typename BasicStringUtils::same_size_convertable_with_char_type<Char,OtherChar>::null_type>
 	BasicString<Char>::BasicString(OtherChar c)
-	: characters((Char*)std::calloc(2, sizeof(Char))), size(1) {
-		// same char size
-		if(characters == nullptr) {
-			throw std::bad_alloc();
-		}
-		characters[0] = (Char)c;
-		characters[size] = NULLCHAR;
+	: storage(1, (Char)c) {
+		//
 	}
 	
 	template<typename Char>
 	template<typename OtherChar,
 		typename BasicStringUtils::diff_size_convertable_with_char_type<Char,OtherChar>::null_type>
 	BasicString<Char>::BasicString(OtherChar c)
-	: characters(nullptr), size(0) {
-		// different char size
-		OtherChar str[2] = {c, NULLCHAR};
-		auto output = BasicStringUtils::convert<Char,OtherChar>(str, 1);
-		assign(output.c_str(), output.length());
+	: storage(BasicStringUtils::convert<Char,OtherChar>(std::basic_string<OtherChar>(1,c).data(), 1)){
+		//
 	}
 	
 	template<typename Char>
 	template<typename OtherChar,
 		typename BasicStringUtils::same_size_convertable_strings<Char,OtherChar>::null_type>
-	BasicString<Char>::BasicString(const OtherChar* str, size_t length)
-	: BasicString((const Char*)str, length) {
-		// same char size
+	BasicString<Char>::BasicString(const OtherChar* str, size_type length)
+	: storage((const Char*)str, length) {
+		//
 	}
 	
 	template<typename Char>
 	template<typename OtherChar,
 		typename BasicStringUtils::diff_size_convertable_strings<Char,OtherChar>::null_type>
-	BasicString<Char>::BasicString(const OtherChar* str, size_t length)
-	: characters(nullptr), size(0) {
-		// different char size
-		auto output = BasicStringUtils::convert<Char,OtherChar>(str, length);
-		assign(output.c_str(), output.length());
+	BasicString<Char>::BasicString(const OtherChar* str, size_type length)
+	: storage(BasicStringUtils::convert<Char,OtherChar>(str, length)) {
+		//
 	}
 	
 	template<typename Char>
 	template<typename OtherChar,
 		typename BasicStringUtils::same_size_convertable_strings<Char,OtherChar>::null_type>
 	BasicString<Char>::BasicString(const OtherChar* str)
-	: BasicString((const Char*)str, BasicStringUtils::strlen<OtherChar>(str)) {
+	: storage((const Char*)str) {
 		// same char size
 	}
 	
@@ -186,7 +152,7 @@ namespace fgl {
 	template<typename OtherChar,
 		typename BasicStringUtils::diff_size_convertable_strings<Char,OtherChar>::null_type>
 	BasicString<Char>::BasicString(const OtherChar* str)
-	: BasicString(str, BasicStringUtils::strlen<OtherChar>(str)) {
+	: storage(BasicStringUtils::convert<Char,OtherChar>(str, BasicStringUtils::strlen<OtherChar>(str))) {
 		// different char size
 	}
 	
@@ -194,7 +160,7 @@ namespace fgl {
 	template<typename OtherChar,
 		typename BasicStringUtils::same_size_convertable_strings<Char,OtherChar>::null_type>
 	BasicString<Char>::BasicString(const BasicString<OtherChar>& str)
-	: BasicString((const Char*)str.characters, str.size) {
+	: storage(str.storage) {
 		// same char size
 	}
 	
@@ -202,17 +168,15 @@ namespace fgl {
 	template<typename OtherChar,
 		typename BasicStringUtils::same_size_convertable_strings<Char,OtherChar>::null_type>
 	BasicString<Char>::BasicString(BasicString<OtherChar>&& str)
-	: characters((const Char*)str.characters), size(str.size) {
+	: storage(str.storage) {
 		// same char size
-		str.size = 0;
-		str.characters = nullptr;
 	}
 	
 	template<typename Char>
 	template<typename OtherChar,
 		typename BasicStringUtils::diff_size_convertable_strings<Char,OtherChar>::null_type>
 	BasicString<Char>::BasicString(const BasicString<OtherChar>& str)
-	: BasicString(str.characters, str.size) {
+	: storage(BasicStringUtils::convert<Char,OtherChar>(str.data(), str.length())) {
 		// different char size
 	}
 	
@@ -220,7 +184,15 @@ namespace fgl {
 	template<typename OtherChar,
 		typename BasicStringUtils::same_size_convertable_strings<Char,OtherChar>::null_type>
 	BasicString<Char>::BasicString(const std::basic_string<OtherChar>& str)
-	: BasicString((const Char*)str.c_str(), str.length()) {
+	: storage(str.storage) {
+		// same char size
+	}
+	
+	template<typename Char>
+	template<typename OtherChar,
+	typename BasicStringUtils::same_size_convertable_strings<Char,OtherChar>::null_type>
+	BasicString<Char>::BasicString(std::basic_string<OtherChar>&& str)
+	: storage(str.storage) {
 		// same char size
 	}
 	
@@ -228,29 +200,33 @@ namespace fgl {
 	template<typename OtherChar,
 		typename BasicStringUtils::diff_size_convertable_strings<Char,OtherChar>::null_type>
 	BasicString<Char>::BasicString(const std::basic_string<OtherChar>& str)
-	: BasicString(str.c_str(), str.length()) {
+	: storage(BasicStringUtils::convert<Char,OtherChar>(str.data(), str.length())) {
 		// different char size
 	}
 	
-	template<typename Char>
-	BasicString<Char>::~BasicString() {
-		if(characters != nullptr) {
-			std::free(characters);
-		}
-	}
-	
-	
 	
 	
 	template<typename Char>
-	BasicString<Char>::operator const Char*() const {
-		return characters;
+	BasicString<Char>::operator const Char*() const noexcept {
+		return storage.c_str();
 	}
 	
 	template<typename Char>
-	BasicString<Char>::operator std::basic_string<Char>() const {
-		return std::basic_string<Char>(characters, size);
+	BasicString<Char>::operator std::basic_string<Char>&() noexcept {
+		return storage;
 	}
+	
+	template<typename Char>
+	BasicString<Char>::operator const std::basic_string<Char>&() const noexcept {
+		return storage;
+	}
+	
+	template<typename Char>
+	BasicString<Char>::operator const std::basic_string_view<Char>() const noexcept {
+		return storage;
+	}
+	
+	
 	
 	#ifdef __OBJC__
 	
@@ -260,7 +236,7 @@ namespace fgl {
 		typename std::enable_if<(BasicStringUtils::can_convert_string_type<_Char>::value
 			&& sizeof(unichar)==sizeof(_Char) && sizeof(_Char)!=sizeof(char)), std::nullptr_t>::type>
 	NSString* BasicString<Char>::toNSString() const {
-		return [NSString stringWithCharacters:(const unichar*)characters length:(NSUInteger)size];
+		return [NSString stringWithCharacters:(const unichar*)storage.data() length:(NSUInteger)storage.length()];
 	}
 	
 	template<typename Char>
@@ -269,7 +245,7 @@ namespace fgl {
 		typename std::enable_if<(BasicStringUtils::can_convert_string_type<_Char>::value
 			&& sizeof(_Char)==sizeof(char)), std::nullptr_t>::type>
 	NSString* BasicString<Char>::toNSString() const {
-		return [NSString stringWithUTF8String:(const char*)characters];
+		return [NSString stringWithUTF8String:(const char*)storage.data()];
 	}
 	
 	template<typename Char>
@@ -278,7 +254,7 @@ namespace fgl {
 		typename std::enable_if<(BasicStringUtils::can_convert_string_type<_Char>::value
 			&& sizeof(unichar)!=sizeof(_Char) && sizeof(_Char)!=sizeof(char)), std::nullptr_t>::type>
 	NSString* BasicString<Char>::toNSString() const {
-		auto output = BasicStringUtils::convert<unichar,Char>(characters, size);
+		auto output = BasicStringUtils::convert<unichar,Char>(storage.data(), storage.length());
 		return [NSString stringWithCharacters:(const unichar*)output.c_str() length:(NSUInteger)output.length()];
 	}
 	
@@ -297,7 +273,7 @@ namespace fgl {
 		typename BasicStringUtils::same_size_convertable_strings<Char,OtherChar>::null_type>
 	std::basic_string<OtherChar> BasicString<Char>::toStdString() const {
 		// same char size
-		return std::basic_string<OtherChar>((const OtherChar*)characters, size);
+		return std::basic_string<OtherChar>((const OtherChar*)storage.data(), storage.length());
 	}
 	
 	template<typename Char>
@@ -305,7 +281,7 @@ namespace fgl {
 		typename BasicStringUtils::diff_size_convertable_strings<Char,OtherChar>::null_type>
 	std::basic_string<OtherChar> BasicString<Char>::toStdString() const {
 		// different char size
-		return BasicStringUtils::convert<OtherChar,Char>(characters, size);
+		return BasicStringUtils::convert<OtherChar,Char>(storage.data(), storage.length());
 	}
 	
 	template<typename Char>
@@ -313,14 +289,14 @@ namespace fgl {
 		typename BasicStringUtils::is_same<Char,SameChar>::null_type>
 	std::basic_string<SameChar> BasicString<Char>::toStdString() const {
 		// same char
-		return std::basic_string<SameChar>(characters, size);
+		return std::basic_string<SameChar>(storage.data(), storage.length());
 	}
 	
 	template<typename Char>
 	template<typename SomeChar,
 		typename BasicStringUtils::can_convert_string_types<Char,SomeChar>::null_type>
 	BasicString<SomeChar> BasicString<Char>::toBasicString() const {
-		return BasicString<SomeChar>(characters, size);
+		return BasicString<SomeChar>(storage.data(), storage.length());
 	}
 	
 	template<typename Char>
@@ -328,74 +304,93 @@ namespace fgl {
 		typename BasicStringUtils::is_same<_Char, Char>::null_type,
 		typename BasicStringUtils::can_convert_string_type<Char>::null_type>
 	BasicString<char> BasicString<Char>::toString() const {
-		return BasicString<char>(characters, size);
+		return BasicStringUtils::convert<char,Char>(storage.data(),storage.length());
 	}
 	
 	
 	
-	
 	template<typename Char>
-	void BasicString<Char>::assign(const Char* str, size_t length) {
-		size_t size_new = BasicStringUtils::get_safe_resize<Char>(length, 0);
-		Char* characters_new = (Char*)std::realloc(characters, (size_new+1)*sizeof(Char));
-		if(characters_new == nullptr) {
-			throw std::bad_alloc();
-		}
-		characters = characters_new;
-		for(size_t i=0; i<size_new; i++) {
-			characters[i] = str[i];
-		}
-		size = size_new;
-		characters[size] = NULLCHAR;
-	}
-	
-	template<typename Char>
-	void BasicString<Char>::assign(const Char* str) {
-		assign(str, BasicStringUtils::strlen<Char>(str));
-	}
-	
-	template<typename Char>
-	BasicString<Char>& BasicString<Char>::operator=(const Char* str) {
-		assign(str, BasicStringUtils::strlen<Char>(str));
+	BasicString<Char>& BasicString<Char>::assign(const BasicString<Char>& str) {
+		storage.assign(str.storage);
 		return *this;
 	}
 	
 	template<typename Char>
-	BasicString<Char>& BasicString<Char>::operator=(const BasicString<Char>& str) {
-		assign(str.characters, str.size);
+	BasicString<Char>& BasicString<Char>::assign(BasicString<Char>&& str) {
+		storage.assign(str.storage);
 		return *this;
 	}
 	
 	template<typename Char>
-	BasicString<Char>& BasicString<Char>::operator=(BasicString<Char>&& str) {
-		if(characters != nullptr) {
-			size = 0;
-			std::free(characters);
-		}
-		characters = str.characters;
-		size = str.size;
-		str.size = 0;
-		str.characters = nullptr;
+	BasicString<Char>& BasicString<Char>::assign(const std::basic_string<Char>& str) {
+		storage.assign(str);
+		return *this;
+	}
+	
+	template<typename Char>
+	BasicString<Char>& BasicString<Char>::assign(std::basic_string<Char>&& str) noexcept {
+		storage.assign(str);
+		return *this;
+	}
+	
+	template<typename Char>
+	BasicString<Char>& BasicString<Char>::assign(const Char* str, size_type length) {
+		storage.assign(str, length);
+		return *this;
+	}
+	
+	template<typename Char>
+	BasicString<Char>& BasicString<Char>::assign(const Char* str) {
+		storage.assign(str);
+		return *this;
+	}
+	
+	template<typename Char>
+	BasicString<Char>& BasicString<Char>::assign(size_type count, Char c) {
+		storage.assign(count, c);
+		return *this;
+	}
+	
+	template<typename Char>
+	template<typename InputIt>
+	BasicString<Char>& BasicString<Char>::assign(InputIt first, InputIt last) {
+		storage.assign(first, last);
+		return *this;
+	}
+	
+	template<typename Char>
+	BasicString<Char>& BasicString<Char>::assign(std::initializer_list<Char> list) {
+		storage.assign(list);
 		return *this;
 	}
 	
 	template<typename Char>
 	BasicString<Char>& BasicString<Char>::operator=(const std::basic_string<Char>& str) {
-		assign(str.c_str(), str.length());
+		storage.operator=(str);
+		return *this;
+	}
+	
+	template<typename Char>
+	BasicString<Char>& BasicString<Char>::operator=(std::basic_string<Char>&& str) noexcept {
+		storage.operator=(str);
+		return *this;
+	}
+	
+	template<typename Char>
+	BasicString<Char>& BasicString<Char>::operator=(const Char* str) {
+		storage.operator=(str);
 		return *this;
 	}
 	
 	template<typename Char>
 	BasicString<Char>& BasicString<Char>::operator=(Char c) {
-		size_t size_new = 1;
-		Char* characters_new = (Char*)std::realloc(characters, (size_new+1)*sizeof(Char));
-		if(characters_new == nullptr) {
-			throw std::bad_alloc();
-		}
-		characters = characters_new;
-		characters[0] = c;
-		size = size_new;
-		characters[size] = NULLCHAR;
+		storage.operator=(c);
+		return *this;
+	}
+	
+	template<typename Char>
+	BasicString<Char>& BasicString<Char>::operator=(std::initializer_list<Char> list) {
+		storage.operator=(list);
 		return *this;
 	}
 	
@@ -410,14 +405,8 @@ namespace fgl {
 		NSUInteger nsString_length = nsString.length;
 		size_t size_new = BasicStringUtils::get_safe_resize<Char>((size_t)nsString_length, 0);
 		NSRange range = NSMakeRange(0, nsString_length);
-		Char* characters_new = (Char*)std::realloc(characters, (size_new+1)*sizeof(Char));
-		if(characters_new == nullptr) {
-			throw std::bad_alloc();
-		}
-		characters = characters_new;
-		size = size_new;
-		[nsString getCharacters:(unichar*)characters range:range];
-		characters[size_new] = NULLCHAR;
+		storage.resize(size_new);
+		[nsString getCharacters:(unichar*)((Char*)storage.data()) range:range];
 		return *this;
 	}
 	
@@ -427,7 +416,7 @@ namespace fgl {
 		typename std::enable_if<(BasicStringUtils::can_convert_string_type<_Char>::value
 			&& sizeof(_Char)==sizeof(char)), std::nullptr_t>::type>
 	BasicString<Char>& BasicString<Char>::operator=(NSString* nsString) {
-		assign((const Char*)[nsString UTF8String]);
+		storage.assign((const Char*)[nsString UTF8String]);
 		return *this;
 	}
 	
@@ -444,9 +433,7 @@ namespace fgl {
 		NSRange range = NSMakeRange(0, nsString_length);
 		[nsString getCharacters:buffer_data range:range];
 		buffer_data[length] = NULLCHAR;
-		auto output = BasicStringUtils::convert<Char,unichar>(buffer_data, length);
-		buffer = nullptr;
-		assign(output.c_str(), output.length());
+		storage = BasicStringUtils::convert<Char,unichar>(buffer_data, length);
 		return *this;
 	}
 	
@@ -456,16 +443,7 @@ namespace fgl {
 	template<typename OtherChar,
 		typename BasicStringUtils::same_size_convertable_with_char_type<Char, OtherChar>::null_type>
 	BasicString<Char>& BasicString<Char>::operator=(OtherChar c) {
-		// same char size
-		size_t size_new = 1;
-		Char* characters_new = (Char*)std::realloc(characters, (size_new+1)*sizeof(Char));
-		if(characters_new == nullptr) {
-			throw std::bad_alloc();
-		}
-		characters = characters_new;
-		characters[0] = (Char)c;
-		size = size_new;
-		characters[size] = NULLCHAR;
+		storage.assign(1, (Char)c);
 		return *this;
 	}
 	
@@ -474,9 +452,7 @@ namespace fgl {
 		typename BasicStringUtils::diff_size_convertable_with_char_type<Char, OtherChar>::null_type>
 	BasicString<Char>& BasicString<Char>::operator=(OtherChar c) {
 		// different char size
-		OtherChar str[2] = {c, NULLCHAR};
-		auto output = BasicStringUtils::convert<Char,OtherChar>(str, 1);
-		assign(output.c_str(), output.length());
+		storage = BasicStringUtils::convert<Char,OtherChar>(std::basic_string<Char>(1,c).data(), 1);
 		return *this;
 	}
 	
@@ -485,7 +461,7 @@ namespace fgl {
 		typename BasicStringUtils::same_size_convertable_strings<Char, OtherChar>::null_type>
 	BasicString<Char>& BasicString<Char>::operator=(const OtherChar* str) {
 		// same char size
-		assign((const Char*)str, BasicStringUtils::strlen<OtherChar>(str));
+		assign((const Char*)str);
 		return *this;
 	}
 	
@@ -494,8 +470,7 @@ namespace fgl {
 		typename BasicStringUtils::diff_size_convertable_strings<Char, OtherChar>::null_type>
 	BasicString<Char>& BasicString<Char>::operator=(const OtherChar* str) {
 		// different char size
-		auto output = BasicStringUtils::convert<Char,OtherChar>(str, BasicStringUtils::strlen<OtherChar>(str));
-		assign(output.c_str(), output.length());
+		storage = BasicStringUtils::convert<Char,OtherChar>(str, BasicStringUtils::strlen<OtherChar>(str));
 		return *this;
 	}
 	
@@ -504,7 +479,7 @@ namespace fgl {
 		typename BasicStringUtils::same_size_convertable_strings<Char, OtherChar>::null_type>
 	BasicString<Char>& BasicString<Char>::operator=(const BasicString<OtherChar>& str) {
 		// same char size
-		assign((const Char*)str.characters, str.size);
+		assign((const Char*)str.data(), str.length());
 		return *this;
 	}
 	
@@ -513,8 +488,7 @@ namespace fgl {
 		typename BasicStringUtils::diff_size_convertable_strings<Char, OtherChar>::null_type>
 	BasicString<Char>& BasicString<Char>::operator=(const BasicString<OtherChar>& str) {
 		// different char size
-		auto output = BasicStringUtils::convert<Char,OtherChar>(str.characters, str.size);
-		assign(output.c_str(), output.length());
+		storage = BasicStringUtils::convert<Char,OtherChar>(str.data(), str.length());
 		return *this;
 	}
 	
@@ -532,63 +506,76 @@ namespace fgl {
 		typename BasicStringUtils::diff_size_convertable_strings<Char, OtherChar>::null_type>
 	BasicString<Char>& BasicString<Char>::operator=(const std::basic_string<OtherChar>& str) {
 		// different char size
-		auto output = BasicStringUtils::convert<Char,OtherChar>(str.c_str(), str.length());
-		assign(output.c_str(), output.length());
+		storage = BasicStringUtils::convert<Char,OtherChar>(str.data(), str.length());
 		return *this;
 	}
 	
 	
 	
-	
 	template<typename Char>
-	void BasicString<Char>::append(const Char* str, size_t length) {
-		size_t size_new = BasicStringUtils::get_safe_resize<Char>(size, length);
-		Char* characters_new = (Char*)std::realloc(characters, (size_new+1)*sizeof(Char));
-		if(characters_new == nullptr) {
-			throw std::bad_alloc();
-		}
-		characters = characters_new;
-		size_t counter = 0;
-		for(size_t i=size; i<size_new; i++) {
-			characters[i] = str[counter];
-			counter++;
-		}
-		size = size_new;
-		characters[size] = NULLCHAR;
-	}
-	
-	template<typename Char>
-	void BasicString<Char>::append(const Char* str) {
-		append(str, BasicStringUtils::strlen<Char>(str));
-	}
-	
-	template<typename Char>
-	void BasicString<Char>::append(Char c) {
-		Char str[2] = {c, NULLCHAR};
-		append(str, 1);
-	}
-	
-	template<typename Char>
-	BasicString<Char>& BasicString<Char>::operator+=(const Char* str) {
-		append(str);
+	BasicString<Char>& BasicString<Char>::append(const BasicString<Char>& str) {
+		storage.append(str.storage);
 		return *this;
 	}
+	
+	template<typename Char>
+	BasicString<Char>& BasicString<Char>::append(const std::basic_string<Char>& str) {
+		storage.append(str);
+		return *this;
+	}
+	
+	template<typename Char>
+	BasicString<Char>& BasicString<Char>::append(const Char* str, size_type length) {
+		storage.append(str,length);
+		return *this;
+	}
+	
+	template<typename Char>
+	BasicString<Char>& BasicString<Char>::append(const Char* str) {
+		storage.append(str);
+		return *this;
+	}
+	
+	template<typename Char>
+	BasicString<Char>& BasicString<Char>::append(size_type count, Char c) {
+		storage.append(count, c);
+		return *this;
+	}
+	
+	template<typename Char>
+	template<typename InputIt>
+	BasicString<Char>& BasicString<Char>::append(InputIt first, InputIt last) {
+		storage.append(first, last);
+	}
+	
+	template<typename Char>
+	BasicString<Char>& BasicString<Char>::append(std::initializer_list<Char> list) {
+		storage.append(list);
+	}
+	
+	
 	
 	template<typename Char>
 	BasicString<Char>& BasicString<Char>::operator+=(const BasicString<Char>& str) {
-		append(str.characters, str.size);
+		storage.operator+=(str.storage);
 		return *this;
 	}
 	
 	template<typename Char>
 	BasicString<Char>& BasicString<Char>::operator+=(const std::basic_string<Char>& str) {
-		append(str.c_str(), str.length());
+		storage.operator+=(str);
+		return *this;
+	}
+	
+	template<typename Char>
+	BasicString<Char>& BasicString<Char>::operator+=(const Char* str) {
+		storage.operator+=(str);
 		return *this;
 	}
 	
 	template<typename Char>
 	BasicString<Char>& BasicString<Char>::operator+=(Char c) {
-		append(c);
+		storage.operator+=(c);
 		return *this;
 	}
 	
@@ -602,16 +589,10 @@ namespace fgl {
 	BasicString<Char>& BasicString<Char>::operator+=(NSString* nsString) {
 		NSUInteger nsString_length = nsString.length;
 		size_t size_new = BasicStringUtils::get_safe_resize<Char>(size, (size_t)nsString_length);
-		Char* characters_new = (Char*)std::realloc(characters, (size_new+1)*sizeof(Char));
-		if(characters_new == nullptr) {
-			throw std::bad_alloc();
-		}
-		characters = characters_new;
-		size_t size_old = size;
-		size = size_new;
+		size_t size_old = storage.size();
 		NSRange range = NSMakeRange(0, nsString_length);
-		[nsString getCharacters:(unichar*)(characters+size_old) range:range];
-		characters[size_new] = NULLCHAR;
+		storage.resize(size_new);
+		[nsString getCharacters:(unichar*)((Char*)(storage.data()+size_old)) range:range];
 		return *this;
 	}
 	
@@ -639,7 +620,7 @@ namespace fgl {
 		buffer_data[nsString_length] = NULLCHAR;
 		auto output = BasicStringUtils::convert<Char,unichar>(buffer_data, (size_t)nsString_length);
 		buffer = nullptr;
-		append(output.c_str(), output.length());
+		append(output);
 		return *this;
 	}
 	
@@ -659,9 +640,7 @@ namespace fgl {
 		typename BasicStringUtils::diff_size_convertable_with_char_type<Char,OtherChar>::null_type>
 	BasicString<Char>& BasicString<Char>::operator+=(OtherChar c) {
 		// different char size
-		OtherChar str[2] = {c, NULLCHAR};
-		auto output = BasicStringUtils::convert<Char,OtherChar>(str, 1);
-		append(output.c_str(), output.length());
+		append(BasicStringUtils::convert<Char,OtherChar>(std::basic_string<OtherChar>(c).data(), 1));
 		return *this;
 	}
 	
@@ -677,8 +656,7 @@ namespace fgl {
 	template<typename OtherChar, typename BasicStringUtils::diff_size_convertable_strings<Char,OtherChar>::null_type>
 	BasicString<Char>& BasicString<Char>::operator+=(const OtherChar* str) {
 		// different char size
-		auto output = BasicStringUtils::convert<Char,OtherChar>(str, BasicStringUtils::strlen<Char>(str));
-		append(output.c_str(), output.length());
+		append(BasicStringUtils::convert<Char,OtherChar>(str, BasicStringUtils::strlen<Char>(str)));
 		return *this;
 	}
 	
@@ -694,8 +672,7 @@ namespace fgl {
 	template<typename OtherChar, typename BasicStringUtils::diff_size_convertable_strings<Char,OtherChar>::null_type>
 	BasicString<Char>& BasicString<Char>::operator+=(const BasicString<OtherChar>& str) {
 		// different char size
-		auto output = BasicStringUtils::convert<Char,OtherChar>(str.characters, str.size);
-		append(output.c_str(), output.length());
+		append(BasicStringUtils::convert<Char,OtherChar>(str.characters, str.size));
 		return *this;
 	}
 	
@@ -703,7 +680,7 @@ namespace fgl {
 	template<typename OtherChar, typename BasicStringUtils::same_size_convertable_strings<Char,OtherChar>::null_type>
 	BasicString<Char>& BasicString<Char>::operator+=(const std::basic_string<OtherChar>& str) {
 		// same char size
-		append((const Char*)str.c_str(), str.length());
+		append((const Char*)str.data(), str.length());
 		return *this;
 	}
 	
@@ -736,8 +713,28 @@ namespace fgl {
 	
 	
 	template<typename Char>
-	int BasicString<Char>::compare(const Char* cmp, size_t length, const std::locale& locale) const {
-		return std::use_facet<std::collate<Char>>(locale).compare(characters, characters+size, cmp, cmp+length);
+	int BasicString<Char>::compare(const Char* cmp, size_type length) const noexcept {
+		return storage.compare(0, length, cmp);
+	}
+	
+	template<typename Char>
+	int BasicString<Char>::compare(const Char* cmp) const noexcept {
+		return storage.compare(cmp);
+	}
+	
+	template<typename Char>
+	int BasicString<Char>::compare(const BasicString<Char>& cmp) const noexcept {
+		return storage.compare(cmp.storage);
+	}
+	
+	template<typename Char>
+	int BasicString<Char>::compare(const std::basic_string<Char>& cmp) const noexcept {
+		return storage.compare(cmp);
+	}
+	
+	template<typename Char>
+	int BasicString<Char>::compare(const Char* cmp, size_type length, const std::locale& locale) const {
+		return std::use_facet<std::collate<Char>>(locale).compare(storage.data(), storage.data()+storage.length(), cmp, cmp+length);
 	}
 	
 	template<typename Char>
@@ -747,14 +744,19 @@ namespace fgl {
 	
 	template<typename Char>
 	int BasicString<Char>::compare(const BasicString<Char>& cmp, const std::locale& locale) const {
-		return compare(cmp.characters, cmp.size, locale);
+		return compare(cmp.storage.data(), cmp.storage.length(), locale);
 	}
 	
 	template<typename Char>
-	bool BasicString<Char>::equals(const Char* str, size_t length) const {
-		if(size == length) {
-			for(size_t i=0; i<size; i++) {
-				if(characters[i] != str[i]) {
+	int BasicString<Char>::compare(const std::basic_string<Char>& cmp, const std::locale& locale) const {
+		return compare(cmp.data(), cmp.length(), locale);
+	}
+	
+	template<typename Char>
+	bool BasicString<Char>::equals(const Char* str, size_type length) const {
+		if(storage.length() == length) {
+			for(size_t i=0; i<length; i++) {
+				if(storage[i] != str[i]) {
 					return false;
 				}
 			}
@@ -770,255 +772,133 @@ namespace fgl {
 	
 	template<typename Char>
 	bool BasicString<Char>::equals(const BasicString<Char>& str) const {
-		return equals(str.characters, str.size);
+		return equals(str.storage.data(), str.storage.length());
 	}
 	
 	
 	
 	
 	template<typename Char>
-	const Char* BasicString<Char>::data() const {
-		return characters;
+	Char* BasicString<Char>::data() noexcept {
+		return (Char*)storage.data();
 	}
 	
 	template<typename Char>
-	size_t BasicString<Char>::length() const {
-		return size;
+	const Char* BasicString<Char>::data() const noexcept {
+		return storage.data();
+	}
+	
+	template<typename Char>
+	const Char* BasicString<Char>::c_str() const noexcept {
+		return storage.c_str();
+	}
+	
+	template<typename Char>
+	typename BasicString<Char>::size_type BasicString<Char>::size() const noexcept {
+		return storage.size();
+	}
+	
+	template<typename Char>
+	typename BasicString<Char>::size_type BasicString<Char>::length() const noexcept {
+		return storage.length();
+	}
+	
+	template<typename Char>
+	typename BasicString<Char>::size_type BasicString<Char>::maxSize() const noexcept {
+		return storage.max_size();
 	}
 	
 	template<typename Char>
 	void BasicString<Char>::clear() {
-		Char* characters_new = (Char*)std::realloc(characters, sizeof(Char));
-		if(characters_new == nullptr) {
-			throw std::bad_alloc();
-		}
-		characters = characters_new;
-		size = 0;
-		characters[0] = NULLCHAR;
+		storage.clear();
 	}
 	
 	template<typename Char>
-	void BasicString<Char>::resize(size_t size_new) {
-		BasicStringUtils::get_safe_resize<Char>(size_new, 0);
-		size_t size_old = size;
-		Char* characters_new = (Char*)std::realloc(characters, (size_new+1)*sizeof(Char));
-		if(characters_new == nullptr) {
-			throw std::bad_alloc();
-		}
-		characters = characters_new;
-		size = size_new;
-		for(size_t i=size_old; i<size_new; i++) {
-			characters[i] = NULLCHAR;
-		}
-		characters[size_new] = NULLCHAR;
+	void BasicString<Char>::resize(size_type size_new) {
+		storage.resize(size_new);
 	}
 	
 	template<typename Char>
-	Char& BasicString<Char>::charAt(size_t index) {
-		if(index < size) {
-			return characters[index];
-		}
-		throw std::out_of_range("index " + std::to_string(index) + " is out of bounds in BasicString<" + typeid(Char).name() + "> with a length of " + std::to_string(size));
+	void BasicString<Char>::resize(size_type size_new, Char c) {
+		storage.resize(size_new, c);
 	}
 	
 	template<typename Char>
-	Char& BasicString<Char>::operator[](size_t index) {
-		if(index < size) {
-			return characters[index];
-		}
-		throw std::out_of_range("index " + std::to_string(index) + " is out of bounds in BasicString<" + typeid(Char).name() + "> with a length of " + std::to_string(size));
+	void BasicString<Char>::reserve(size_type capacity) {
+		storage.reserve(capacity);
 	}
 	
 	template<typename Char>
-	const Char& BasicString<Char>::charAt(size_t index) const {
-		if(index < size) {
-			return characters[index];
-		}
-		throw std::out_of_range("index " + std::to_string(index) + " is out of bounds in BasicString<" + typeid(Char).name() + "> with a length of " + std::to_string(size));
+	Char& BasicString<Char>::charAt(size_type index) {
+		return storage.at(index);
 	}
 	
 	template<typename Char>
-	const Char& BasicString<Char>::operator[](size_t index) const {
-		if(index < size) {
-			return characters[index];
-		}
-		throw std::out_of_range("index " + std::to_string(index) + " is out of bounds in BasicString<" + typeid(Char).name() + "> with a length of " + std::to_string(size));
+	Char& BasicString<Char>::operator[](size_type index) {
+		return storage[index];
 	}
 	
 	template<typename Char>
-	size_t BasicString<Char>::indexOf(Char find, size_t startIndex) const {
-		if(startIndex > size) {
-			throw std::out_of_range("index " + std::to_string(startIndex) + " is out of bounds in BasicString<" + typeid(Char).name() + "> with a length of " + std::to_string(size));
+	const Char& BasicString<Char>::charAt(size_type index) const {
+		return storage.at(index);
+	}
+	
+	template<typename Char>
+	const Char& BasicString<Char>::operator[](size_type index) const {
+		return storage[index];
+	}
+	
+	template<typename Char>
+	typename BasicString<Char>::size_type BasicString<Char>::indexOf(Char find, size_type startIndex) const noexcept {
+		return storage.find(find, startIndex);
+	}
+	
+	template<typename Char>
+	typename BasicString<Char>::size_type BasicString<Char>::indexOf(const std::basic_string<Char>& find, size_type startIndex) const noexcept {
+		return storage.find(find, startIndex);
+	}
+	
+	template<typename Char>
+	typename BasicString<Char>::size_type BasicString<Char>::indexOf(const BasicString<Char>& find, size_type startIndex) const noexcept {
+		return storage.find(find.storage, startIndex);
+	}
+	
+	template<typename Char>
+	typename BasicString<Char>::size_type BasicString<Char>::indexOf(const Char* find, size_type startIndex) const {
+		return storage.find(find, startIndex);
+	}
+	
+	template<typename Char>
+	typename BasicString<Char>::size_type BasicString<Char>::lastIndexOf(Char find, size_type startIndex) const noexcept {
+		return storage.rfind(find, startIndex);
+	}
+	
+	template<typename Char>
+	typename BasicString<Char>::size_type BasicString<Char>::lastIndexOf(const std::basic_string<Char>& find, size_type startIndex) const noexcept {
+		return storage.rfind(find, startIndex);
+	}
+	
+	template<typename Char>
+	typename BasicString<Char>::size_type BasicString<Char>::lastIndexOf(const BasicString<Char>& find, size_type startIndex) const noexcept {
+		return storage.rfind(find.storage, startIndex);
+	}
+	
+	template<typename Char>
+	typename BasicString<Char>::size_type BasicString<Char>::lastIndexOf(const Char* find, size_type startIndex) const {
+		return storage.rfind(find, startIndex);
+	}
+	
+	template<typename Char>
+	bool BasicString<Char>::startsWith(const Char* str, size_type length) const {
+		if(length > storage.length()) {
+			return false;
 		}
-		for(size_t i=startIndex; i<size; i++) {
-			if(characters[i] == find) {
-				return i;
+		for(size_type i=0; i<length; i++) {
+			if(storage[i] != str[i]) {
+				return false;
 			}
 		}
-		return BasicString<Char>::NOT_FOUND;
-	}
-	
-	template<typename Char>
-	size_t BasicString<Char>::indexOf(const BasicString<Char>& find, size_t startIndex) const {
-		if(startIndex > size) {
-			throw std::out_of_range("index " + std::to_string(startIndex) + " is out of bounds in BasicString<" + typeid(Char).name() + "> with a length of " + std::to_string(size));
-		}
-		if(find.size == 0) {
-			return BasicString<Char>::NOT_FOUND;
-		}
-		else if(find.size > size) {
-			return BasicString<Char>::NOT_FOUND;
-		}
-		size_t finish = size - find.size;
-		for(size_t i=0; i<=finish; i++) {
-			if(characters[i] == find.characters[0]) {
-				bool match = true;
-				for(size_t j=1; j<find.size; j++) {
-					if(characters[i+j] != find.characters[j]) {
-						match = false;
-						break;
-					}
-				}
-				if(match) {
-					return i;
-				}
-			}
-		}
-		return BasicString<Char>::NOT_FOUND;
-	}
-	
-	template<typename Char>
-	size_t BasicString<Char>::indexOf(const Char* find, size_t startIndex) const {
-		if(startIndex > size) {
-			throw std::out_of_range("index " + std::to_string(startIndex) + " is out of bounds in BasicString<" + typeid(Char).name() + "> with a length of " + std::to_string(size));
-		}
-		size_t find_size = BasicStringUtils::strlen<Char>(find);
-		if(find_size == 0) {
-			return BasicString<Char>::NOT_FOUND;
-		}
-		else if(find_size > size) {
-			return BasicString<Char>::NOT_FOUND;
-		}
-		size_t finish = size - find_size;
-		for(size_t i=0; i<=finish; i++) {
-			if(characters[i] == find[0]) {
-				bool match = true;
-				for(size_t j=1; j<find_size; j++) {
-					if(characters[i+j] != find[j]) {
-						match = false;
-						break;
-					}
-				}
-				if(match) {
-					return i;
-				}
-			}
-		}
-		return BasicString<Char>::NOT_FOUND;
-	}
-	
-	template<typename Char>
-	size_t BasicString<Char>::lastIndexOf(Char find, size_t startIndex) const {
-		if(startIndex == (size_t)-1) {
-			return BasicString<Char>::NOT_FOUND;
-		}
-		else if(startIndex >= size) {
-			throw std::out_of_range("index " + std::to_string(startIndex) + " is out of bounds in BasicString<" + typeid(Char).name() + "> with a length of " + std::to_string(size));
-		}
-		for(size_t i=startIndex; i!=(size_t)-1; i--) {
-			if(characters[i] == find) {
-				return i;
-			}
-		}
-		return BasicString<Char>::NOT_FOUND;
-	}
-	
-	template<typename Char>
-	size_t BasicString<Char>::lastIndexOf(Char find) const {
-		return lastIndexOf(find, size-1);
-	}
-	
-	template<typename Char>
-	size_t BasicString<Char>::lastIndexOf(const BasicString<Char>& find, size_t startIndex) const {
-		if(startIndex == (size_t)-1) {
-			return BasicString<Char>::NOT_FOUND;
-		}
-		else if(startIndex >= size) {
-			throw std::out_of_range("index " + std::to_string(startIndex) + " is out of bounds in BasicString<" + typeid(Char).name() + "> with a length of " + std::to_string(size));
-		}
-		else if(find.size == 0) {
-			return BasicString<Char>::NOT_FOUND;
-		}
-		else if(find.size > size) {
-			return BasicString<Char>::NOT_FOUND;
-		}
-		size_t find_last = find.size-1;
-		for(size_t i=(startIndex-1); i>=find_last; i--) {
-			if(characters[i] == find.characters[find_last]) {
-				bool match = true;
-				size_t counter = i-1;
-				for(size_t j=(find_last-1); j!=(size_t)-1; j--) {
-					if(characters[counter] != find.characters[j]) {
-						match = false;
-						break;
-					}
-					else {
-						counter--;
-					}
-				}
-				if(match) {
-					return i;
-				}
-			}
-		}
-		return BasicString<Char>::NOT_FOUND;
-	}
-	
-	template<typename Char>
-	size_t BasicString<Char>::lastIndexOf(const BasicString<Char>& find) const {
-		return lastIndexOf(find, size);
-	}
-	
-	template<typename Char>
-	size_t BasicString<Char>::lastIndexOf(const Char* find, size_t startIndex) const {
-		size_t find_size = BasicStringUtils::strlen<Char>(find);
-		if(startIndex == (size_t)-1) {
-			return BasicString<Char>::NOT_FOUND;
-		}
-		else if(startIndex >= size) {
-			throw std::out_of_range("index " + std::to_string(startIndex) + " is out of bounds in BasicString<" + typeid(Char).name() + "> with a length of " + std::to_string(size));
-		}
-		else if(find_size == 0) {
-			return BasicString<Char>::NOT_FOUND;
-		}
-		else if(find_size > size) {
-			return BasicString<Char>::NOT_FOUND;
-		}
-		size_t find_last = find_size-1;
-		for(size_t i=startIndex; i>=find_last; i--) {
-			if(characters[i]==find[find_last]) {
-				bool match = true;
-				size_t counter = i-1;
-				for(size_t j=(find_last-1); j!=(size_t)-1; j--) {
-					if(characters[counter] != find[j]) {
-						match = false;
-						break;
-					}
-					else {
-						counter--;
-					}
-				}
-				if(match) {
-					return i;
-				}
-			}
-		}
-		return BasicString<Char>::NOT_FOUND;
-	}
-	
-	template<typename Char>
-	size_t BasicString<Char>::lastIndexOf(const Char* find) const {
-		return lastIndexOf(find, size-1);
+		return true;
 	}
 	
 	template<typename Char>
@@ -1027,37 +907,24 @@ namespace fgl {
 	}
 	
 	template<typename Char>
-	bool BasicString<Char>::startsWith(const Char* str, size_t length) const {
-		if(length > size) {
-			return false;
-		}
-		for(size_t i=0; i<length; i++) {
-			if(characters[i]!=str[i]) {
-				return false;
-			}
-		}
-		return true;
+	bool BasicString<Char>::startsWith(const std::basic_string<Char>& str) const {
+		return startsWith(str.data(), str.length());
 	}
 	
 	template<typename Char>
 	bool BasicString<Char>::startsWith(const BasicString<Char>& str) const {
-		return startsWith(str.characters, str.size);
+		return startsWith(str.storage.data(), str.storage.length());
 	}
 	
 	template<typename Char>
-	bool BasicString<Char>::endsWith(const Char* str) const {
-		return endsWith(str, BasicStringUtils::strlen<Char>(str));
-	}
-	
-	template<typename Char>
-	bool BasicString<Char>::endsWith(const Char* str, size_t length) const {
-		if(length > size) {
+	bool BasicString<Char>::endsWith(const Char* str, size_type length) const {
+		if(length > storage.length()) {
 			return false;
 		}
-		size_t str_index = length-1;
-		size_t str_end = size-length-1;
-		for(size_t i=(size-1); i!=str_end; i--) {
-			if(characters[i]!=str[str_index]) {
+		size_type str_index = length-1;
+		size_type str_end = storage.length()-length-1;
+		for(size_type i=(storage.length()-1); i!=str_end; i--) {
+			if(storage[i] != str[str_index]) {
 				return false;
 			}
 			str_index--;
@@ -1066,48 +933,48 @@ namespace fgl {
 	}
 	
 	template<typename Char>
+	bool BasicString<Char>::endsWith(const std::basic_string<Char>& str) const {
+		return endsWith(str.data(), str.length());
+	}
+	
+	template<typename Char>
 	bool BasicString<Char>::endsWith(const BasicString<Char>& str) const {
-		return endsWith(str.characters, str.size);
+		return endsWith(str.storage.data(), str.storage.length());
 	}
 	
 	
 	
 	template<typename Char>
-	BasicString<Char> BasicString<Char>::replace(const Char& find, const Char& replace) const {
+	BasicString<Char> BasicString<Char>::replacing(Char find, Char replace) const {
 		BasicString<Char> newStr;
-		Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size+1)*sizeof(Char));
-		if(newStr_characters_new == nullptr) {
-			throw std::bad_alloc();
-		}
-		newStr.characters = newStr_characters_new;
-		newStr.size = size;
-		for(size_t i=0; i<size; i++) {
-			if(characters[i] == find) {
-				newStr.characters[i] = replace;
+		newStr.reserve(storage.length());
+		for(size_type i=0; i<storage.length(); i++) {
+			Char c = storage[i];
+			if(c == find) {
+				newStr.append(1, replace);
 			}
 			else {
-				newStr.characters[i] = characters[i];
+				newStr.append(1, c);
 			}
 		}
-		newStr.characters[size] = NULLCHAR;
 		return newStr;
 	}
 	
 	template<typename Char>
-	BasicString<Char> BasicString<Char>::replace(const BasicString<Char>& find, const BasicString<Char>& replace) const {
-		if(find.size == 0) {
+	BasicString<Char> BasicString<Char>::replacing(const std::basic_string<Char>& find, const std::basic_string<Char>& replace) const {
+		if(find.length() == 0) {
 			return *this;
 		}
-		else if(find.size > size) {
+		else if(find.length() > storage.length()) {
 			return *this;
 		}
-		LinkedList<size_t> indexes;
-		size_t finish = size - find.size;
-		for(size_t i=0; i<=finish; i++) {
-			if(characters[i] == find.characters[0]) {
+		LinkedList<size_type> indexes;
+		size_type finish = storage.length() - find.size;
+		for(size_type i=0; i<=finish; i++) {
+			if(storage[i] == find[0]) {
 				bool match = true;
 				for(size_t j=1; j<find.size; j++) {
-					if(characters[i+j] != find.characters[j]) {
+					if(storage[i+j] != find[j]) {
 						match = false;
 						break;
 					}
@@ -1118,297 +985,146 @@ namespace fgl {
 				}
 			}
 		}
-		size_t indexes_size = indexes.size();
-		if(indexes_size > 0) {
-			BasicString<Char> newStr;
-			size_t size_new = size + (replace.size*indexes_size) - (find.size*indexes_size);
-			Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size_new+1)*sizeof(Char));
-			if(newStr_characters_new == nullptr) {
-				throw std::bad_alloc();
-			}
-			newStr.characters = newStr_characters_new;
-			newStr.size = size_new;
-			size_t oldStr_counter = 0;
-			auto indexes_it = indexes.begin();
-			for(size_t i=0; i<size_new; i++) {
-				if(oldStr_counter == *indexes_it) {
-					for(size_t j=0; j<replace.size; j++) {
-						newStr.characters[i] = replace.characters[j];
-						i++;
-					}
-					i--;
-					oldStr_counter += find.size;
-					indexes_it++;
-				}
-				else {
-					newStr.characters[i] = characters[oldStr_counter];
-					oldStr_counter++;
-				}
-			}
-			newStr.characters[size_new] = NULLCHAR;
-			return newStr;
-		}
-		return *this;
-	}
-	
-	template<typename Char>
-	BasicString<Char> BasicString<Char>::replace(const std::basic_regex<Char>& find, const BasicString<Char>& replace) const {
-		return std::regex_replace(characters, find, replace.characters);
-	}
-	
-	template<typename Char>
-	BasicString<Char> BasicString<Char>::replace(size_t startIndex, size_t endIndex, const Char* replace) const {
-		if(startIndex >= size) {
-			throw std::out_of_range("index " + std::to_string(startIndex) + " is out of bounds in BasicString<" + typeid(Char).name() + "> with a length of " + std::to_string(size));
-		}
-		else if(endIndex > size && !(endIndex < startIndex && endIndex == (size_t)-1)) {
-			throw std::out_of_range("index " + std::to_string(endIndex) + " is out of bounds in BasicString<" + typeid(Char).name() + "> with a length of " + std::to_string(size));
-		}
-		size_t replace_size = BasicStringUtils::strlen<Char>(replace);
-		if(startIndex <= endIndex) {
-			size_t find_size = endIndex - startIndex;
-			size_t size_new = BasicStringUtils::get_safe_resize<Char>(size - find_size, replace_size);
-			BasicString<Char> newStr;
-			Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size_new+1)*sizeof(Char));
-			if(newStr_characters_new == nullptr) {
-				throw std::bad_alloc();
-			}
-			newStr.characters = newStr_characters_new;
-			newStr.size = size_new;
-			for(size_t i=0; i<startIndex; i++) {
-				newStr.characters[i] = characters[i];
-			}
-			size_t replace_end = startIndex + replace_size;
-			size_t counter = 0;
-			for(size_t i=startIndex; i<replace_end; i++) {
-				newStr.characters[i] = replace[counter];
-				counter++;
-			}
-			counter = endIndex;
-			for(size_t i=replace_end; i<size_new; i++) {
-				newStr.characters[i] = characters[counter];
-				counter++;
-			}
-			newStr.characters[size_new] = NULLCHAR;
-			return newStr;
-		}
-		else {
-			BasicString<Char> newStr;
-			size_t find_size = (startIndex+1) - (endIndex+1);
-			size_t size_new = BasicStringUtils::get_safe_resize<Char>(size - find_size, replace_size);
-			Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size_new+1)*sizeof(Char));
-			if(newStr_characters_new == nullptr) {
-				throw std::bad_alloc();
-			}
-			newStr.characters = newStr_characters_new;
-			newStr.size = size_new;
-			if(endIndex != (size_t)-1) {
-				for(size_t i=0; i<=endIndex; i++) {
-					newStr.characters[i] = characters[i];
-				}
-			}
-			size_t replace_end = (endIndex+1)+replace_size;
-			size_t counter = replace_size-1;
-			for(size_t i=(endIndex+1); i<replace_end; i++) {
-				newStr.characters[i] = replace[counter];
-				counter--;
-			}
-			counter = startIndex+1;
-			for(size_t i=replace_end; i<size_new; i++) {
-				newStr.characters[i] = characters[counter];
-				counter++;
-			}
-			newStr.characters[size_new] = NULLCHAR;
-			return newStr;
-		}
-	}
-	
-	template<typename Char>
-	BasicString<Char> BasicString<Char>::replace(size_t startIndex, size_t endIndex, const BasicString<Char>& replace) const {
-		if(startIndex >= size) {
-			throw std::out_of_range("index " + std::to_string(startIndex) + " is out of bounds in BasicString<" + typeid(Char).name() + "> with a length of " + std::to_string(size));
-		}
-		else if(endIndex>size && !(endIndex<startIndex && endIndex==(size_t)-1)) {
-			throw std::out_of_range("index " + std::to_string(endIndex) + " is out of bounds in BasicString<" + typeid(Char).name() + "> with a length of " + std::to_string(size));
-		}
-		if(startIndex <= endIndex) {
-			BasicString<Char> newStr;
-			size_t find_size = endIndex - startIndex;
-			size_t size_new = BasicStringUtils::get_safe_resize<Char>(size - find_size, replace.size);
-			Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size_new+1)*sizeof(Char));
-			if(newStr_characters_new == nullptr) {
-				throw std::bad_alloc();
-			}
-			newStr.characters = newStr_characters_new;
-			newStr.size = size_new;
-			for(size_t i=0; i<startIndex; i++) {
-				newStr.characters[i] = characters[i];
-			}
-			size_t replace_end = startIndex + replace.size;
-			size_t counter = 0;
-			for(size_t i=startIndex; i<replace_end; i++) {
-				newStr.characters[i] = replace.characters[counter];
-				counter++;
-			}
-			counter = endIndex;
-			for(size_t i=replace_end; i<size_new; i++) {
-				newStr.characters[i] = characters[counter];
-				counter++;
-			}
-			newStr.characters[size_new] = NULLCHAR;
-			return newStr;
-		}
-		else {
-			BasicString<Char> newStr;
-			size_t find_size = (startIndex+1) - (endIndex+1);
-			size_t size_new = BasicStringUtils::get_safe_resize<Char>(size - find_size, replace.size);
-			Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size_new+1)*sizeof(Char));
-			if(newStr_characters_new == nullptr) {
-				throw std::bad_alloc();
-			}
-			newStr.characters = newStr_characters_new;
-			newStr.size = size_new;
-			if(endIndex != (size_t)-1) {
-				for(size_t i=0; i<=endIndex; i++) {
-					newStr.characters[i] = characters[i];
-				}
-			}
-			size_t replace_end = (endIndex+1)+replace.size;
-			size_t counter = replace.size-1;
-			for(size_t i=(endIndex+1); i<replace_end; i++) {
-				newStr.characters[i] = replace.characters[counter];
-				counter--;
-			}
-			counter = startIndex+1;
-			for(size_t i=replace_end; i<size_new; i++) {
-				newStr.characters[i] = characters[counter];
-				counter++;
-			}
-			newStr.characters[size_new] = NULLCHAR;
-			return newStr;
-		}
-	}
-	
-	template<typename Char>
-	BasicString<Char> BasicString<Char>::substring(size_t startIndex, size_t endIndex) const {
-		if(startIndex > size) {
-			throw std::out_of_range("index " + std::to_string(startIndex) + " is out of bounds in BasicString<" + typeid(Char).name() + "> with a length of " + std::to_string(size));
-		}
-		else if(endIndex > size && !(endIndex<startIndex && endIndex==(size_t)-1)) {
-			throw std::out_of_range("index " + std::to_string(endIndex) + " is out of bounds in BasicString<" + typeid(Char).name() + "> with a length of " + std::to_string(size));
+		size_type indexes_size = indexes.size();
+		if(indexes_size == 0) {
+			return *this;
 		}
 		BasicString<Char> newStr;
-		if(startIndex > endIndex) {
-			size_t size_new = (startIndex+1) - (endIndex+1);
-			Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size_new+1)*sizeof(Char));
-			if(newStr_characters_new == nullptr) {
-				throw std::bad_alloc();
+		size_type size_new = storage.length() + (replace.size*indexes_size) - (find.size*indexes_size);
+		newStr.reserve(size_new);
+		size_t oldStr_counter = 0;
+		auto indexes_it = indexes.begin();
+		for(size_t i=0; i<size_new; i++) {
+			if(oldStr_counter == *indexes_it) {
+				for(size_t j=0; j<replace.length(); j++) {
+					newStr.append(1,replace.storage[j]);
+					i++;
+				}
+				i--;
+				oldStr_counter += find.length();
+				indexes_it++;
 			}
-			newStr.characters = newStr_characters_new;
-			newStr.size = size_new;
-			size_t counter = 0;
-			for(size_t i=startIndex; i!=endIndex; i--) {
-				newStr.characters[counter] = characters[i];
-				counter++;
+			else {
+				newStr.append(1,storage[oldStr_counter]);
+				oldStr_counter++;
 			}
-			newStr.characters[size_new] = NULLCHAR;
-		}
-		else if(startIndex<endIndex) {
-			size_t size_new = endIndex - startIndex;
-			Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size_new+1)*sizeof(Char));
-			if(newStr_characters_new == nullptr) {
-				throw std::bad_alloc();
-			}
-			newStr.characters = newStr_characters_new;
-			newStr.size = size_new;
-			size_t counter = 0;
-			for(size_t i=startIndex; i<endIndex; i++) {
-				newStr.characters[counter] = characters[i];
-				counter++;
-			}
-			newStr.characters[size_new] = NULLCHAR;
 		}
 		return newStr;
 	}
 	
 	template<typename Char>
-	BasicString<Char> BasicString<Char>::substring(size_t startIndex) const {
-		return substring(startIndex, size);
+	BasicString<Char> BasicString<Char>::replacing(const std::basic_regex<Char>& find, const std::basic_string<Char>& replace, std::regex_constants::match_flag_type flags) const {
+		return std::regex_replace(storage, find, replace, flags);
+	}
+	
+	template<typename Char>
+	template<typename InputIt>
+	BasicString<Char> BasicString<Char>::replacing(size_type startIndex, size_type count, InputIt first, InputIt last) const {
+		size_type endIndex = startIndex + count;
+		if(startIndex >= storage.length()) {
+			throw std::out_of_range("index " + std::to_string(startIndex) + " is out of bounds in BasicString<" + typeid(Char).name() + "> with a length of " + std::to_string(storage.length()));
+		}
+		else if(endIndex < startIndex || endIndex > storage.length()) {
+			throw std::out_of_range("index " + std::to_string(startIndex) + " plus count " + std::to_string(count) + " is out of bounds in BasicString<" + typeid(Char).name() + "> with a length of " + std::to_string(storage.length()));
+		}
+		size_type replaceLength = std::distance(first, last);
+		BasicString<Char> newStr;
+		size_type size_new = BasicStringUtils::get_safe_resize<Char>(storage.length() - count, replaceLength);
+		newStr.reserve(size_new);
+		newStr.append(storage.data(), startIndex);
+		newStr.append(first, last);
+		newStr.append(storage.data()+endIndex, storage.length()-endIndex);
+		return newStr;
+	}
+	
+	template<typename Char>
+	BasicString<Char> BasicString<Char>::replacing(size_type startIndex, size_type count, const std::basic_string<Char>& replace) const {
+		return replacing(startIndex, count, replace.begin(), replace.end());
+	}
+	
+	template<typename Char>
+	BasicString<Char> BasicString<Char>::substring(size_type startIndex, size_type count) const {
+		return storage.substr(startIndex, count);
 	}
 	
 	template<typename Char>
 	LinkedList<BasicString<Char>> BasicString<Char>::split(Char delim) const {
-		LinkedList<BasicString<Char>> elements;
+		LinkedList<BasicString<Char>> items;
 		size_t lastStart = 0;
-		for(size_t i=0; i<size; i++) {
-			if(characters[i] == delim) {
-				elements.pushBack(substring(lastStart, i));
+		for(size_t i=0; i<storage.length(); i++) {
+			if(storage[i] == delim) {
+				items.pushBack(substring(lastStart, i-lastStart));
 				lastStart = i+1;
 			}
 		}
-		elements.pushBack(substring(lastStart, size));
-		return elements;
+		items.pushBack(substring(lastStart, length()-lastStart));
+		return items;
 	}
 	
 	template<typename Char>
 	LinkedList<BasicString<Char>> BasicString<Char>::split(const Char* delim) const {
 		size_t delim_size = BasicStringUtils::strlen<Char>(delim);
-		if(delim_size == 0 || delim_size > size) {
+		if(delim_size == 0 || delim_size > storage.length()) {
 			LinkedList<BasicString<Char>> elements;
 			elements.pushBack(*this);
 			return elements;
 		}
-		LinkedList<BasicString<Char>> elements;
+		LinkedList<BasicString<Char>> items;
 		size_t lastStart = 0;
-		size_t finish = size - delim_size;
+		size_t finish = storage.length() - delim_size;
 		for(size_t i=0; i<=finish; i++) {
-			if(characters[i]==delim[0]) {
+			if(storage[i] == delim[0]) {
 				bool match = true;
 				for(size_t j=1; j<delim_size; j++) {
-					if(characters[i+j] != delim[j]) {
+					if(storage[i+j] != delim[j]) {
 						match = false;
 						break;
 					}
 				}
 				if(match) {
-					elements.pushBack(substring(lastStart, i));
+					items.pushBack(substring(lastStart, i-lastStart));
 					lastStart = i+delim_size;
 					i = lastStart-1;
 				}
 			}
 		}
-		elements.pushBack(substring(lastStart, size));
-		return elements;
+		items.pushBack(substring(lastStart, storage.length()-lastStart));
+		return items;
 	}
 	
 	template<typename Char>
-	LinkedList<BasicString<Char>> BasicString<Char>::split(const BasicString<Char>& delim) const {
-		if(delim.size == 0 || delim.size > size) {
-			LinkedList<BasicString<Char> > elements;
-			elements.pushBack(*this);
-			return elements;
+	LinkedList<BasicString<Char>> BasicString<Char>::split(const std::basic_string<Char>& delim) const {
+		if(delim.length() == 0 || delim.length() > storage.length()) {
+			LinkedList<BasicString<Char>> items;
+			items.pushBack(*this);
+			return items;
 		}
-		LinkedList<BasicString<Char> > elements;
+		LinkedList<BasicString<Char>> items;
 		size_t lastStart = 0;
-		size_t finish = size - delim.size;
+		size_t finish = storage.length() - delim.length();
 		for(size_t i=0; i<=finish; i++) {
-			if(characters[i] == delim.characters[0]) {
+			if(storage[i] == delim[0]) {
 				bool match = true;
-				for(size_t j=1; j<delim.size; j++) {
-					if(characters[i+j] != delim.characters[j]) {
+				for(size_t j=1; j<delim.length(); j++) {
+					if(storage[i+j] != delim[j]) {
 						match = false;
 						break;
 					}
 				}
 				if(match) {
-					elements.pushBack(substring(lastStart, i));
+					items.pushBack(substring(lastStart, i-lastStart));
 					lastStart = i+delim.size;
 					i = lastStart-1;
 				}
 			}
 		}
-		elements.pushBack(substring(lastStart, size));
-		return elements;
+		items.pushBack(substring(lastStart, storage.length()-lastStart));
+		return items;
+	}
+	
+	template<typename Char>
+	LinkedList<BasicString<Char>> BasicString<Char>::split(const BasicString<Char>& delim) const {
+		return split(delim.storage);
 	}
 	
 	template<typename Char>
@@ -1417,13 +1133,13 @@ namespace fgl {
 	typename BasicStringUtils::can_convert_string_type<_Char>::null_type>
 	BasicString<Char> BasicString<Char>::trim(const std::locale& locale) const {
 		typedef typename BasicStringUtils::utf_eqv<Char>::type utf_char;
-		if(size == 0) {
+		if(storage.length() == 0) {
 			return *this;
 		}
 		bool hitLetter = false;
-		size_t startIndex = 0;
-		for(size_t i=0; i<size && !hitLetter; i++) {
-			if(!std::isspace<utf_char>((utf_char)characters[i], locale)) {
+		size_type startIndex = 0;
+		for(size_type i=0; i<storage.length() && !hitLetter; i++) {
+			if(!std::isspace<utf_char>((utf_char)storage[i], locale)) {
 				startIndex = i;
 				hitLetter = true;
 			}
@@ -1432,14 +1148,14 @@ namespace fgl {
 			return BasicString<Char>();
 		}
 		hitLetter = false;
-		size_t endIndex = size;
-		for(size_t i=(size-1); i>=startIndex && i!=(size_t)-1 && !hitLetter; i--) {
-			if(!std::isspace<utf_char>((utf_char)characters[i], locale)) {
+		size_type endIndex = storage.length();
+		for(size_type i=(storage.length()-1); i>=startIndex && i!=(size_type)-1 && !hitLetter; i--) {
+			if(!std::isspace<utf_char>((utf_char)storage[i], locale)) {
 				endIndex = i+1;
 				hitLetter = true;
 			}
 		}
-		return substring(startIndex, endIndex);
+		return substring(startIndex, endIndex-startIndex);
 	}
 	
 	template<typename Char>
@@ -1448,17 +1164,11 @@ namespace fgl {
 		typename BasicStringUtils::can_convert_string_type<_Char>::null_type>
 	BasicString<Char> BasicString<Char>::toLowerCase(const std::locale& locale) const {
 		BasicString<Char> newStr;
-		Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size+1)*sizeof(Char));
-		if(newStr_characters_new == nullptr) {
-			throw std::bad_alloc();
-		}
-		newStr.characters = newStr_characters_new;
-		newStr.size = size;
-		for(size_t i=0; i<size; i++) {
+		newStr.reserve(storage.length());
+		for(size_type i=0; i<storage.length(); i++) {
 			typedef typename BasicStringUtils::utf_eqv<Char>::type UTFChar;
-			newStr.characters[i] = (Char)std::tolower<UTFChar>((UTFChar)characters[i], locale);
+			newStr.append(1,(Char)std::tolower<UTFChar>((UTFChar)storage[i], locale));
 		}
-		newStr.characters[size] = NULLCHAR;
 		return newStr;
 	}
 	
@@ -1468,17 +1178,11 @@ namespace fgl {
 		typename BasicStringUtils::can_convert_string_type<_Char>::null_type>
 	BasicString<Char> BasicString<Char>::toUpperCase(const std::locale& locale) const {
 		BasicString<Char> newStr;
-		Char* newStr_characters_new = (Char*)std::realloc(newStr.characters, (size+1)*sizeof(Char));
-		if(newStr_characters_new == nullptr) {
-			throw std::bad_alloc();
-		}
-		newStr.characters = newStr_characters_new;
-		newStr.size = size;
-		for(size_t i=0; i<size; i++) {
+		newStr.reserve(storage.length());
+		for(size_type i=0; i<storage.length(); i++) {
 			typedef typename BasicStringUtils::utf_eqv<Char>::type UTFChar;
-			newStr.characters[i] = (Char)std::toupper<UTFChar>((UTFChar)characters[i], locale);
+			newStr.append(1,(Char)std::toupper<UTFChar>((UTFChar)storage[i], locale));
 		}
-		newStr.characters[size] = NULLCHAR;
 		return newStr;
 	}
 	
@@ -1486,7 +1190,7 @@ namespace fgl {
 	template<typename Num,
 		typename BasicStringUtils::string_type_convertable_with_number<Char,Num>::null_type>
 	Num BasicString<Char>::toArithmeticValue(const std::locale& locale) const {
-		std::basic_istringstream<Char> convert(std::basic_string<Char>(characters, size));
+		std::basic_istringstream<Char> convert(storage);
 		convert.imbue(locale);
 		Num numVal = 0;
 		if(!(convert >> numVal)) {
@@ -1505,24 +1209,25 @@ namespace fgl {
 		if(list.size() == 0) {
 			return BasicString<Char>();
 		}
-		size_t listSize = 0;
-		size_t listIndex = 0;
+		size_type listSize = 0;
+		size_type i = 0;
+		size_type lastListIndex = list.size()-1;
 		for(auto& str : list) {
 			listSize = BasicStringUtils::get_safe_resize<Char>(listSize, str.length());
-			if(listIndex != (list.size()-1)) {
+			if(i != lastListIndex) {
 				listSize = BasicStringUtils::get_safe_resize<Char>(listSize, separator.length());
 			}
-			listIndex++;
+			i++;
 		}
-		std::basic_string<Char> joined;
+		BasicString<Char> joined;
 		joined.reserve(listSize);
-		listIndex = 0;
+		i = 0;
 		for(auto& str : list) {
-			joined += str.template toStdString<Char>();
-			if(listIndex != (list.size()-1)) {
-				joined += separator.template toStdString<Char>();
+			joined.append(str);
+			if(i != lastListIndex) {
+				joined.append(separator);
 			}
-			listIndex++;
+			i++;
 		}
 		return joined;
 	}
