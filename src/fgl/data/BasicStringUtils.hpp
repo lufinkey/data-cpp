@@ -785,10 +785,10 @@ namespace fgl {
 		auto buffer = std::make_unique<unichar[]>((size_t)left.length);
 		NSRange range = NSMakeRange(0, left_length);
 		[left getCharacters:buffer.get() range:range];
-		auto left_str = convert<Char,unichar>(buffer.get(), (size_type)left_length);
+		auto left_str = convert<Char,unichar>(buffer.get(), (size_t)left_length);
 		buffer = nullptr;
-		size_type left_size = left_str.length();
-		size_type size_new = get_safe_resize<Char>(left_size, right.size());
+		size_t left_size = left_str.length();
+		size_t size_new = get_safe_resize<Char>(left_size, right.size());
 		BasicString<Char> newStr;
 		newStr.reserve(size_new);
 		newStr.append(left_str);
