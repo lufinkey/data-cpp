@@ -588,7 +588,7 @@ namespace fgl {
 			&& sizeof(unichar)==sizeof(_Char) && sizeof(_Char)!=sizeof(char)), std::nullptr_t>::type>
 	BasicString<Char>& BasicString<Char>::operator+=(NSString* nsString) {
 		NSUInteger nsString_length = nsString.length;
-		size_t size_new = BasicStringUtils::get_safe_resize<Char>(size, (size_t)nsString_length);
+		size_t size_new = BasicStringUtils::get_safe_resize<Char>(storage.size(), (size_t)nsString_length);
 		size_t size_old = storage.size();
 		NSRange range = NSMakeRange(0, nsString_length);
 		storage.resize(size_new);
