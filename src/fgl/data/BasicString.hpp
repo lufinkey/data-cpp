@@ -19,12 +19,8 @@
 #include <fgl/data/BasicStringUtils.hpp>
 
 namespace fgl {
-	template<typename Storage>
-	class BasicList;
-	template<typename Storage>
-	class BasicLinkedList;
-	template<typename T>
-	using LinkedList = BasicLinkedList<std::list<T>>;
+	template<typename T, template<typename...> typename Storage>
+	class LinkedList;
 	
 	template<typename Char>
 	class BasicString {
@@ -312,9 +308,9 @@ namespace fgl {
 		BasicString<Char> substring(size_t startIndex, size_t endIndex) const;
 		BasicString<Char> substring(size_t startIndex) const;
 		
-		LinkedList<BasicString<Char>> split(Char delim) const;
-		LinkedList<BasicString<Char>> split(const Char* delim) const;
-		LinkedList<BasicString<Char>> split(const BasicString<Char>& delim) const;
+		LinkedList<BasicString<Char>,std::list> split(Char delim) const;
+		LinkedList<BasicString<Char>,std::list> split(const Char* delim) const;
+		LinkedList<BasicString<Char>,std::list> split(const BasicString<Char>& delim) const;
 		
 		template<typename _Char=Char,
 			typename BasicStringUtils::is_same<_Char,Char>::null_type = nullptr,
