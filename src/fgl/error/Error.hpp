@@ -25,6 +25,6 @@ namespace fgl {
 		
 		/*! Gets a String representation of the Error
 		 \returns a String representation of the error */
-		String toString() const;
+		virtual String toString() const;
 	};
 }
