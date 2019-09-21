@@ -13,38 +13,18 @@
 #include <fgl/data/BasicString.hpp>
 
 namespace fgl {
-	/*! An error class to throw when a generic error arises */
-	class Error: std::exception {
+	/*! An error interface to conform to for errors */
+	class Error {
 	public:
-		/*! An explanation of the error*/
-		String message;
-		
-		/*! default constructor*/
-		Error();
-		/*! Constructs an error with a message.
-			\param message an explanation of the error */
-		explicit Error(String message);
 		/*! virtual destructor*/
 		virtual ~Error();
 		
 		/*! Gets an explanation of the error.
-		 \returns a const char pointer containing an error message*/
-		virtual const char* what() const noexcept override;
+		 \returns a String containing an error message*/
+		virtual String getMessage() const = 0;
 		
 		/*! Gets a String representation of the Error
 		 \returns a String representation of the error */
 		String toString() const;
-		
-		/*! Gets the name of the Error class. This function must be overridden in every subclass of Error.
-		 \returns a String representing the class name of the error */
-		virtual String getClassName() const;
 	};
-	
-	#define ErrorClass(ClassName, BaseClass, ...) \
-		class ClassName : BaseClass { \
-			virtual String getClassName() const override { \
-				return #ClassName; \
-			} \
-			__VA_ARGS__ \
-		}
 }
