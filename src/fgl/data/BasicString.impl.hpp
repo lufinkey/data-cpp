@@ -809,7 +809,7 @@ namespace fgl {
 	}
 	
 	template<typename Char>
-	bool BasicString<Char>::empty() const {
+	bool BasicString<Char>::empty() const noexcept {
 		return storage.empty();
 	}
 	
