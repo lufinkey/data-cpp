@@ -314,6 +314,7 @@ namespace fgl {
 		inline size_type size() const noexcept;
 		inline size_type length() const noexcept;
 		inline size_type maxSize() const noexcept;
+		inline bool empty() const noexcept;
 		inline void clear();
 		inline void resize(size_type size);
 		inline void resize(size_type size, Char c);

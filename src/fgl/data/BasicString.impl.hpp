@@ -809,6 +809,11 @@ namespace fgl {
 	}
 	
 	template<typename Char>
+	bool BasicString<Char>::empty() const {
+		return storage.empty();
+	}
+	
+	template<typename Char>
 	void BasicString<Char>::clear() {
 		storage.clear();
 	}
