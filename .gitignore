@@ -66,3 +66,12 @@ Carthage/Build
 /projects/codelite/test/Makefile
 /projects/codelite/test/*.txt
 /projects/codelite/test/*.mk
+
+# Android Studio
+.idea
+.gradle
+local.properties
+*.iml
+buck-out/
+\.buckd/
+*.keystore
