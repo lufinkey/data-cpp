@@ -69,6 +69,10 @@ namespace fgl {
 				&& sizeof(unichar)!=sizeof(_Char) && sizeof(_Char)!=sizeof(char)), std::nullptr_t>::type = nullptr>
 		explicit BasicString(NSString* nsString);
 		#endif
+
+		#ifdef JNIEXPORT
+		BasicString(JNIEnv* env, jstring javaString);
+		#endif
 		
 		template<typename OtherChar,
 			typename BasicStringUtils::same_size_convertable_with_char_type<Char,OtherChar>::null_type = nullptr>

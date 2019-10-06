@@ -107,7 +107,17 @@ namespace fgl {
 	}
 	
 	#endif
-	
+
+	#ifdef JNIEXPORT
+
+	BasicString(JNIEnv* env, jstring javaString) {
+		const char* javaStringChars = env->GetStringUTFChars(javaString, nullptr);
+		operator=(javaStringChars);
+		env->ReleaseStringUTFChars(javaString, javaStringChars);
+	}
+
+	#endif
+
 	template<typename Char>
 	template<typename OtherChar,
 		typename BasicStringUtils::same_size_convertable_with_char_type<Char,OtherChar>::null_type>
