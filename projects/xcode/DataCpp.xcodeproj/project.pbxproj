@@ -7,17 +7,24 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A5133ACF234A5C3A006DDCB4 /* JNI.h in Headers */ = {isa = PBXBuildFile; fileRef = A5133ACE234A5C3A006DDCB4 /* JNI.h */; };
+		A5133AD0234A5C44006DDCB4 /* ObjectiveCpp.h in Headers */ = {isa = PBXBuildFile; fileRef = A571E13C2332CEE000603E14 /* ObjectiveCpp.h */; };
+		A5133AD5234A5C4D006DDCB4 /* Common.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A53E4E6623048C5B000BB7D8 /* Common.hpp */; };
+		A5133AD6234A5C4D006DDCB4 /* BasicStringUtils.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A53E4E6B2304B3A3000BB7D8 /* BasicStringUtils.hpp */; };
+		A5133AD7234A5C4D006DDCB4 /* BasicString.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A53E4E4823048758000BB7D8 /* BasicString.hpp */; };
+		A5133AD8234A5C4D006DDCB4 /* BasicString.impl.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A53E4ECC230867B5000BB7D8 /* BasicString.impl.hpp */; };
+		A5133AD9234A5C4D006DDCB4 /* String.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A53E4E472304874A000BB7D8 /* String.hpp */; };
+		A5133ADA234A5C4D006DDCB4 /* BasicList.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A567C15E2319A6CF00BB5398 /* BasicList.hpp */; };
+		A5133ADB234A5C4D006DDCB4 /* ArrayList.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A567C1612319D69400BB5398 /* ArrayList.hpp */; };
+		A5133ADC234A5C4D006DDCB4 /* LinkedList.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A567C1622319D6A100BB5398 /* LinkedList.hpp */; };
+		A5133ADD234A5C4D006DDCB4 /* Traits.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A567C1602319B0A600BB5398 /* Traits.hpp */; };
+		A5133ADE234A5C55006DDCB4 /* PlatformChecks.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A571E1362332C7A700603E14 /* PlatformChecks.hpp */; };
 		A517B81F23093B7C00897145 /* libDataCpp-macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A53E4EB223063BFC000BB7D8 /* libDataCpp-macOS.a */; };
 		A5224A342315E8100006D213 /* Error.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A564E02D230934A10018787F /* Error.cpp */; };
-		A53E4EB623063C20000BB7D8 /* Common.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A53E4E6623048C5B000BB7D8 /* Common.hpp */; };
-		A53E4EB723063C20000BB7D8 /* BasicStringUtils.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A53E4E6B2304B3A3000BB7D8 /* BasicStringUtils.hpp */; };
-		A53E4EB823063C20000BB7D8 /* BasicString.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A53E4E4823048758000BB7D8 /* BasicString.hpp */; };
-		A53E4EB923063C20000BB7D8 /* String.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A53E4E472304874A000BB7D8 /* String.hpp */; };
 		A53E4EBA23063C24000BB7D8 /* Error.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A53E4E6A23048DE5000BB7D8 /* Error.hpp */; };
 		A53E4EC923064126000BB7D8 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A53E4EBC230640CD000BB7D8 /* main.cpp */; };
 		A564E02E230934A10018787F /* Error.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A564E02D230934A10018787F /* Error.cpp */; };
 		A564E037230935B30018787F /* data.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A564E01923091D590018787F /* data.hpp */; };
-		A564E038230935B30018787F /* BasicString.impl.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A53E4ECC230867B5000BB7D8 /* BasicString.impl.hpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -42,6 +49,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		A5133ACE234A5C3A006DDCB4 /* JNI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JNI.h; sourceTree = "<group>"; };
 		A53E4E472304874A000BB7D8 /* String.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = String.hpp; sourceTree = "<group>"; };
 		A53E4E4823048758000BB7D8 /* BasicString.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = BasicString.hpp; sourceTree = "<group>"; };
 		A53E4E6623048C5B000BB7D8 /* Common.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Common.hpp; sourceTree = "<group>"; };
@@ -143,6 +151,7 @@
 			isa = PBXGroup;
 			children = (
 				A571E1362332C7A700603E14 /* PlatformChecks.hpp */,
+				A5133ACE234A5C3A006DDCB4 /* JNI.h */,
 				A571E13C2332CEE000603E14 /* ObjectiveCpp.h */,
 			);
 			path = util;
@@ -185,12 +194,19 @@
 			buildActionMask = 2147483647;
 			files = (
 				A564E037230935B30018787F /* data.hpp in Headers */,
+				A5133ADD234A5C4D006DDCB4 /* Traits.hpp in Headers */,
 				A53E4EBA23063C24000BB7D8 /* Error.hpp in Headers */,
-				A53E4EB623063C20000BB7D8 /* Common.hpp in Headers */,
-				A53E4EB723063C20000BB7D8 /* BasicStringUtils.hpp in Headers */,
-				A53E4EB823063C20000BB7D8 /* BasicString.hpp in Headers */,
-				A564E038230935B30018787F /* BasicString.impl.hpp in Headers */,
-				A53E4EB923063C20000BB7D8 /* String.hpp in Headers */,
+				A5133AD0234A5C44006DDCB4 /* ObjectiveCpp.h in Headers */,
+				A5133AD8234A5C4D006DDCB4 /* BasicString.impl.hpp in Headers */,
+				A5133ADB234A5C4D006DDCB4 /* ArrayList.hpp in Headers */,
+				A5133AD5234A5C4D006DDCB4 /* Common.hpp in Headers */,
+				A5133ADA234A5C4D006DDCB4 /* BasicList.hpp in Headers */,
+				A5133AD7234A5C4D006DDCB4 /* BasicString.hpp in Headers */,
+				A5133AD6234A5C4D006DDCB4 /* BasicStringUtils.hpp in Headers */,
+				A5133ADE234A5C55006DDCB4 /* PlatformChecks.hpp in Headers */,
+				A5133ACF234A5C3A006DDCB4 /* JNI.h in Headers */,
+				A5133AD9234A5C4D006DDCB4 /* String.hpp in Headers */,
+				A5133ADC234A5C4D006DDCB4 /* LinkedList.hpp in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
