@@ -110,7 +110,8 @@ namespace fgl {
 
 	#ifdef JNIEXPORT
 
-	BasicString(JNIEnv* env, jstring javaString) {
+	template<typename Char>
+	BasicString<Char>::BasicString(JNIEnv* env, jstring javaString) {
 		const char* javaStringChars = env->GetStringUTFChars(javaString, nullptr);
 		operator=(javaStringChars);
 		env->ReleaseStringUTFChars(javaString, javaStringChars);
