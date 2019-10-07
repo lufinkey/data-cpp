@@ -282,7 +282,7 @@ namespace fgl {
 	#ifdef JNIEXPORT
 
 	template<typename Char>
-	jstring BasicString<Char>::toJavaString(JNIEnv* env) {
+	jstring BasicString<Char>::toJavaString(JNIEnv* env) const {
 		if constexpr(std::is_same<Char,char>::value) {
 			return env->NewStringUTF(storage.c_str());
 		} else {
