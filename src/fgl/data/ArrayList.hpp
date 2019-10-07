@@ -50,7 +50,7 @@ namespace fgl {
 		
 		inline iterator insert(const_iterator pos, const T& value);
 		inline iterator insert(const_iterator pos, T&& value);
-		inline iterator insert(const_iterator pos, size_type count, const ValueType& value);
+		inline iterator insert(const_iterator pos, size_type count, const T& value);
 		template<typename InputIterator, typename = IsInputIterator<InputIterator>>
 		inline iterator insert(const_iterator pos, InputIterator begin, InputIterator end);
 		inline iterator insert(const_iterator pos, std::initializer_list<T> list);
@@ -84,9 +84,9 @@ namespace fgl {
 		inline bool removeFirstWhere(const Function<bool(const T&)>& predicate);
 		inline bool removeLastWhere(const Function<bool(const T&)>& predicate);
 		#ifdef __OBJC__
-		size_type removeWhere(BOOL(^predicate)(const ValueType&));
-		inline bool removeFirstWhere(BOOL(^predicate)(const ValueType&));
-		inline bool removeLastWhere(BOOL(^predicate)(const ValueType&));
+		size_type removeWhere(BOOL(^predicate)(const T&));
+		inline bool removeFirstWhere(BOOL(^predicate)(const T&));
+		inline bool removeLastWhere(BOOL(^predicate)(const T&));
 		#endif
 		inline void clear();
 		
@@ -95,8 +95,8 @@ namespace fgl {
 		inline size_type indexWhere(const Function<bool(const T&)>& predicate) const;
 		inline size_type lastIndexWhere(const Function<bool(const T&)>& predicate) const;
 		#ifdef __OBJC__
-		inline size_type indexWhere(BOOL(^predicate)(const ValueType&)) const;
-		inline size_type lastIndexWhere(BOOL(^predicate)(const ValueType&)) const;
+		inline size_type indexWhere(BOOL(^predicate)(const T&)) const;
+		inline size_type lastIndexWhere(BOOL(^predicate)(const T&)) const;
 		#endif
 
 		inline ArrayList<T,Storage> where(const Function<bool(const T&)>& predicate) const;
@@ -112,19 +112,19 @@ namespace fgl {
 #pragma mark ArrayList implementation
 	
 	template<typename T, template<typename...> typename Storage>
-	typename ArrayList<T,Storage>::ValueType& ArrayList<T,Storage>::operator[](size_type index) {
+	T& ArrayList<T,Storage>::operator[](size_type index) {
 		FGL_ASSERT(index >= 0 && index < this->size(), "index out of bounds");
 		return this->storage[index];
 	}
 	
 	template<typename T, template<typename...> typename Storage>
-	const typename ArrayList<T,Storage>::ValueType& ArrayList<T,Storage>::operator[](size_type index) const {
+	const T& ArrayList<T,Storage>::operator[](size_type index) const {
 		FGL_ASSERT(index >= 0 && index < this->size(), "index out of bounds");
 		return this->storage[index];
 	}
 	
 	template<typename T, template<typename...> typename Storage>
-	typename ArrayList<T,Storage>::ValueType& ArrayList<T,Storage>::get(size_type index) {
+	T& ArrayList<T,Storage>::get(size_type index) {
 		FGL_ASSERT(index >= 0 && index < this->size(), "index out of bounds");
 		return this->storage[index];
 	}
@@ -302,7 +302,7 @@ namespace fgl {
 	}
 	
 	template<typename T, template<typename...> typename Storage>
-	typename ArrayList<T,Storage>::size_type ArrayList<T,Storage>::removeEqual(const ValueType& value) {
+	typename ArrayList<T,Storage>::size_type ArrayList<T,Storage>::removeEqual(const T& value) {
 		size_type removeCount = 0;
 		size_t firstRemoveIndex = -1;
 		for(size_t i=(this->size()-1); i!=-1; i--) {
@@ -326,7 +326,7 @@ namespace fgl {
 	}
 	
 	template<typename T, template<typename...> typename Storage>
-	bool ArrayList<T,Storage>::removeFirstEqual(const ValueType& value) {
+	bool ArrayList<T,Storage>::removeFirstEqual(const T& value) {
 		auto it = findEqual(value);
 		if(it == this->end()) {
 			return false;
@@ -392,7 +392,7 @@ namespace fgl {
 	#ifdef __OBJC__
 	
 	template<typename T, template<typename...> typename Storage>
-	typename ArrayList<T,Storage>::size_type ArrayList<T,Storage>::removeWhere(BOOL(^predicate)(const ValueType&)) {
+	typename ArrayList<T,Storage>::size_type ArrayList<T,Storage>::removeWhere(BOOL(^predicate)(const T&)) {
 		size_type removeCount = 0;
 		size_t firstRemoveIndex = -1;
 		for(size_t i=(this->size()-1); i!=-1; i--) {
@@ -416,7 +416,7 @@ namespace fgl {
 	}
 	
 	template<typename T, template<typename...> typename Storage>
-	bool ArrayList<T,Storage>::removeFirstWhere(BOOL(^predicate)(const ValueType&)) {
+	bool ArrayList<T,Storage>::removeFirstWhere(BOOL(^predicate)(const T&)) {
 		auto it = findWhere(predicate);
 		if(it == this->end()) {
 			return false;
@@ -426,7 +426,7 @@ namespace fgl {
 	}
 	
 	template<typename T, template<typename...> typename Storage>
-	bool ArrayList<T,Storage>::removeLastWhere(BOOL(^predicate)(const ValueType&)) {
+	bool ArrayList<T,Storage>::removeLastWhere(BOOL(^predicate)(const T&)) {
 		auto it = findLastWhere(predicate);
 		if(it == this->end()) {
 			return false;
