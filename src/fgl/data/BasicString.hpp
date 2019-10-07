@@ -145,6 +145,10 @@ namespace fgl {
 			typename BasicStringUtils::can_convert_string_type<_Char>::null_type = nullptr>
 		inline explicit operator NSString*() const;
 		#endif
+
+		#ifdef JNIEXPORT
+		inline jstring toJavaString(JNIEnv* env) const;
+		#endif
 		
 		template<typename OtherChar,
 			typename BasicStringUtils::same_size_convertable_strings<Char,OtherChar>::null_type = nullptr>
