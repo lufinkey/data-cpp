@@ -543,9 +543,11 @@ namespace fgl {
 
 	template<typename T, template<typename...> typename Storage>
 	jobjectArray ArrayList<T,Storage>::toJavaObjectArray(JNIEnv* env, jclass objectClass, Function<jobject(JNIEnv*,const T&)> transform) const {
-		jobjectArray javaArray = env->NewObjectArray((jsize)storage.size(), objectClass, nullptr);
-		for(size_t i=0; i<storage.size(); i++) {
-			env->SetObjectArrayElement(javaArray, (jsize)i, transform(env, storage[i]));
+		jobjectArray javaArray = env->NewObjectArray((jsize)this->storage.size(), objectClass, nullptr);
+		size_t i=0;
+		for(auto& item : this->storage) {
+			env->SetObjectArrayElement(javaArray, (jsize)i, transform(env, item));
+			i++;
 		}
 		return javaArray;
 	}
