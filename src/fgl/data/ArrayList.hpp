@@ -32,6 +32,10 @@ namespace fgl {
 		
 		using BasicList<Storage<T>>::BasicList;
 		using BasicList<Storage<T>>::operator=;
+
+		#ifdef JNIEXPORT
+		ArrayList(JNIEnv* env, jobjectArray javaArray, Function<T(JNIEnv*,jobject)> transform);
+		#endif
 		
 		inline T& operator[](size_type index);
 		inline const T& operator[](size_type) const;
@@ -105,11 +109,28 @@ namespace fgl {
 		inline ArrayList<NewT,NewStorage> map(const Function<NewT(T&)>&);
 		template<typename NewT, template<typename...> typename NewStorage = Storage>
 		inline ArrayList<NewT,NewStorage> map(const Function<NewT(const T&)>&) const;
+
+		#ifdef JNIEXPORT
+		jobjectArray toJavaObjectArray(JNIEnv* env, jclass objectClass, Function<jobject(JNIEnv*,const T&)> transform) const;
+		#endif
 	};
 	
 	
 	
 #pragma mark ArrayList implementation
+
+	#ifdef JNIEXPORT
+
+	template<typename T, template<typename...> typename Storage>
+	ArrayList<T,Storage>::ArrayList(JNIEnv* env, jobjectArray javaArray, Function<T(JNIEnv*,jobject)> transform) {
+		jsize javaArraySize = env->GetArrayLength(javaArray);
+		reserve((size_type)javaArraySize);
+		for(jsize i=0; i<javaArraySize; i++) {
+			pushBack(transform(env, env->GetObjectArrayElement(javaArray, i)));
+		}
+	}
+
+	#endif
 	
 	template<typename T, template<typename...> typename Storage>
 	T& ArrayList<T,Storage>::operator[](size_type index) {
@@ -514,4 +535,20 @@ namespace fgl {
 		}
 		return newArray;
 	}
+
+
+
+
+	#ifdef JNIEXPORT
+
+	template<typename T, template<typename...> typename Storage>
+	jobjectArray ArrayList<T,Storage>::toJavaObjectArray(JNIEnv* env, jclass objectClass, Function<jobject(JNIEnv*,const T&)> transform) const {
+		jobjectArray javaArray = env->NewObjectArray((jsize)storage.size(), objectClass, nullptr);
+		for(size_t i=0; i<storage.size(); i++) {
+			env->SetObjectArrayElement(javaArray, (jsize)i, transform(env, storage[i]));
+		}
+		return javaArray;
+	}
+
+	#endif
 }

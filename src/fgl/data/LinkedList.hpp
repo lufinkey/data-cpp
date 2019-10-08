@@ -32,6 +32,10 @@ namespace fgl {
 		
 		using BasicList<Storage<T>>::BasicList;
 		using BasicList<Storage<T>>::operator=;
+
+		#ifdef JNIEXPORT
+		LinkedList(JNIEnv* env, jobjectArray javaArray, Function<T(JNIEnv*,jobject)> transform);
+		#endif
 		
 		inline iterator insert(const_iterator pos, const T& value);
 		inline iterator insert(const_iterator pos, T&& value);
@@ -84,11 +88,28 @@ namespace fgl {
 		inline LinkedList<NewT,NewStorage> map(const Function<NewT(T&)>&);
 		template<typename NewT, template<typename...> typename NewStorage = Storage>
 		inline LinkedList<NewT,NewStorage> map(const Function<NewT(const T&)>&) const;
+
+		#ifdef JNIEXPORT
+		jobjectArray toJavaObjectArray(JNIEnv* env, jclass objectClass, Function<jobject(JNIEnv*,const T&)> transform) const;
+		#endif
 	};
 	
 	
 	
 #pragma mark LinkedList implementation
+
+	#ifdef JNIEXPORT
+
+	template<typename T, template<typename...> typename Storage>
+	LinkedList<T,Storage>::LinkedList(JNIEnv* env, jobjectArray javaArray, Function<T(JNIEnv*,jobject)> transform) {
+		jsize javaArraySize = env->GetArrayLength(javaArray);
+		reserve((size_type)javaArraySize);
+		for(jsize i=0; i<javaArraySize; i++) {
+			pushBack(transform(env, env->GetObjectArrayElement(javaArray, i)));
+		}
+	}
+
+	#endif
 	
 	template<typename T, template<typename...> typename Storage>
 	typename LinkedList<T,Storage>::iterator LinkedList<T,Storage>::insert(const_iterator pos, const T& value) {
@@ -427,4 +448,21 @@ namespace fgl {
 		}
 		return newList;
 	}
+
+
+
+	#ifdef JNIEXPORT
+
+	template<typename T, template<typename...> typename Storage>
+	jobjectArray LinkedList<T,Storage>::toJavaObjectArray(JNIEnv* env, jclass objectClass, Function<jobject(JNIEnv*,const T&)> transform) const {
+		jobjectArray javaArray = env->NewObjectArray((jsize)storage.size(), objectClass, nullptr);
+		jsize i=0;
+		for(auto& item : storage) {
+			env->SetObjectArrayElement(javaArray, i, transform(env, item));
+			i++;
+		}
+		return javaArray;
+	}
+
+	#endif
 }
