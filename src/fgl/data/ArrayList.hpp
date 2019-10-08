@@ -13,6 +13,9 @@
 #include <fgl/data/Common.hpp>
 #include <fgl/data/BasicList.hpp>
 #include <fgl/data/Traits.hpp>
+#ifdef __OBJC__
+#import <Foundation/Foundation.h>
+#endif
 
 namespace fgl {
 	template<typename T, template<typename...> typename Storage = std::vector>
@@ -32,6 +35,10 @@ namespace fgl {
 		
 		using BasicList<Storage<T>>::BasicList;
 		using BasicList<Storage<T>>::operator=;
+		
+		#ifdef __OBJC__
+		ArrayList(NSArray* objcArray, Function<T(NSObject*)> transform);
+		#endif
 
 		#ifdef JNIEXPORT
 		ArrayList(JNIEnv* env, jobjectArray javaArray, Function<T(JNIEnv*,jobject)> transform);
@@ -109,6 +116,10 @@ namespace fgl {
 		inline ArrayList<NewT,NewStorage> map(const Function<NewT(T&)>&);
 		template<typename NewT, template<typename...> typename NewStorage = Storage>
 		inline ArrayList<NewT,NewStorage> map(const Function<NewT(const T&)>&) const;
+		
+		#ifdef __OBJC__
+		NSArray* toNSArray(Function<NSObject*(const T&)> transform) const;
+		#endif
 
 		#ifdef JNIEXPORT
 		jobjectArray toJavaObjectArray(JNIEnv* env, jclass objectClass, Function<jobject(JNIEnv*,const T&)> transform) const;
@@ -118,6 +129,18 @@ namespace fgl {
 	
 	
 #pragma mark ArrayList implementation
+
+	#ifdef __OBJC__
+
+	template<typename T, template<typename...> typename Storage>
+	ArrayList<T,Storage>::ArrayList(NSArray* objcArray, Function<T(NSObject*)> transform) {
+		reserve((size_type)objcArray.length);
+		for(NSObject* obj in objcArray) {
+			pushBack(transform(obj));
+		}
+	}
+
+	#endif
 
 	#ifdef JNIEXPORT
 
@@ -538,6 +561,19 @@ namespace fgl {
 
 
 
+
+	#ifdef __OBJC__
+
+	template<typename T, template<typename...> typename Storage>
+	NSArray* ArrayList<T,Storage>::toNSArray(Function<NSObject*(const T&)> transform) const {
+		NSMutableArray* objcArray = [[NSMutableArray alloc] init];
+		for(auto& item : this->storage) {
+			[objcArray addObject:transform(item)];
+		}
+		return objcArray;
+	}
+
+	#endif
 
 	#ifdef JNIEXPORT
 

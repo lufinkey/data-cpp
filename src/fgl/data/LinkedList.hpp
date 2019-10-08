@@ -32,6 +32,10 @@ namespace fgl {
 		
 		using BasicList<Storage<T>>::BasicList;
 		using BasicList<Storage<T>>::operator=;
+		
+		#ifdef __OBJC__
+		LinkedList(NSArray* objcArray, Function<T(NSObject*)> transform);
+		#endif
 
 		#ifdef JNIEXPORT
 		LinkedList(JNIEnv* env, jobjectArray javaArray, Function<T(JNIEnv*,jobject)> transform);
@@ -88,6 +92,10 @@ namespace fgl {
 		inline LinkedList<NewT,NewStorage> map(const Function<NewT(T&)>&);
 		template<typename NewT, template<typename...> typename NewStorage = Storage>
 		inline LinkedList<NewT,NewStorage> map(const Function<NewT(const T&)>&) const;
+		
+		#ifdef __OBJC__
+		NSArray* toNSArray(Function<NSObject*(const T&)> transform) const;
+		#endif
 
 		#ifdef JNIEXPORT
 		jobjectArray toJavaObjectArray(JNIEnv* env, jclass objectClass, Function<jobject(JNIEnv*,const T&)> transform) const;
@@ -98,12 +106,22 @@ namespace fgl {
 	
 #pragma mark LinkedList implementation
 
+	#ifdef __OBJC__
+
+	template<typename T, template<typename...> typename Storage>
+	LinkedList<T,Storage>::LinkedList(NSArray* objcArray, Function<T(NSObject*)> transform) {
+		for(NSObject* obj in objcArray) {
+			pushBack(transform(obj));
+		}
+	}
+
+	#endif
+
 	#ifdef JNIEXPORT
 
 	template<typename T, template<typename...> typename Storage>
 	LinkedList<T,Storage>::LinkedList(JNIEnv* env, jobjectArray javaArray, Function<T(JNIEnv*,jobject)> transform) {
 		jsize javaArraySize = env->GetArrayLength(javaArray);
-		reserve((size_type)javaArraySize);
 		for(jsize i=0; i<javaArraySize; i++) {
 			pushBack(transform(env, env->GetObjectArrayElement(javaArray, i)));
 		}
@@ -450,6 +468,19 @@ namespace fgl {
 	}
 
 
+
+	#ifdef __OBJC__
+
+	template<typename T, template<typename...> typename Storage>
+	NSArray* LinkedList<T,Storage>::toNSArray(Function<NSObject*(const T&)> transform) const {
+		NSMutableArray* objcArray = [[NSMutableArray alloc] init];
+		for(auto& item : this->storage) {
+			[objcArray addObject:transform(item)];
+		}
+		return objcArray;
+	}
+
+	#endif
 
 	#ifdef JNIEXPORT
 
