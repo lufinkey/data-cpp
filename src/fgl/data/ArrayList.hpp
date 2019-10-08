@@ -134,7 +134,7 @@ namespace fgl {
 
 	template<typename T, template<typename...> typename Storage>
 	ArrayList<T,Storage>::ArrayList(NSArray* objcArray, Function<T(NSObject*)> transform) {
-		reserve((size_type)objcArray.length);
+		reserve((size_type)objcArray.count);
 		for(NSObject* obj in objcArray) {
 			pushBack(transform(obj));
 		}
