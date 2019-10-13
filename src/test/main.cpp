@@ -13,5 +13,7 @@ using namespace fgl;
 int main(int argc, char* argv[]) {
 	BasicString<char> str = String::join(std::vector<String>{ String("hello"), String(" "), String("world") });
 	
+	auto result = LinkedList<int>() + ArrayList<int>();
+	
 	return 0;
 }

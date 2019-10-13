@@ -125,6 +125,9 @@ namespace fgl {
 		jobjectArray toJavaObjectArray(JNIEnv* env, jclass objectClass, Function<jobject(JNIEnv*,const T&)> transform) const;
 		#endif
 	};
+
+	template<typename T, template<typename...> typename Storage, typename ListType, typename = IsContainer<ListType>>
+	ArrayList<T,Storage> operator+(const ArrayList<T,Storage>& left, const ListType& right);
 	
 	
 	
@@ -589,4 +592,19 @@ namespace fgl {
 	}
 
 	#endif
+	
+	
+	
+	template<typename T, template<typename...> typename Storage, typename ListType, typename _>
+	ArrayList<T,Storage> operator+(const ArrayList<T,Storage>& left, const ListType& right) {
+		ArrayList<T,Storage> newList;
+		newList.reserve(left.size() + right.size());
+		for(auto& item : left) {
+			newList.pushBack(item);
+		}
+		for(auto& item : right) {
+			newList.pushBack(item);
+		}
+		return newList;
+	}
 }

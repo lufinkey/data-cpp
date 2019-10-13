@@ -101,6 +101,15 @@ namespace fgl {
 		jobjectArray toJavaObjectArray(JNIEnv* env, jclass objectClass, Function<jobject(JNIEnv*,const T&)> transform) const;
 		#endif
 	};
+
+	template<typename T, template<typename...> typename Storage, typename ListType, typename = IsContainer<ListType>>
+	LinkedList<T,Storage> operator+(const LinkedList<T,Storage>& left, const ListType& right);
+	template<typename T, template<typename...> typename Storage>
+	LinkedList<T,Storage> operator+(LinkedList<T,Storage>&& left, LinkedList<T,Storage>&& right);
+	template<typename T, template<typename...> typename Storage>
+	LinkedList<T,Storage> operator+(const LinkedList<T,Storage>& left, LinkedList<T,Storage>&& right);
+	template<typename T, template<typename...> typename Storage>
+	LinkedList<T,Storage> operator+(LinkedList<T,Storage>&& left, const LinkedList<T,Storage>& right);
 	
 	
 	
@@ -496,4 +505,47 @@ namespace fgl {
 	}
 
 	#endif
+
+
+
+
+	template<typename T, template<typename...> typename Storage, typename ListType, typename _>
+	LinkedList<T,Storage> operator+(const LinkedList<T,Storage>& left, const ListType& right) {
+		LinkedList<T,Storage> newList;
+		for(auto& item : left) {
+			newList.pushBack(item);
+		}
+		for(auto& item : right) {
+			newList.pushBack(item);
+		}
+		return newList;
+	}
+
+	template<typename T, template<typename...> typename Storage>
+	LinkedList<T,Storage> operator+(LinkedList<T,Storage>&& left, LinkedList<T,Storage>&& right) {
+		LinkedList<T,Storage> newList;
+		newList.splice(newList.end(), left);
+		newList.splice(newList.end(), right);
+		return newList;
+	}
+
+	template<typename T, template<typename...> typename Storage>
+	LinkedList<T,Storage> operator+(const LinkedList<T,Storage>& left, LinkedList<T,Storage>&& right) {
+		LinkedList<T,Storage> newList;
+		for(auto& item : left) {
+			newList.pushBack(item);
+		}
+		newList.splice(newList.end(), right);
+		return newList;
+	}
+
+	template<typename T, template<typename...> typename Storage>
+	LinkedList<T,Storage> operator+(LinkedList<T,Storage>&& left, const LinkedList<T,Storage>& right) {
+		LinkedList<T,Storage> newList;
+		newList.splice(newList.end(), left);
+		for(auto& item : right) {
+			newList.pushBack(item);
+		}
+		return newList;
+	}
 }
