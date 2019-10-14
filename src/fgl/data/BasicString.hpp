@@ -389,6 +389,13 @@ namespace fgl {
 		template<typename ListType,
 			typename std::enable_if<std::is_same<BasicString<Char>,typename ListType::value_type>::value, std::nullptr_t>::type = nullptr>
 		static BasicString<Char> join(const ListType& list, const BasicString<Char>& separator = BasicString<Char>());
+
+		template<typename StreamableType>
+		static BasicString<Char> stream(StreamableType streamable) {
+			std::basic_ostringstream<Char> ss;
+			ss << streamable;
+			return ss.str();
+		}
 	};
 	
 	
