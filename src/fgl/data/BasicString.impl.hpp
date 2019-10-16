@@ -12,6 +12,10 @@
 #include <fgl/data/LinkedList.hpp>
 #include <iterator>
 #include <memory>
+#include <stdexcept>
+#ifdef NAPI_MODULE_X
+#include <fgl/util/NAPI.h>
+#endif
 
 namespace fgl {
 	template<typename Char>
@@ -118,6 +122,37 @@ namespace fgl {
 	}
 
 	#endif
+
+	#ifdef SRC_NAPI_H_
+	
+	template<typename Char>
+	BasicString(Napi::String napiString) {
+		if(napiString.IsEmpty()) {
+			operator=(napiString.Utf8Value());
+		}
+	}
+	
+	#endif
+
+	#ifdef NAPI_MODULE_X
+
+	template<typename Char>
+	BasicString(napi_env env, napi_value value) {
+		if(value == nullptr) {
+			return;
+		}
+		DATACPP_NAPI_ASSERT_TYPE(value, napi_string);
+		size_t stringLength = 0;
+		DATACPP_NAPI_CALL_OR_THROW(env, "failed to get js string length", napi_get_value_string_utf8((env), value, nullptr, 0, &stringLength));
+		storage.resize(stringLength);
+		size_t stringLengthCopied = 0;
+		char* stringData = (char*)storage.data();
+		DATACPP_NAPI_CALL_OR_THROW(env, "failed to copy string", napi_get_value_string_utf8((env), value, stringData, stringLength + 1, &stringLengthCopied));
+		DATACPP_NAPI_ASSERT(env, stringLength == stringLengthCopied, "Couldn't fully copy data to string");
+	}
+
+	#endif
+
 
 	template<typename Char>
 	template<typename OtherChar,
@@ -287,6 +322,32 @@ namespace fgl {
 			return env->NewStringUTF(storage.c_str());
 		} else {
 			return env->NewStringUTF(BasicStringUtils::convert<char,Char>(storage.data(), storage.length()).c_str());
+		}
+	}
+
+	#endif
+
+	#ifdef SRC_NAPI_H_
+
+	template<typename Char>
+	Napi::String BasicString<Char>::toNapiString(napi_env env) const {
+		return Napi::String::New(env, storage);
+	}
+
+	#endif
+
+	#ifdef NAPI_MODULE_X
+
+	napi_value BasicString<Char>::toNapiValue(napi_env env) const {
+		if constexpr(std::is_same<char,Char>::value) {
+			napi_value value = nullptr;
+			DATACPP_NAPI_CALL_OR_THROW(env, "failed to create napi_value", napi_create_string_utf8(env, storage.data(), storage.length(), &value));
+			return value;
+		} else {
+			auto str = toStdString<char>();
+			napi_value value = nullptr;
+			DATACPP_NAPI_CALL_OR_THROW(env, "failed to create napi_value", napi_create_string_utf8(env, str.data(), str.length(), &value));
+			return value;
 		}
 	}
 
@@ -1463,3 +1524,7 @@ namespace fgl {
 		return (right.compare(left) <= 0);
 	}
 }
+
+#ifdef NAPI_MODULE_X
+#include <fgl/util/NAPI_undef.h>
+#endif

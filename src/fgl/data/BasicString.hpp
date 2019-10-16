@@ -74,6 +74,13 @@ namespace fgl {
 		BasicString(JNIEnv* env, jstring javaString);
 		#endif
 		
+		#ifdef SRC_NAPI_H_
+		BasicString(Napi::String napiString);
+		#endif
+		#ifdef NAPI_MODULE_X
+		BasicString(napi_env env, napi_value napiString);
+		#endif
+		
 		template<typename OtherChar,
 			typename BasicStringUtils::same_size_convertable_with_char_type<Char,OtherChar>::null_type = nullptr>
 		inline explicit BasicString(OtherChar c);
@@ -148,6 +155,13 @@ namespace fgl {
 
 		#ifdef JNIEXPORT
 		inline jstring toJavaString(JNIEnv* env) const;
+		#endif
+		
+		#ifdef SRC_NAPI_H_
+		Napi::String toNapiString(napi_env) const;
+		#endif
+		#ifdef NAPI_MODULE_X
+		napi_value toNodeJSValue(napi_env) const;
 		#endif
 		
 		template<typename OtherChar,
