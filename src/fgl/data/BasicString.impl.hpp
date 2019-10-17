@@ -126,7 +126,7 @@ namespace fgl {
 	#ifdef NODE_API_MODULE
 	
 	template<typename Char>
-	BasicString(Napi::String napiString) {
+	BasicString<Char>::BasicString(Napi::String napiString) {
 		if(napiString.IsEmpty()) {
 			operator=(napiString.Utf8Value());
 		}
@@ -137,7 +137,7 @@ namespace fgl {
 	#ifdef NAPI_MODULE
 
 	template<typename Char>
-	BasicString(napi_env env, napi_value value) {
+	BasicString<Char>::BasicString(napi_env env, napi_value value) {
 		if(value == nullptr) {
 			return;
 		}
@@ -338,7 +338,7 @@ namespace fgl {
 
 	#ifdef NAPI_MODULE
 
-	napi_value BasicString<Char>::toNapiValue(napi_env env) const {
+	napi_value BasicString<Char>::toNodeJSValue(napi_env env) const {
 		if constexpr(std::is_same<char,Char>::value) {
 			napi_value value = nullptr;
 			DATACPP_NAPI_CALL_OR_THROW(env, "failed to create napi_value", napi_create_string_utf8(env, storage.data(), storage.length(), &value));
