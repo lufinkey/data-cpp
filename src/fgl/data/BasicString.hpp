@@ -74,10 +74,10 @@ namespace fgl {
 		BasicString(JNIEnv* env, jstring javaString);
 		#endif
 		
-		#ifdef SRC_NAPI_H_
+		#ifdef NODE_API_MODULE
 		BasicString(Napi::String napiString);
 		#endif
-		#ifdef NAPI_MODULE_X
+		#ifdef NAPI_MODULE
 		BasicString(napi_env env, napi_value napiString);
 		#endif
 		
@@ -157,10 +157,10 @@ namespace fgl {
 		inline jstring toJavaString(JNIEnv* env) const;
 		#endif
 		
-		#ifdef SRC_NAPI_H_
+		#ifdef NODE_API_MODULE
 		Napi::String toNapiString(napi_env) const;
 		#endif
-		#ifdef NAPI_MODULE_X
+		#ifdef NAPI_MODULE
 		napi_value toNodeJSValue(napi_env) const;
 		#endif
 		

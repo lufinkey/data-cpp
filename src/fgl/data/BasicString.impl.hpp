@@ -13,7 +13,7 @@
 #include <iterator>
 #include <memory>
 #include <stdexcept>
-#ifdef NAPI_MODULE_X
+#ifdef NAPI_MODULE
 #include <fgl/util/NAPI.h>
 #endif
 
@@ -123,7 +123,7 @@ namespace fgl {
 
 	#endif
 
-	#ifdef SRC_NAPI_H_
+	#ifdef NODE_API_MODULE
 	
 	template<typename Char>
 	BasicString(Napi::String napiString) {
@@ -134,7 +134,7 @@ namespace fgl {
 	
 	#endif
 
-	#ifdef NAPI_MODULE_X
+	#ifdef NAPI_MODULE
 
 	template<typename Char>
 	BasicString(napi_env env, napi_value value) {
@@ -327,7 +327,7 @@ namespace fgl {
 
 	#endif
 
-	#ifdef SRC_NAPI_H_
+	#ifdef NODE_API_MODULE
 
 	template<typename Char>
 	Napi::String BasicString<Char>::toNapiString(napi_env env) const {
@@ -336,7 +336,7 @@ namespace fgl {
 
 	#endif
 
-	#ifdef NAPI_MODULE_X
+	#ifdef NAPI_MODULE
 
 	napi_value BasicString<Char>::toNapiValue(napi_env env) const {
 		if constexpr(std::is_same<char,Char>::value) {
@@ -1525,6 +1525,6 @@ namespace fgl {
 	}
 }
 
-#ifdef NAPI_MODULE_X
+#ifdef NAPI_MODULE
 #include <fgl/util/NAPI_undef.h>
 #endif
