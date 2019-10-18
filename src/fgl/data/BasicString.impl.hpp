@@ -143,11 +143,11 @@ namespace fgl {
 		}
 		DATACPP_NAPI_ASSERT_TYPE(value, napi_string);
 		size_t stringLength = 0;
-		DATACPP_NAPI_CALL_OR_THROW(env, "failed to get js string length", napi_get_value_string_utf8((env), value, nullptr, 0, &stringLength));
+		DATACPP_NAPI_CALL(env, "failed to get js string length", napi_get_value_string_utf8((env), value, nullptr, 0, &stringLength));
 		storage.resize(stringLength);
 		size_t stringLengthCopied = 0;
 		char* stringData = (char*)storage.data();
-		DATACPP_NAPI_CALL_OR_THROW(env, "failed to copy string", napi_get_value_string_utf8((env), value, stringData, stringLength + 1, &stringLengthCopied));
+		DATACPP_NAPI_CALL(env, "failed to copy string", napi_get_value_string_utf8((env), value, stringData, stringLength + 1, &stringLengthCopied));
 		DATACPP_NAPI_ASSERT(env, stringLength == stringLengthCopied, "Couldn't fully copy data to string");
 	}
 

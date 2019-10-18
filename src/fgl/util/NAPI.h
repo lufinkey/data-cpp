@@ -34,12 +34,7 @@
 // Returns NULL on failed assertion.
 // This is meant to be used inside napi_callback methods.
 #define DATACPP_NAPI_ASSERT(env, assertion, message) \
-	DATACPP_NAPI_ASSERT_BASE(env, assertion, message, return nullptr)
-
-// Returns empty on failed assertion.
-// This is meant to be used inside functions with void return type.
-#define DATACPP_NAPI_ASSERT_VOID(env, assertion, message) \
-	DATACPP_NAPI_ASSERT_BASE(env, assertion, message, return)
+	DATACPP_NAPI_ASSERT_BASE(env, assertion, message, throw std::runtime_error(message))
 
 #define DATACPP_NAPI_CALL_BASE(env, the_call, fail_action) { \
 	if ((the_call) != napi_ok) { \
@@ -49,16 +44,8 @@
 }
 
 // Returns nullptr if the_call doesn't return napi_ok.
-#define DATACPP_NAPI_CALL(env, the_call) \
-	DATACPP_NAPI_CALL_BASE(env, the_call, return nullptr)
-
-// Returns empty if the_call doesn't return napi_ok.
-#define DATACPP_NAPI_CALL_VOID(env, the_call) \
-	DATACPP_NAPI_CALL_BASE(env, the_call, return)
-
-// Performs an action and returns nullptr if the_call doesn't return napi_ok
-#define DATACPP_NAPI_CALL_ELSE(env, else_action, the_call) \
-	DATACPP_NAPI_CALL_BASE(env, the_call, else_action; return nullptr)
+#define DATACPP_NAPI_CALL(env, error, the_call) \
+	DATACPP_NAPI_CALL_BASE(env, the_call, throw std::runtime_error(error))
 
 // Ensures an napi_value is a certain type
 #define DATACPP_NAPI_ASSERT_TYPE(value, expectedType) { \
@@ -69,6 +56,3 @@
 
 #define DATACPP_NAPI_METHOD_DESCRIPTOR(name, func) \
 	napi_property_descriptor{ name, 0, func, 0, 0, 0, napi_default, 0 }
-
-#define DATACPP_NAPI_CALL_OR_THROW(env, error, the_call) \
-	DATACPP_NAPI_CALL_BASE(env, the_call, throw std::runtime_error(error))
