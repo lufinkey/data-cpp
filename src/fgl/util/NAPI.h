@@ -48,7 +48,7 @@
 	DATACPP_NAPI_CALL_BASE(env, the_call, throw std::runtime_error(error))
 
 // Ensures an napi_value is a certain type
-#define DATACPP_NAPI_ASSERT_TYPE(value, expectedType) { \
+#define DATACPP_NAPI_ASSERT_TYPE(env, value, expectedType) { \
 	napi_valuetype valueType; \
 	DATACPP_NAPI_CALL(env, napi_typeof(env, value, &valueType)); \
 	DATACPP_NAPI_ASSERT(env, valueType == expectedType, "Expected a " #expectedType " for value " #value); \

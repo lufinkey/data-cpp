@@ -141,7 +141,7 @@ namespace fgl {
 		if(value == nullptr) {
 			return;
 		}
-		DATACPP_NAPI_ASSERT_TYPE(value, napi_string);
+		DATACPP_NAPI_ASSERT_TYPE(env, value, napi_string);
 		size_t stringLength = 0;
 		DATACPP_NAPI_CALL(env, "failed to get js string length", napi_get_value_string_utf8((env), value, nullptr, 0, &stringLength));
 		storage.resize(stringLength);
@@ -341,12 +341,12 @@ namespace fgl {
 	napi_value BasicString<Char>::toNodeJSValue(napi_env env) const {
 		if constexpr(std::is_same<char,Char>::value) {
 			napi_value value = nullptr;
-			DATACPP_NAPI_CALL_OR_THROW(env, "failed to create napi_value", napi_create_string_utf8(env, storage.data(), storage.length(), &value));
+			DATACPP_NAPI_CALL(env, "failed to create napi_value", napi_create_string_utf8(env, storage.data(), storage.length(), &value));
 			return value;
 		} else {
 			auto str = toStdString<char>();
 			napi_value value = nullptr;
-			DATACPP_NAPI_CALL_OR_THROW(env, "failed to create napi_value", napi_create_string_utf8(env, str.data(), str.length(), &value));
+			DATACPP_NAPI_CALL(env, "failed to create napi_value", napi_create_string_utf8(env, str.data(), str.length(), &value));
 			return value;
 		}
 	}
