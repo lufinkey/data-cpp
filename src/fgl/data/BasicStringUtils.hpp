@@ -685,6 +685,7 @@ namespace fgl {
 		newStr.reserve(size_new);
 		newStr.append(left);
 		newStr.append(1, right);
+		return newStr;
 	}
 	
 	template<typename Char>
