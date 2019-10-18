@@ -13,6 +13,7 @@
 #include <iterator>
 #include <memory>
 #include <stdexcept>
+#include <type_traits>
 #ifdef NAPI_MODULE
 #include <fgl/util/NAPI.h>
 #endif
@@ -338,8 +339,9 @@ namespace fgl {
 
 	#ifdef NAPI_MODULE
 
+	template<typename Char>
 	napi_value BasicString<Char>::toNodeJSValue(napi_env env) const {
-		if constexpr(std::is_same<char,Char>::value) {
+		if constexpr(sizeof(Char) == 1 && std::is_integral<Char>::value) {
 			napi_value value = nullptr;
 			DATACPP_NAPI_CALL(env, "failed to create napi_value", napi_create_string_utf8(env, storage.data(), storage.length(), &value));
 			return value;

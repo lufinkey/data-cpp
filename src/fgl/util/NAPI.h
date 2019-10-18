@@ -36,21 +36,21 @@
 #define DATACPP_NAPI_ASSERT(env, assertion, message) \
 	DATACPP_NAPI_ASSERT_BASE(env, assertion, message, throw std::runtime_error(message))
 
-#define DATACPP_NAPI_CALL_BASE(env, the_call, fail_action) { \
+#define DATACPP_NAPI_CALL_BASE(env, the_call, fail_action, default_fail_action) { \
 	if ((the_call) != napi_ok) { \
-		DATACPP_NAPI_THROW_LAST_ERROR((env), fail_action); \
-		fail_action; \
+		DATACPP_NAPI_THROW_LAST_ERROR(env, fail_action); \
+		default_fail_action; \
 	} \
 }
 
 // Returns nullptr if the_call doesn't return napi_ok.
 #define DATACPP_NAPI_CALL(env, error, the_call) \
-	DATACPP_NAPI_CALL_BASE(env, the_call, throw std::runtime_error(error))
+	DATACPP_NAPI_CALL_BASE(env, the_call, throw std::runtime_error(error_message), throw std::runtime_error(error))
 
 // Ensures an napi_value is a certain type
 #define DATACPP_NAPI_ASSERT_TYPE(env, value, expectedType) { \
 	napi_valuetype valueType; \
-	DATACPP_NAPI_CALL(env, napi_typeof(env, value, &valueType)); \
+	DATACPP_NAPI_CALL(env, "Failed to determine type of value", napi_typeof(env, value, &valueType)); \
 	DATACPP_NAPI_ASSERT(env, valueType == expectedType, "Expected a " #expectedType " for value " #value); \
 }
 
