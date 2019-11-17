@@ -80,7 +80,7 @@ namespace fgl {
 	}
 
 	template<typename T, typename Func>
-	inline Optional<T> chain_access(Func func, Optional<T> defaultValue = std::nullopt) {
+	inline Optional<T> chain(Func func, Optional<T> defaultValue = std::nullopt) {
 		using namespace _chain_access;
 		try {
 			return func(Opter());
@@ -90,7 +90,7 @@ namespace fgl {
 	}
 
 	template<typename Func>
-	inline bool chain_call(Func func) {
+	inline bool chain(Func func) {
 		using namespace _chain_access;
 		try {
 			func(Opter());

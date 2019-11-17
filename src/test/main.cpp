@@ -17,7 +17,8 @@ int main(int argc, char* argv[]) {
 	
 	Optional<String> optStr = std::nullopt;
 	Optional<String> optStr2 = "ayy";
-	auto chainResult = chain_access<String>([&](auto _){ return _(optStr)->append(_(optStr2).value()); });
+	auto chainResult = chain<String>([&](auto _){ return _(optStr)->append(_(optStr2).value()); });
+	chain([&](auto _){ return _(optStr)->append(_(optStr2).value()); });
 	
 	return 0;
 }
