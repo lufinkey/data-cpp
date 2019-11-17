@@ -10,7 +10,6 @@
 
 #include <algorithm>
 #include <initializer_list>
-#include <optional>
 #include <stdexcept>
 #include <type_traits>
 #include <fgl/data/Common.hpp>

@@ -13,7 +13,6 @@
 #include <functional>
 #include <iostream>
 #include <list>
-#include <optional>
 #include <vector>
 #ifdef __OBJC__
 #import <Foundation/Foundation.h>
@@ -23,8 +22,6 @@ namespace fgl {
 	template<typename T>
 	using Function = std::function<T>;
 	using Any = std::any;
-	template<typename T>
-	using Optional = std::optional<T>;
 	
 	#ifndef FGL_ASSERT
 		#ifdef NDEBUG

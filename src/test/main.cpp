@@ -15,5 +15,9 @@ int main(int argc, char* argv[]) {
 	
 	auto result = LinkedList<int>() + ArrayList<int>();
 	
+	Optional<String> optStr = std::nullopt;
+	Optional<String> optStr2 = "ayy";
+	auto chainResult = chain_access<String>([&](auto _){ return _(optStr)->append(_(optStr2).value()); });
+	
 	return 0;
 }

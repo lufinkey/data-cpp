@@ -68,6 +68,7 @@
 		A571E1362332C7A700603E14 /* PlatformChecks.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = PlatformChecks.hpp; sourceTree = "<group>"; };
 		A571E13C2332CEE000603E14 /* ObjectiveCpp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjectiveCpp.h; sourceTree = "<group>"; };
 		A58B32802310B0DF00E80ECB /* libDataCpp-iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libDataCpp-iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A5B9734D2381C51000FB3F1C /* Optional.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Optional.hpp; sourceTree = "<group>"; };
 		A5E851AD2357C7610001F74D /* NAPI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NAPI.h; sourceTree = "<group>"; };
 		A5E851AE2357C7770001F74D /* NAPI_undef.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NAPI_undef.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -121,6 +122,7 @@
 				A567C1612319D69400BB5398 /* ArrayList.hpp */,
 				A567C1622319D6A100BB5398 /* LinkedList.hpp */,
 				A567C1602319B0A600BB5398 /* Traits.hpp */,
+				A5B9734D2381C51000FB3F1C /* Optional.hpp */,
 			);
 			path = data;
 			sourceTree = "<group>";

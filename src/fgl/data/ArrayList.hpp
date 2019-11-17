@@ -47,8 +47,8 @@ namespace fgl {
 		inline T& operator[](size_type index);
 		inline const T& operator[](size_type) const;
 		
-		inline T& get(size_type index);
-		inline const T& get(size_type) const;
+		inline T& at(size_type index);
+		inline const T& at(size_type) const;
 		
 		inline const T* data() const;
 		inline size_type capacity() const;
@@ -171,15 +171,15 @@ namespace fgl {
 	}
 	
 	template<typename T, template<typename...> typename Storage>
-	T& ArrayList<T,Storage>::get(size_type index) {
+	T& ArrayList<T,Storage>::at(size_type index) {
 		FGL_ASSERT(index >= 0 && index < this->size(), "index out of bounds");
-		return this->storage[index];
+		return this->storage.at(index);
 	}
 	
 	template<typename T, template<typename...> typename Storage>
-	const T& ArrayList<T,Storage>::get(size_type index) const {
+	const T& ArrayList<T,Storage>::at(size_type index) const {
 		FGL_ASSERT(index >= 0 && index < this->size(), "index out of bounds");
-		return this->storage[index];
+		return this->storage.at(index);
 	}
 	
 	
