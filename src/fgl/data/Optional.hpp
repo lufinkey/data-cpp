@@ -11,6 +11,7 @@
 #include <optional>
 #include <variant>
 #include <tuple>
+#include <fgl/util/PlatformChecks.hpp>
 
 namespace fgl {
 	template<typename T>
@@ -44,6 +45,7 @@ namespace fgl {
 				return val(args...);
 			}
 			
+			#ifndef TARGETPLATFORM_IOS
 			template<typename Type>
 			inline auto get() {
 				try {
@@ -61,6 +63,7 @@ namespace fgl {
 					throw noaccess();
 				}
 			}
+			#endif
 			
 			inline auto value() {
 				if constexpr(std::is_same<typename std::remove_cv<T>::type,Optional<typename T::value_type>>::value) {
