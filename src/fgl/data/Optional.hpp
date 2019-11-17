@@ -66,24 +66,22 @@ namespace fgl {
 				if constexpr(std::is_same<typename std::remove_cv<T>::type,Optional<typename T::value_type>>::value) {
 					return val.value();
 				} else {
-					return val;
+					return *val;
 				}
 			}
 		};
-	
-		struct Opter {
-			template<typename T>
-			inline OptObject<T> operator()(T& obj) {
-				return OptObject<T>{ obj };
-			}
-		};
+	}
+
+	template<typename T>
+	_chain_access::OptObject<T> opt(T& obj) {
+		return _chain_access::OptObject<T>{ obj };
 	}
 
 	template<typename T, typename Func>
 	inline Optional<T> chain(Func func, Optional<T> defaultValue = std::nullopt) {
 		using namespace _chain_access;
 		try {
-			return func(Opter());
+			return func();
 		} catch(noaccess&) {
 			return defaultValue;
 		}
@@ -93,7 +91,7 @@ namespace fgl {
 	inline bool chain(Func func) {
 		using namespace _chain_access;
 		try {
-			func(Opter());
+			func();
 			return true;
 		} catch(noaccess&) {
 			return false;
