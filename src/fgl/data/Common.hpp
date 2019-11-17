@@ -22,6 +22,11 @@ namespace fgl {
 	template<typename T>
 	using Function = std::function<T>;
 	using Any = std::any;
+
+	template<typename T>
+	using $ = std::shared_ptr<T>;
+	template<typename T>
+	using w$ = std::weak_ptr<T>;
 	
 	#ifndef FGL_ASSERT
 		#ifdef NDEBUG
