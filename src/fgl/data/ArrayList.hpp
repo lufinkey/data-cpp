@@ -12,6 +12,7 @@
 #include <vector>
 #include <fgl/data/Common.hpp>
 #include <fgl/data/BasicList.hpp>
+#include <fgl/data/Optional.hpp>
 #include <fgl/data/Traits.hpp>
 #ifdef __OBJC__
 #import <Foundation/Foundation.h>
@@ -49,6 +50,18 @@ namespace fgl {
 		
 		inline T& at(size_type index);
 		inline const T& at(size_type) const;
+		
+		inline Optional<T> maybeAt(size_type index) const;
+		inline Optional<std::reference_wrapper<T>> maybeRefAt(size_type index);
+		inline Optional<std::reference_wrapper<const T>> maybeRefAt(size_type index) const;
+		
+		inline Optional<T> first() const;
+		inline Optional<std::reference_wrapper<T>> firstRef();
+		inline Optional<std::reference_wrapper<const T>> firstRef() const;
+		
+		inline Optional<T> last() const;
+		inline Optional<std::reference_wrapper<T>> lastRef();
+		inline Optional<std::reference_wrapper<const T>> lastRef() const;
 		
 		inline const T* data() const;
 		inline size_type capacity() const;
@@ -180,6 +193,82 @@ namespace fgl {
 	const T& ArrayList<T,Storage>::at(size_type index) const {
 		FGL_ASSERT(index >= 0 && index < this->size(), "index out of bounds");
 		return this->storage.at(index);
+	}
+	
+
+
+	template<typename T, template<typename...> typename Storage>
+	Optional<T> ArrayList<T,Storage>::maybeAt(size_type index) const {
+		if(index >= this->storage.size()) {
+			return std::nullopt;
+		}
+		return this->storage[index];
+	}
+	
+	template<typename T, template<typename...> typename Storage>
+	Optional<std::reference_wrapper<T>> ArrayList<T,Storage>::maybeRefAt(size_type index) {
+		if(index >= this->storage.size()) {
+			return std::nullopt;
+		}
+		return std::ref<T>(this->storage[index]);
+	}
+	
+	template<typename T, template<typename...> typename Storage>
+	Optional<std::reference_wrapper<const T>> ArrayList<T,Storage>::maybeRefAt(size_type index) const {
+		if(index >= this->storage.size()) {
+			return std::nullopt;
+		}
+		return std::ref<const T>(this->storage[index]);
+	}
+	
+	
+	
+	template<typename T, template<typename...> typename Storage>
+	Optional<T> ArrayList<T,Storage>::first() const {
+		if(this->storage.size() == 0) {
+			return std::nullopt;
+		}
+		return this->storage.front();
+	}
+	
+	template<typename T, template<typename...> typename Storage>
+	Optional<std::reference_wrapper<T>> ArrayList<T,Storage>::firstRef() {
+		if(this->storage.size() == 0) {
+			return std::nullopt;
+		}
+		return std::ref<T>(this->storage.front());
+	}
+	
+	template<typename T, template<typename...> typename Storage>
+	Optional<std::reference_wrapper<const T>> ArrayList<T,Storage>::firstRef() const {
+		if(this->storage.size() == 0) {
+			return std::nullopt;
+		}
+		return std::ref<const T>(this->storage.front());
+	}
+	
+	template<typename T, template<typename...> typename Storage>
+	Optional<T> ArrayList<T,Storage>::last() const {
+		if(this->storage.size() == 0) {
+			return std::nullopt;
+		}
+		return this->storage.back();
+	}
+	
+	template<typename T, template<typename...> typename Storage>
+	Optional<std::reference_wrapper<T>> ArrayList<T,Storage>::lastRef() {
+		if(this->storage.size() == 0) {
+			return std::nullopt;
+		}
+		return std::ref<T>(this->storage.back());
+	}
+	
+	template<typename T, template<typename...> typename Storage>
+	Optional<std::reference_wrapper<const T>> ArrayList<T,Storage>::lastRef() const {
+		if(this->storage.size() == 0) {
+			return std::nullopt;
+		}
+		return std::ref<const T>(this->storage.back());
 	}
 	
 	
