@@ -20,13 +20,12 @@ namespace fgl {
 	template<typename T>
 	using OptionalRef = std::optional<std::reference_wrapper<T>>;
 
-	template<typename T, bool isOptional = std::is_same<T, Optional<T>>::value>
+	template<typename T>
 	struct optionalize_t {
 		using type = Optional<T>;
 	};
-
 	template<typename T>
-	struct optionalize_t<T,true> {
+	struct optionalize_t<Optional<T>> {
 		using type = T;
 	};
 
