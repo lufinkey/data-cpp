@@ -9,6 +9,7 @@
 #pragma once
 
 #include <optional>
+#include <functional>
 #include <variant>
 #include <tuple>
 #include <fgl/util/PlatformChecks.hpp>
@@ -16,6 +17,8 @@
 namespace fgl {
 	template<typename T>
 	using Optional = std::optional<T>;
+	template<typename T>
+	using OptionalRef = std::optional<std::reference_wrapper<T>>;
 
 	template<typename T, bool isOptional = std::is_same<T, Optional<T>>::value>
 	struct optionalize_t {
