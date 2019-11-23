@@ -17,6 +17,19 @@ namespace fgl {
 	template<typename T>
 	using Optional = std::optional<T>;
 
+	template<typename T, bool isOptional = std::is_same<T, Optional<T>>::value>
+	struct optionalize_t {
+		using type = Optional<T>;
+	};
+
+	template<typename T>
+	struct optionalize_t<T,true> {
+		using type = T;
+	};
+
+	template<typename T>
+	using Optionalized = typename optionalize_t<T>::type;
+
 	namespace _chain_access {
 		struct noaccess {
 			bool padding = false;
