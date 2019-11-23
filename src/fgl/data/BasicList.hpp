@@ -13,6 +13,7 @@
 #include <stdexcept>
 #include <type_traits>
 #include <fgl/data/Common.hpp>
+#include <fgl/data/Optional.hpp>
 #include <fgl/data/Traits.hpp>
 
 namespace fgl {
@@ -80,6 +81,14 @@ namespace fgl {
 		inline const ValueType& front() const;
 		inline ValueType& back();
 		inline const ValueType& back() const;
+		
+		inline Optional<ValueType> first() const;
+		inline OptionalRef<ValueType> firstRef();
+		inline OptionalRef<const ValueType> firstRef() const;
+		
+		inline Optional<ValueType> last() const;
+		inline OptionalRef<ValueType> lastRef();
+		inline OptionalRef<const ValueType> lastRef() const;
 		
 		inline iterator findEqual(const ValueType& value);
 		inline const_iterator findEqual(const ValueType& value) const;
@@ -344,6 +353,56 @@ namespace fgl {
 	const typename BasicList<Storage>::ValueType& BasicList<Storage>::back() const {
 		FGL_ASSERT(size() > 0, "Cannot get front of empty list");
 		return storage.back();
+	}
+
+
+
+	template<typename Storage>
+	Optional<typename BasicList<Storage>::ValueType> BasicList<Storage>::first() const {
+		if(this->storage.size() == 0) {
+			return std::nullopt;
+		}
+		return this->storage.front();
+	}
+	
+	template<typename Storage>
+	OptionalRef<typename BasicList<Storage>::ValueType> BasicList<Storage>::firstRef() {
+		if(this->storage.size() == 0) {
+			return std::nullopt;
+		}
+		return std::ref<ValueType>(this->storage.front());
+	}
+	
+	template<typename Storage>
+	OptionalRef<const typename BasicList<Storage>::ValueType> BasicList<Storage>::firstRef() const {
+		if(this->storage.size() == 0) {
+			return std::nullopt;
+		}
+		return std::ref<const ValueType>(this->storage.front());
+	}
+	
+	template<typename Storage>
+	Optional<typename BasicList<Storage>::ValueType> BasicList<Storage>::last() const {
+		if(this->storage.size() == 0) {
+			return std::nullopt;
+		}
+		return this->storage.back();
+	}
+	
+	template<typename Storage>
+	OptionalRef<typename BasicList<Storage>::ValueType> BasicList<Storage>::lastRef() {
+		if(this->storage.size() == 0) {
+			return std::nullopt;
+		}
+		return std::ref<ValueType>(this->storage.back());
+	}
+	
+	template<typename Storage>
+	OptionalRef<const typename BasicList<Storage>::ValueType> BasicList<Storage>::lastRef() const {
+		if(this->storage.size() == 0) {
+			return std::nullopt;
+		}
+		return std::ref<const ValueType>(this->storage.back());
 	}
 	
 	

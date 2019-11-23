@@ -55,14 +55,6 @@ namespace fgl {
 		inline Optional<std::reference_wrapper<T>> maybeRefAt(size_type index);
 		inline Optional<std::reference_wrapper<const T>> maybeRefAt(size_type index) const;
 		
-		inline Optional<T> first() const;
-		inline Optional<std::reference_wrapper<T>> firstRef();
-		inline Optional<std::reference_wrapper<const T>> firstRef() const;
-		
-		inline Optional<T> last() const;
-		inline Optional<std::reference_wrapper<T>> lastRef();
-		inline Optional<std::reference_wrapper<const T>> lastRef() const;
-		
 		inline const T* data() const;
 		inline size_type capacity() const;
 		
@@ -99,6 +91,8 @@ namespace fgl {
 		
 		inline iterator remove(const_iterator pos);
 		inline iterator remove(const_iterator begin, const_iterator end);
+		inline iterator erase(const_iterator pos);
+		inline iterator erase(const_iterator begin, const_iterator end);
 		inline iterator removeAt(size_type pos);
 		inline iterator removeAt(size_type pos, size_type count);
 		size_type removeEqual(const T& value);
@@ -219,56 +213,6 @@ namespace fgl {
 			return std::nullopt;
 		}
 		return std::ref<const T>(this->storage[index]);
-	}
-	
-	
-	
-	template<typename T, template<typename...> typename Storage>
-	Optional<T> ArrayList<T,Storage>::first() const {
-		if(this->storage.size() == 0) {
-			return std::nullopt;
-		}
-		return this->storage.front();
-	}
-	
-	template<typename T, template<typename...> typename Storage>
-	Optional<std::reference_wrapper<T>> ArrayList<T,Storage>::firstRef() {
-		if(this->storage.size() == 0) {
-			return std::nullopt;
-		}
-		return std::ref<T>(this->storage.front());
-	}
-	
-	template<typename T, template<typename...> typename Storage>
-	Optional<std::reference_wrapper<const T>> ArrayList<T,Storage>::firstRef() const {
-		if(this->storage.size() == 0) {
-			return std::nullopt;
-		}
-		return std::ref<const T>(this->storage.front());
-	}
-	
-	template<typename T, template<typename...> typename Storage>
-	Optional<T> ArrayList<T,Storage>::last() const {
-		if(this->storage.size() == 0) {
-			return std::nullopt;
-		}
-		return this->storage.back();
-	}
-	
-	template<typename T, template<typename...> typename Storage>
-	Optional<std::reference_wrapper<T>> ArrayList<T,Storage>::lastRef() {
-		if(this->storage.size() == 0) {
-			return std::nullopt;
-		}
-		return std::ref<T>(this->storage.back());
-	}
-	
-	template<typename T, template<typename...> typename Storage>
-	Optional<std::reference_wrapper<const T>> ArrayList<T,Storage>::lastRef() const {
-		if(this->storage.size() == 0) {
-			return std::nullopt;
-		}
-		return std::ref<const T>(this->storage.back());
 	}
 	
 	
@@ -423,6 +367,16 @@ namespace fgl {
 	
 	template<typename T, template<typename...> typename Storage>
 	typename ArrayList<T,Storage>::iterator ArrayList<T,Storage>::remove(const_iterator first, const_iterator last) {
+		return this->storage.erase(first, last);
+	}
+	
+	template<typename T, template<typename...> typename Storage>
+	typename ArrayList<T,Storage>::iterator ArrayList<T,Storage>::erase(const_iterator pos) {
+		return this->storage.erase(pos);
+	}
+	
+	template<typename T, template<typename...> typename Storage>
+	typename ArrayList<T,Storage>::iterator ArrayList<T,Storage>::erase(const_iterator first, const_iterator last) {
 		return this->storage.erase(first, last);
 	}
 	

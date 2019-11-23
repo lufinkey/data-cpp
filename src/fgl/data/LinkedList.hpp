@@ -73,6 +73,8 @@ namespace fgl {
 		
 		inline iterator remove(const_iterator pos);
 		inline iterator remove(const_iterator begin, const_iterator end);
+		inline iterator erase(const_iterator pos);
+		inline iterator erase(const_iterator begin, const_iterator end);
 		size_type removeEqual(const T& value);
 		inline bool removeFirstEqual(const T& value);
 		inline bool removeLastEqual(const T& value);
@@ -289,6 +291,16 @@ namespace fgl {
 	
 	template<typename T, template<typename...> typename Storage>
 	typename LinkedList<T,Storage>::iterator LinkedList<T,Storage>::remove(const_iterator first, const_iterator last) {
+		return this->storage.erase(first, last);
+	}
+
+	template<typename T, template<typename...> typename Storage>
+	typename LinkedList<T,Storage>::iterator LinkedList<T,Storage>::erase(const_iterator pos) {
+		return this->storage.erase(pos);
+	}
+	
+	template<typename T, template<typename...> typename Storage>
+	typename LinkedList<T,Storage>::iterator LinkedList<T,Storage>::erase(const_iterator first, const_iterator last) {
 		return this->storage.erase(first, last);
 	}
 	
