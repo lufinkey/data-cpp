@@ -411,6 +411,11 @@ namespace fgl {
 			return ss.str();
 		}
 	};
+
+
+
+	template<typename Char>
+	std::ostream& operator<<(std::ostream& os, const BasicString<Char>& str);
 	
 	
 	

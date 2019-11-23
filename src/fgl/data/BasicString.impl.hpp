@@ -1325,7 +1325,14 @@ namespace fgl {
 	}
 	
 	
-	
+
+	template<typename Char>
+	std::ostream& operator<<(std::ostream& os, const BasicString<Char>& str) {
+		os << str.storage;
+		return os;
+	}
+
+
 	
 	template<typename Char, typename OtherChar,
 		typename BasicStringUtils::can_convert_string_types<Char, OtherChar>::null_type>
