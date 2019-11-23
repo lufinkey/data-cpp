@@ -458,7 +458,6 @@ namespace fgl {
 	template<typename NewT, template<typename...> typename NewStorage>
 	LinkedList<NewT,NewStorage> LinkedList<T,Storage>::map(const Function<NewT(T&)>& transform) {
 		LinkedList<NewT,NewStorage> newList;
-		newList.reserve(this->size());
 		for(auto& item : this->storage) {
 			newList.pushBack(transform(item));
 		}
@@ -469,7 +468,6 @@ namespace fgl {
 	template<typename NewT, template<typename...> typename NewStorage>
 	LinkedList<NewT,NewStorage> LinkedList<T,Storage>::map(const Function<NewT(const T&)>& transform) const {
 		LinkedList<NewT,NewStorage> newList;
-		newList.reserve(this->size());
 		for(auto& item : this->storage) {
 			newList.pushBack(transform(item));
 		}
