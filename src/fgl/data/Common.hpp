@@ -27,6 +27,10 @@ namespace fgl {
 	using $ = std::shared_ptr<T>;
 	template<typename T>
 	using w$ = std::weak_ptr<T>;
+	template<typename T, typename... Args>
+	$<T> new$(Args&&... args) {
+		return std::make_shared<T>(args...);
+	}
 	
 	#ifndef FGL_ASSERT
 		#ifdef NDEBUG
