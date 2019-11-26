@@ -32,6 +32,15 @@ namespace fgl {
 	template<typename T>
 	using Optionalized = typename optionalize_t<T>::type;
 
+	template<typename T>
+	inline Optionalized<T> maybe(T value) {
+		if constexpr(std::is_same<T,Optionalized<T>>::value) {
+			return value;
+		} else {
+			return Optionalized<T>(value);
+		}
+	}
+
 	namespace _chain_access {
 		struct noaccess {
 			bool padding = false;
