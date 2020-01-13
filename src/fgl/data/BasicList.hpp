@@ -108,11 +108,11 @@ namespace fgl {
 		inline size_type countWhere(Predicate predicate) const;
 		
 		template<typename Predicate>
-		inline ValueType& firstWhere(Predicate predicate, const ValueType& defaultValue);
+		inline ValueType& firstWhere(Predicate predicate, ValueType& defaultValue);
 		template<typename Predicate>
 		inline const ValueType& firstWhere(Predicate predicate, const ValueType& defaultValue) const;
 		template<typename Predicate>
-		inline ValueType& lastWhere(Predicate predicate, const ValueType& defaultValue);
+		inline ValueType& lastWhere(Predicate predicate, ValueType& defaultValue);
 		template<typename Predicate>
 		inline const ValueType& lastWhere(Predicate predicate, const ValueType& defaultValue) const;
 		
@@ -485,7 +485,7 @@ namespace fgl {
 	
 	template<typename Storage>
 	template<typename Predicate>
-	typename BasicList<Storage>::ValueType& BasicList<Storage>::firstWhere(Predicate predicate, const ValueType& defaultValue) {
+	typename BasicList<Storage>::ValueType& BasicList<Storage>::firstWhere(Predicate predicate, ValueType& defaultValue) {
 		auto it = findWhere(predicate);
 		if(it == end()) {
 			return defaultValue;
@@ -505,7 +505,7 @@ namespace fgl {
 	
 	template<typename Storage>
 	template<typename Predicate>
-	typename BasicList<Storage>::ValueType& BasicList<Storage>::lastWhere(Predicate predicate, const ValueType& defaultValue) {
+	typename BasicList<Storage>::ValueType& BasicList<Storage>::lastWhere(Predicate predicate, ValueType& defaultValue) {
 		auto it = findLastWhere(predicate);
 		if(it == end()) {
 			return defaultValue;
