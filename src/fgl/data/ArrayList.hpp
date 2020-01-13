@@ -98,26 +98,23 @@ namespace fgl {
 		size_type removeEqual(const T& value);
 		inline bool removeFirstEqual(const T& value);
 		inline bool removeLastEqual(const T& value);
-		size_type removeWhere(const Function<bool(const T&)>& predicate);
-		inline bool removeFirstWhere(const Function<bool(const T&)>& predicate);
-		inline bool removeLastWhere(const Function<bool(const T&)>& predicate);
-		#ifdef __OBJC__
-		size_type removeWhere(BOOL(^predicate)(const T&));
-		inline bool removeFirstWhere(BOOL(^predicate)(const T&));
-		inline bool removeLastWhere(BOOL(^predicate)(const T&));
-		#endif
+		template<typename Predicate>
+		size_type removeWhere(Predicate predicate);
+		template<typename Predicate>
+		inline bool removeFirstWhere(Predicate predicate);
+		template<typename Predicate>
+		inline bool removeLastWhere(Predicate predicate);
 		inline void clear();
 		
 		inline size_type indexOf(const T& value) const;
 		inline size_type lastIndexOf(const T& value) const;
-		inline size_type indexWhere(const Function<bool(const T&)>& predicate) const;
-		inline size_type lastIndexWhere(const Function<bool(const T&)>& predicate) const;
-		#ifdef __OBJC__
-		inline size_type indexWhere(BOOL(^predicate)(const T&)) const;
-		inline size_type lastIndexWhere(BOOL(^predicate)(const T&)) const;
-		#endif
+		template<typename Predicate>
+		inline size_type indexWhere(Predicate predicate) const;
+		template<typename Predicate>
+		inline size_type lastIndexWhere(Predicate predicate) const;
 
-		inline ArrayList<T,Storage> where(const Function<bool(const T&)>& predicate) const;
+		template<typename Predicate>
+		inline ArrayList<T,Storage> where(Predicate predicate) const;
 		
 		template<typename NewT, template<typename...> typename NewStorage = Storage>
 		inline ArrayList<NewT,NewStorage> map(const Function<NewT(T&)>&);
@@ -436,7 +433,8 @@ namespace fgl {
 	}
 	
 	template<typename T, template<typename...> typename Storage>
-	typename ArrayList<T,Storage>::size_type ArrayList<T,Storage>::removeWhere(const Function<bool(const T&)>& predicate) {
+	template<typename Predicate>
+	typename ArrayList<T,Storage>::size_type ArrayList<T,Storage>::removeWhere(Predicate predicate) {
 		size_type removeCount = 0;
 		size_t firstRemoveIndex = -1;
 		for(size_t i=(this->size()-1); i!=-1; i--) {
@@ -460,7 +458,8 @@ namespace fgl {
 	}
 	
 	template<typename T, template<typename...> typename Storage>
-	bool ArrayList<T,Storage>::removeFirstWhere(const Function<bool(const T&)>& predicate) {
+	template<typename Predicate>
+	bool ArrayList<T,Storage>::removeFirstWhere(Predicate predicate) {
 		auto it = findWhere(predicate);
 		if(it == this->end()) {
 			return false;
@@ -470,7 +469,8 @@ namespace fgl {
 	}
 	
 	template<typename T, template<typename...> typename Storage>
-	bool ArrayList<T,Storage>::removeLastWhere(const Function<bool(const T&)>& predicate) {
+	template<typename Predicate>
+	bool ArrayList<T,Storage>::removeLastWhere(Predicate predicate) {
 		auto it = findLastWhere(predicate);
 		if(it == this->end()) {
 			return false;
@@ -478,54 +478,6 @@ namespace fgl {
 		this->storage.erase(it);
 		return true;
 	}
-	
-	#ifdef __OBJC__
-	
-	template<typename T, template<typename...> typename Storage>
-	typename ArrayList<T,Storage>::size_type ArrayList<T,Storage>::removeWhere(BOOL(^predicate)(const T&)) {
-		size_type removeCount = 0;
-		size_t firstRemoveIndex = -1;
-		for(size_t i=(this->size()-1); i!=-1; i--) {
-			if(predicate(this->storage[i])) {
-				removeCount++;
-				if(firstRemoveIndex == -1) {
-					firstRemoveIndex = i;
-				}
-			}
-			else {
-				if(firstRemoveIndex != -1) {
-					this->storage.erase(this->begin()+i+1, this->begin()+firstRemoveIndex+1);
-					firstRemoveIndex = -1;
-				}
-			}
-		}
-		if(firstRemoveIndex != -1) {
-			this->storage.erase(this->begin(), this->begin()+firstRemoveIndex+1);
-		}
-		return removeCount;
-	}
-	
-	template<typename T, template<typename...> typename Storage>
-	bool ArrayList<T,Storage>::removeFirstWhere(BOOL(^predicate)(const T&)) {
-		auto it = findWhere(predicate);
-		if(it == this->end()) {
-			return false;
-		}
-		this->storage.erase(it);
-		return true;
-	}
-	
-	template<typename T, template<typename...> typename Storage>
-	bool ArrayList<T,Storage>::removeLastWhere(BOOL(^predicate)(const T&)) {
-		auto it = findLastWhere(predicate);
-		if(it == this->end()) {
-			return false;
-		}
-		this->storage.erase(it);
-		return true;
-	}
-	
-	#endif
 	
 	template<typename T, template<typename...> typename Storage>
 	void ArrayList<T,Storage>::clear() {
@@ -545,33 +497,22 @@ namespace fgl {
 	}
 	
 	template<typename T, template<typename...> typename Storage>
-	typename ArrayList<T,Storage>::size_type ArrayList<T,Storage>::indexWhere(const Function<bool(const T&)>& predicate) const {
+	template<typename Predicate>
+	typename ArrayList<T,Storage>::size_type ArrayList<T,Storage>::indexWhere(Predicate predicate) const {
 		return findWhere(predicate) - this->begin();
 	}
 	
 	template<typename T, template<typename...> typename Storage>
-	typename ArrayList<T,Storage>::size_type ArrayList<T,Storage>::lastIndexWhere(const Function<bool(const T&)>& predicate) const {
+	template<typename Predicate>
+	typename ArrayList<T,Storage>::size_type ArrayList<T,Storage>::lastIndexWhere(Predicate predicate) const {
 		return findLastWhere(predicate) - this->begin();
 	}
-	
-	#ifdef __OBJC__
-	
-	template<typename T, template<typename...> typename Storage>
-	typename ArrayList<T,Storage>::size_type ArrayList<T,Storage>::indexWhere(BOOL(^predicate)(const T&)) const {
-		return findWhere(predicate) - this->begin();
-	}
-	
-	template<typename T, template<typename...> typename Storage>
-	typename ArrayList<T,Storage>::size_type ArrayList<T,Storage>::lastIndexWhere(BOOL(^predicate)(const T&)) const {
-		return findLastWhere(predicate) - this->begin();
-	}
-	
-	#endif
 
 
 
 	template<typename T, template<typename...> typename Storage>
-	ArrayList<T,Storage> ArrayList<T,Storage>::where(const Function<bool(const T&)> &predicate) const {
+	template<typename Predicate>
+	ArrayList<T,Storage> ArrayList<T,Storage>::where(Predicate predicate) const {
 		std::list<T> newList;
 		for(auto& item : this->storage) {
 			if(predicate(item)) {

@@ -78,17 +78,16 @@ namespace fgl {
 		size_type removeEqual(const T& value);
 		inline bool removeFirstEqual(const T& value);
 		inline bool removeLastEqual(const T& value);
-		size_type removeWhere(const Function<bool(const T&)>& predicate);
-		inline bool removeFirstWhere(const Function<bool(const T&)>& predicate);
-		inline bool removeLastWhere(const Function<bool(const T&)>& predicate);
-		#ifdef __OBJC__
-		size_type removeWhere(BOOL(^predicate)(const T&));
-		inline bool removeFirstWhere(BOOL(^predicate)(const T&));
-		inline bool removeLastWhere(BOOL(^predicate)(const T&));
-		#endif
+		template<typename Predicate>
+		size_type removeWhere(Predicate predicate);
+		template<typename Predicate>
+		inline bool removeFirstWhere(Predicate predicate);
+		template<typename Predicate>
+		inline bool removeLastWhere(Predicate predicate);
 		inline void clear();
 
-		inline LinkedList<T,Storage> where(const Function<bool(const T&)>& predicate) const;
+		template<typename Predicate>
+		inline LinkedList<T,Storage> where(Predicate predicate) const;
 		
 		template<typename NewT, template<typename...> typename NewStorage = Storage>
 		inline LinkedList<NewT,NewStorage> map(const Function<NewT(T&)>&);
@@ -351,7 +350,8 @@ namespace fgl {
 	}
 	
 	template<typename T, template<typename...> typename Storage>
-	typename LinkedList<T,Storage>::size_type LinkedList<T,Storage>::removeWhere(const Function<bool(const T&)>& predicate) {
+	template<typename Predicate>
+	typename LinkedList<T,Storage>::size_type LinkedList<T,Storage>::removeWhere(Predicate predicate) {
 		size_type count = 0;
 		auto last = this->end();
 		auto firstDelete = last;
@@ -373,7 +373,8 @@ namespace fgl {
 	}
 	
 	template<typename T, template<typename...> typename Storage>
-	bool LinkedList<T,Storage>::removeFirstWhere(const Function<bool(const T&)>& predicate) {
+	template<typename Predicate>
+	bool LinkedList<T,Storage>::removeFirstWhere(Predicate predicate) {
 		auto last = this->end();
 		for(auto it=this->begin(); it!=last; it++) {
 			if(predicate(*it)) {
@@ -385,7 +386,8 @@ namespace fgl {
 	}
 	
 	template<typename T, template<typename...> typename Storage>
-	bool LinkedList<T,Storage>::removeLastWhere(const Function<bool(const T&)>& predicate) {
+	template<typename Predicate>
+	bool LinkedList<T,Storage>::removeLastWhere(Predicate predicate) {
 		auto last = this->rend();
 		for(auto it=this->rbegin(); it!=last; it++) {
 			if(predicate(*it)) {
@@ -395,56 +397,6 @@ namespace fgl {
 		}
 		return false;
 	}
-	
-	#ifdef __OBJC__
-	
-	template<typename T, template<typename...> typename Storage>
-	typename LinkedList<T,Storage>::size_type LinkedList<T,Storage>::removeWhere(BOOL(^predicate)(const T&)) {
-		size_type count = 0;
-		auto last = this->end();
-		auto firstDelete = last;
-		for(auto it=this->begin(); it!=last; it++) {
-			if(predicate(*it)) {
-				count++;
-				if(firstDelete == last) {
-					firstDelete = it;
-				}
-			}
-			else if(firstDelete != last) {
-				this->storage.erase(firstDelete, it);
-			}
-		}
-		if(firstDelete != last) {
-			this->storage.erase(firstDelete, last);
-		}
-		return count;
-	}
-	
-	template<typename T, template<typename...> typename Storage>
-	bool LinkedList<T,Storage>::removeFirstWhere(BOOL(^predicate)(const T&)) {
-		auto last = this->end();
-		for(auto it=this->begin(); it!=last; it++) {
-			if(predicate(*it)) {
-				this->storage.erase(it);
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	template<typename T, template<typename...> typename Storage>
-	bool LinkedList<T,Storage>::removeLastWhere(BOOL(^predicate)(const T&)) {
-		auto last = this->rend();
-		for(auto it=this->rbegin(); it!=last; it++) {
-			if(predicate(*it)) {
-				this->storage.erase(it.base() - 1);
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	#endif
 	
 	template<typename T, template<typename...> typename Storage>
 	void LinkedList<T,Storage>::clear() {
@@ -454,7 +406,8 @@ namespace fgl {
 
 
 	template<typename T, template<typename...> typename Storage>
-	LinkedList<T,Storage> LinkedList<T,Storage>::where(const Function<bool(const T&)>& predicate) const {
+	template<typename Predicate>
+	LinkedList<T,Storage> LinkedList<T,Storage>::where(Predicate predicate) const {
 		LinkedList<T,Storage> newList;
 		for(auto& item : this->storage) {
 			if(predicate(item)) {

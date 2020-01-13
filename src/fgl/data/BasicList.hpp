@@ -94,50 +94,51 @@ namespace fgl {
 		inline const_iterator findEqual(const ValueType& value) const;
 		inline iterator findLastEqual(const ValueType& value);
 		inline const_iterator findLastEqual(const ValueType& value) const;
-		inline iterator findWhere(const Function<bool(const ValueType&)>& predicate);
-		inline const_iterator findWhere(const Function<bool(const ValueType&)>& predicate) const;
-		inline iterator findLastWhere(const Function<bool(const ValueType&)>& predicate);
-		inline const_iterator findLastWhere(const Function<bool(const ValueType&)>& predicate) const;
-		#ifdef __OBJC__
-		inline iterator findWhere(BOOL(^predicate)(const ValueType&));
-		inline const_iterator findWhere(BOOL(^predicate)(const ValueType&)) const;
-		inline iterator findLastWhere(BOOL(^predicate)(const ValueType&));
-		inline const_iterator findLastWhere(BOOL(^predicate)(const ValueType&)) const;
-		#endif
+		template<typename Predicate>
+		inline iterator findWhere(Predicate predicate);
+		template<typename Predicate>
+		inline const_iterator findWhere(Predicate predicate) const;
+		template<typename Predicate>
+		inline iterator findLastWhere(Predicate predicate);
+		template<typename Predicate>
+		inline const_iterator findLastWhere(Predicate predicate) const;
 		
 		inline size_type count(const ValueType& value) const;
-		inline size_type countWhere(const Function<bool(const ValueType&)>& predicate) const;
-		#ifdef __OBJC__
-		inline size_type countWhere(BOOL(^predicate)(const ValueType&)) const;
-		#endif
+		template<typename Predicate>
+		inline size_type countWhere(Predicate predicate) const;
 		
-		inline ValueType& firstWhere(const Function<bool(const ValueType&)>& predicate, const ValueType& defaultValue);
-		inline const ValueType& firstWhere(const Function<bool(const ValueType&)>& predicate, const ValueType& defaultValue) const;
-		inline ValueType& lastWhere(const Function<bool(const ValueType&)>& predicate, const ValueType& defaultValue);
-		inline const ValueType& lastWhere(const Function<bool(const ValueType&)>& predicate, const ValueType& defaultValue) const;
-		#ifdef __OBJC__
-		inline ValueType& firstWhere(BOOL(^predicate)(const ValueType&), const ValueType& defaultValue);
-		inline const ValueType& firstWhere(BOOL(^predicate)(const ValueType&), const ValueType& defaultValue) const;
-		inline ValueType& lastWhere(BOOL(^predicate)(const ValueType&), const ValueType& defaultValue);
-		inline const ValueType& lastWhere(BOOL(^predicate)(const ValueType&), const ValueType& defaultValue) const;
-		#endif
+		template<typename Predicate>
+		inline ValueType& firstWhere(Predicate predicate, const ValueType& defaultValue);
+		template<typename Predicate>
+		inline const ValueType& firstWhere(Predicate predicate, const ValueType& defaultValue) const;
+		template<typename Predicate>
+		inline ValueType& lastWhere(Predicate predicate, const ValueType& defaultValue);
+		template<typename Predicate>
+		inline const ValueType& lastWhere(Predicate predicate, const ValueType& defaultValue) const;
+		
+		template<typename Predicate>
+		inline Optional<ValueType> firstWhere(Predicate predicate) const;
+		template<typename Predicate>
+		inline OptionalRef<ValueType> firstRefWhere(Predicate predicate);
+		template<typename Predicate>
+		inline OptionalRef<const ValueType> firstRefWhere(Predicate predicate) const;
+		template<typename Predicate>
+		inline Optional<ValueType> lastWhere(Predicate predicate) const;
+		template<typename Predicate>
+		inline OptionalRef<ValueType> lastRefWhere(Predicate predicate);
+		template<typename Predicate>
+		inline OptionalRef<const ValueType> lastRefWhere(Predicate predicate) const;
 		
 		inline bool contains(const ValueType& value) const;
-		inline bool containsWhere(const Function<bool(const ValueType&)>& predicate) const;
-		#ifdef __OBJC__
-		inline bool containsWhere(BOOL(^predicate)(const ValueType&)) const;
-		#endif
+		template<typename Predicate>
+		inline bool containsWhere(Predicate predicate) const;
 		
 		inline void sort();
-		inline void sort(const Function<bool(const ValueType&,const ValueType&)>& predicate);
-		#ifdef __OBJC__
-		inline void sort(BOOL(^predicate)(const ValueType&));
-		#endif
+		template<typename Predicate>
+		inline void sort(Predicate predicate);
 		inline void stableSort();
-		inline void stableSort(const Function<bool(const ValueType&,const ValueType&)>& predicate);
-		#ifdef __OBJC__
-		inline void stableSort(BOOL(^predicate)(const ValueType&));
-		#endif
+		template<typename Predicate>
+		inline void stableSort(Predicate predicate);
 	};
 	
 	
@@ -436,17 +437,20 @@ namespace fgl {
 	}
 	
 	template<typename Storage>
-	typename BasicList<Storage>::iterator BasicList<Storage>::findWhere(const Function<bool(const ValueType&)>& predicate) {
+	template<typename Predicate>
+	typename BasicList<Storage>::iterator BasicList<Storage>::findWhere(Predicate predicate) {
 		return std::find_if(begin(), end(), predicate);
 	}
 	
 	template<typename Storage>
-	typename BasicList<Storage>::const_iterator BasicList<Storage>::findWhere(const Function<bool(const ValueType&)>& predicate) const {
+	template<typename Predicate>
+	typename BasicList<Storage>::const_iterator BasicList<Storage>::findWhere(Predicate predicate) const {
 		return std::find_if(begin(), end(), predicate);
 	}
 	
 	template<typename Storage>
-	typename BasicList<Storage>::iterator BasicList<Storage>::findLastWhere(const Function<bool(const ValueType&)>& predicate) {
+	template<typename Predicate>
+	typename BasicList<Storage>::iterator BasicList<Storage>::findLastWhere(Predicate predicate) {
 		auto it = std::find_if(rbegin(), rend(), predicate);
 		if(it == rend()) {
 			return end();
@@ -455,45 +459,14 @@ namespace fgl {
 	}
 	
 	template<typename Storage>
-	typename BasicList<Storage>::const_iterator BasicList<Storage>::findLastWhere(const Function<bool(const ValueType&)>& predicate) const {
+	template<typename Predicate>
+	typename BasicList<Storage>::const_iterator BasicList<Storage>::findLastWhere(Predicate predicate) const {
 		auto it = std::find_if(rbegin(), rend(), predicate);
 		if(it == rend()) {
 			return end();
 		}
 		return it.base() - 1;
 	}
-	
-	#ifdef __OBJC__
-	
-	template<typename Storage>
-	typename BasicList<Storage>::iterator BasicList<Storage>::findWhere(BOOL(^predicate)(const ValueType&)) {
-		return std::find_if(begin(), end(), predicate);
-	}
-	
-	template<typename Storage>
-	typename BasicList<Storage>::const_iterator BasicList<Storage>::findWhere(BOOL(^predicate)(const ValueType&)) const {
-		return std::find_if(begin(), end(), predicate);
-	}
-	
-	template<typename Storage>
-	typename BasicList<Storage>::iterator BasicList<Storage>::findLastWhere(BOOL(^predicate)(const ValueType&)) {
-		auto it = std::find_if(rbegin(), rend(), predicate);
-		if(it == rend()) {
-			return end();
-		}
-		return it.base() - 1;
-	}
-	
-	template<typename Storage>
-	typename BasicList<Storage>::const_iterator BasicList<Storage>::findLastWhere(BOOL(^predicate)(const ValueType&)) const {
-		auto it = std::find_if(rbegin(), rend(), predicate);
-		if(it == rend()) {
-			return end();
-		}
-		return it.base() - 1;
-	}
-	
-	#endif
 	
 	
 	
@@ -503,23 +476,16 @@ namespace fgl {
 	}
 	
 	template<typename Storage>
-	typename BasicList<Storage>::size_type BasicList<Storage>::countWhere(const Function<bool(const ValueType&)>& predicate) const {
+	template<typename Predicate>
+	typename BasicList<Storage>::size_type BasicList<Storage>::countWhere(Predicate predicate) const {
 		return std::count_if(begin(), end(), predicate);
 	}
 	
-	#ifdef __OBJC__
-	
-	template<typename Storage>
-	typename BasicList<Storage>::size_type BasicList<Storage>::countWhere(BOOL(^predicate)(const ValueType&)) const {
-		return std::count_if(begin(), end(), predicate);
-	}
-	
-	#endif
-	
 	
 	
 	template<typename Storage>
-	typename BasicList<Storage>::ValueType& BasicList<Storage>::firstWhere(const Function<bool(const ValueType&)>& predicate, const ValueType& defaultValue) {
+	template<typename Predicate>
+	typename BasicList<Storage>::ValueType& BasicList<Storage>::firstWhere(Predicate predicate, const ValueType& defaultValue) {
 		auto it = findWhere(predicate);
 		if(it == end()) {
 			return defaultValue;
@@ -528,7 +494,8 @@ namespace fgl {
 	}
 	
 	template<typename Storage>
-	const typename BasicList<Storage>::ValueType& BasicList<Storage>::firstWhere(const Function<bool(const ValueType&)>& predicate, const ValueType& defaultValue) const {
+	template<typename Predicate>
+	const typename BasicList<Storage>::ValueType& BasicList<Storage>::firstWhere(Predicate predicate, const ValueType& defaultValue) const {
 		auto it = findWhere(predicate);
 		if(it == end()) {
 			return defaultValue;
@@ -537,7 +504,8 @@ namespace fgl {
 	}
 	
 	template<typename Storage>
-	typename BasicList<Storage>::ValueType& BasicList<Storage>::lastWhere(const Function<bool(const ValueType&)>& predicate, const ValueType& defaultValue) {
+	template<typename Predicate>
+	typename BasicList<Storage>::ValueType& BasicList<Storage>::lastWhere(Predicate predicate, const ValueType& defaultValue) {
 		auto it = findLastWhere(predicate);
 		if(it == end()) {
 			return defaultValue;
@@ -546,53 +514,14 @@ namespace fgl {
 	}
 	
 	template<typename Storage>
-	const typename BasicList<Storage>::ValueType& BasicList<Storage>::lastWhere(const Function<bool(const ValueType&)>& predicate, const ValueType& defaultValue) const {
+	template<typename Predicate>
+	const typename BasicList<Storage>::ValueType& BasicList<Storage>::lastWhere(Predicate predicate, const ValueType& defaultValue) const {
 		auto it = findLastWhere(predicate);
 		if(it == end()) {
 			return defaultValue;
 		}
 		return *it;
 	}
-	
-	#ifdef __OBJC__
-	
-	template<typename Storage>
-	typename BasicList<Storage>::ValueType& BasicList<Storage>::firstWhere(BOOL(^predicate)(const ValueType&), const ValueType& defaultValue) {
-		auto it = findWhere(predicate);
-		if(it == end()) {
-			return defaultValue;
-		}
-		return *it;
-	}
-	
-	template<typename Storage>
-	const typename BasicList<Storage>::ValueType& BasicList<Storage>::firstWhere(BOOL(^predicate)(const ValueType&), const ValueType& defaultValue) const {
-		auto it = findWhere(predicate);
-		if(it == end()) {
-			return defaultValue;
-		}
-		return *it;
-	}
-	
-	template<typename Storage>
-	typename BasicList<Storage>::ValueType& BasicList<Storage>::lastWhere(BOOL(^predicate)(const ValueType&), const ValueType& defaultValue) {
-		auto it = findLastWhere(predicate);
-		if(it == end()) {
-			return defaultValue;
-		}
-		return *it;
-	}
-	
-	template<typename Storage>
-	const typename BasicList<Storage>::ValueType& BasicList<Storage>::lastWhere(BOOL(^predicate)(const ValueType&), const ValueType& defaultValue) const {
-		auto it = findLastWhere(predicate);
-		if(it == end()) {
-			return defaultValue;
-		}
-		return *it;
-	}
-	
-	#endif
 	
 	
 	
@@ -602,18 +531,10 @@ namespace fgl {
 	}
 	
 	template<typename Storage>
-	bool BasicList<Storage>::containsWhere(const Function<bool(const ValueType&)>& predicate) const {
+	template<typename Predicate>
+	bool BasicList<Storage>::containsWhere(Predicate predicate) const {
 		return findWhere(predicate) != end();
 	}
-	
-	#ifdef __OBJC__
-	
-	template<typename Storage>
-	bool BasicList<Storage>::containsWhere(BOOL(^predicate)(const ValueType&)) const {
-		return findWhere(predicate) != end();
-	}
-	
-	#endif
 	
 	
 	
@@ -623,18 +544,10 @@ namespace fgl {
 	}
 	
 	template<typename Storage>
-	void BasicList<Storage>::sort(const Function<bool(const ValueType&,const ValueType&)>& predicate) {
+	template<typename Predicate>
+	void BasicList<Storage>::sort(Predicate predicate) {
 		std::sort(begin(), end(), predicate);
 	}
-	
-	#ifdef __OBJC__
-	
-	template<typename Storage>
-	void BasicList<Storage>::sort(BOOL(^predicate)(const ValueType&)) {
-		std::sort(begin(), end(), predicate);
-	}
-	
-	#endif
 	
 	template<typename Storage>
 	void BasicList<Storage>::stableSort() {
@@ -642,16 +555,8 @@ namespace fgl {
 	}
 	
 	template<typename Storage>
-	void BasicList<Storage>::stableSort(const Function<bool(const ValueType&,const ValueType&)>& predicate) {
+	template<typename Predicate>
+	void BasicList<Storage>::stableSort(Predicate predicate) {
 		std::stable_sort(begin(), end(), predicate);
 	}
-	
-	#ifdef __OBJC__
-	
-	template<typename Storage>
-	void BasicList<Storage>::stableSort(BOOL(^predicate)(const ValueType&)) {
-		std::stable_sort(begin(), end(), predicate);
-	}
-	
-	#endif
 }
