@@ -522,6 +522,68 @@ namespace fgl {
 		}
 		return *it;
 	}
+
+
+
+	template<typename Storage>
+	template<typename Predicate>
+	Optional<typename BasicList<Storage>::ValueType> BasicList<Storage>::firstWhere(Predicate predicate) const {
+		auto it = findWhere(predicate);
+		if(it == end()) {
+			return std::nullopt;
+		}
+		return *it;
+	}
+
+	template<typename Storage>
+	template<typename Predicate>
+	OptionalRef<typename BasicList<Storage>::ValueType> BasicList<Storage>::firstRefWhere(Predicate predicate) {
+		auto it = findWhere(predicate);
+		if(it == end()) {
+			return std::nullopt;
+		}
+		return std::ref(*it);
+	}
+
+	template<typename Storage>
+	template<typename Predicate>
+	OptionalRef<const typename BasicList<Storage>::ValueType> BasicList<Storage>::firstRefWhere(Predicate predicate) const {
+		auto it = findWhere(predicate);
+		if(it == end()) {
+			return std::nullopt;
+		}
+		return std::ref(*it);
+	}
+
+	template<typename Storage>
+	template<typename Predicate>
+	Optional<typename BasicList<Storage>::ValueType> BasicList<Storage>::lastWhere(Predicate predicate) const {
+		auto it = findLastWhere(predicate);
+		if(it == end()) {
+			return std::nullopt;
+		}
+		return *it;
+	}
+
+	template<typename Storage>
+	template<typename Predicate>
+	OptionalRef<typename BasicList<Storage>::ValueType> BasicList<Storage>::lastRefWhere(Predicate predicate) {
+		auto it = findLastWhere(predicate);
+		if(it == end()) {
+			return std::nullopt;
+		}
+		return std::ref(*it);
+	}
+
+	template<typename Storage>
+	template<typename Predicate>
+	OptionalRef<const typename BasicList<Storage>::ValueType> BasicList<Storage>::lastRefWhere(Predicate predicate) const {
+		auto it = findLastWhere(predicate);
+		if(it == end()) {
+			return std::nullopt;
+		}
+		return std::ref(*it);
+	}
 	
 	
 	
