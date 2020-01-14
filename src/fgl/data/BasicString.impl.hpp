@@ -1285,7 +1285,8 @@ namespace fgl {
 		std::basic_istringstream<Char> convert(storage);
 		convert.imbue(locale);
 		Num numVal = 0;
-		if(!(convert >> numVal)) {
+		convert >> numVal;
+		if(convert.fail()) {
 			throw std::logic_error("BasicString does not represent an arithmetic value");
 		}
 		return numVal;
