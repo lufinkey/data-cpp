@@ -23,5 +23,12 @@ int main(int argc, char* argv[]) {
 	auto chainResult = chain<String>([&](){ return opt(optStr)->append(opt(optStr2).value()); });
 	chain([&](){ return opt(optStr)->append(opt(optStr2).value()); });
 	
+	auto maybeTryResult = maybeTry([]() {
+		return 5;
+	});
+	if(maybeTryResult) {
+		printf("got maybeTryResult: %i\n", maybeTryResult.value());
+	}
+	
 	return 0;
 }

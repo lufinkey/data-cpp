@@ -124,4 +124,15 @@ namespace fgl {
 			return false;
 		}
 	}
+
+
+
+	template<typename Func>
+	auto maybeTry(Func func) -> Optionalized<decltype(func())> {
+		try {
+			return func();
+		} catch(...) {
+			return std::nullopt;
+		}
+	}
 }
