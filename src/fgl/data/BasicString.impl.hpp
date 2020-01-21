@@ -128,9 +128,10 @@ namespace fgl {
 	
 	template<typename Char>
 	BasicString<Char>::BasicString(Napi::String napiString) {
-		if(napiString.IsEmpty()) {
-			operator=(napiString.Utf8Value());
+		if(napiString.IsEmpty() || napiString.IsNull() || napiString.IsUndefined()) {
+			return;
 		}
+		operator=(napiString.Utf8Value());
 	}
 	
 	#endif
