@@ -12,7 +12,7 @@ include_directories(
 
 file(GLOB_RECURSE DATACPP_SOURCES ../../../../../../src/fgl/*.cpp)
 
-add_library(DataCpp STATIC
+add_library(DataCpp SHARED
 		DataCpp_android.cpp
 		${DATACPP_SOURCES})
 
