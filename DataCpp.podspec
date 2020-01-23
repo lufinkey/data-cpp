@@ -43,6 +43,9 @@ Pod::Spec.new do |s|
 		'HEADER_SEARCH_PATHS' => "$(PODS_ROOT)/DataCpp/src",
 		'CLANG_CXX_LANGUAGE_STANDARD' => 'gnu++17'
 	}
+	s.user_target_xcconfig = {
+		'FRAMEWORK_SEARCH_PATHS' => "${PODS_ROOT}/DataCpp/src"
+	}
 	# s.frameworks = 'UIKit', 'MapKit'
 	# s.dependency 'AFNetworking', '~> 2.3'
 end
