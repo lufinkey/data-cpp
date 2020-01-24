@@ -81,6 +81,9 @@ namespace fgl {
 		typename std::enable_if<(BasicStringUtils::can_convert_string_type<_Char>::value
 			&& sizeof(unichar)==sizeof(_Char) && sizeof(_Char)!=sizeof(char)), std::nullptr_t>::type>
 	BasicString<Char>::BasicString(NSString* nsString) {
+		if(nsString == nil) {
+			return;
+		}
 		NSUInteger nsString_length = nsString.length;
 		size_t size_new = BasicStringUtils::get_safe_resize<Char>((size_t)nsString_length, 0);
 		NSRange range = NSMakeRange(0, nsString_length);
@@ -94,7 +97,7 @@ namespace fgl {
 		typename std::enable_if<(BasicStringUtils::can_convert_string_type<_Char>::value
 			&& sizeof(_Char)==sizeof(char)), std::nullptr_t>::type>
 	BasicString<Char>::BasicString(NSString* nsString)
-	: storage((const Char*)[nsString UTF8String]) {
+	: storage((nsString != nil) ? (const Char*)[nsString UTF8String] : "") {
 		//
 	}
 	
@@ -104,6 +107,9 @@ namespace fgl {
 		typename std::enable_if<(BasicStringUtils::can_convert_string_type<_Char>::value
 			&& sizeof(unichar)!=sizeof(_Char) && sizeof(_Char)!=sizeof(char)), std::nullptr_t>::type>
 	BasicString<Char>::BasicString(NSString* nsString) {
+		if(nsString == nil) {
+			return;
+		}
 		NSUInteger nsString_length = nsString.length;
 		auto buffer = std::make_unique<unichar[]>((size_t)nsString_length);
 		NSRange range = NSMakeRange(0, nsString_length);
@@ -490,6 +496,10 @@ namespace fgl {
 		typename std::enable_if<(BasicStringUtils::can_convert_string_type<_Char>::value
 			&& sizeof(unichar)==sizeof(_Char) && sizeof(_Char)!=sizeof(char)), std::nullptr_t>::type>
 	BasicString<Char>& BasicString<Char>::operator=(NSString* nsString) {
+		if(nsString == nil) {
+			clear();
+			return *this;
+		}
 		NSUInteger nsString_length = nsString.length;
 		size_t size_new = BasicStringUtils::get_safe_resize<Char>((size_t)nsString_length, 0);
 		NSRange range = NSMakeRange(0, nsString_length);
@@ -504,6 +514,10 @@ namespace fgl {
 		typename std::enable_if<(BasicStringUtils::can_convert_string_type<_Char>::value
 			&& sizeof(_Char)==sizeof(char)), std::nullptr_t>::type>
 	BasicString<Char>& BasicString<Char>::operator=(NSString* nsString) {
+		if(nsString == nil) {
+			clear();
+			return *this;
+		}
 		storage.assign((const Char*)[nsString UTF8String]);
 		return *this;
 	}
@@ -514,6 +528,10 @@ namespace fgl {
 		typename std::enable_if<(BasicStringUtils::can_convert_string_type<_Char>::value
 			&& sizeof(unichar)!=sizeof(_Char) && sizeof(_Char)!=sizeof(char)), std::nullptr_t>::type>
 	BasicString<Char>& BasicString<Char>::operator=(NSString* nsString) {
+		if(nsString == nil) {
+			clear();
+			return *this;
+		}
 		NSUInteger nsString_length = nsString.length;
 		size_t length = BasicStringUtils::get_safe_resize<Char>((size_t)nsString_length, 0);
 		auto buffer = std::make_unique<unichar[]>(length);
@@ -675,6 +693,9 @@ namespace fgl {
 		typename std::enable_if<(BasicStringUtils::can_convert_string_type<_Char>::value
 			&& sizeof(unichar)==sizeof(_Char) && sizeof(_Char)!=sizeof(char)), std::nullptr_t>::type>
 	BasicString<Char>& BasicString<Char>::operator+=(NSString* nsString) {
+		if(nsString == nil) {
+			return *this;
+		}
 		NSUInteger nsString_length = nsString.length;
 		size_t size_new = BasicStringUtils::get_safe_resize<Char>(storage.size(), (size_t)nsString_length);
 		size_t size_old = storage.size();
@@ -690,6 +711,9 @@ namespace fgl {
 		typename std::enable_if<(BasicStringUtils::can_convert_string_type<_Char>::value
 			&& sizeof(_Char)==sizeof(char)), std::nullptr_t>::type>
 	BasicString<Char>& BasicString<Char>::operator+=(NSString* nsString) {
+		if(nsString == nil) {
+			return *this;
+		}
 		append((const Char*)[nsString UTF8String]);
 		return *this;
 	}
@@ -700,6 +724,9 @@ namespace fgl {
 		typename std::enable_if<(BasicStringUtils::can_convert_string_type<_Char>::value
 			&& sizeof(unichar)!=sizeof(_Char) && sizeof(_Char)!=sizeof(char)), std::nullptr_t>::type>
 	BasicString<Char>& BasicString<Char>::operator+=(NSString* nsString) {
+		if(nsString == nil) {
+			return *this;
+		}
 		NSUInteger nsString_length = nsString.length;
 		auto buffer = std::make_unique<unichar[]>((size_t)nsString_length);
 		auto buffer_data = buffer.get();
