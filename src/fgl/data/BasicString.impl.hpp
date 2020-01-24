@@ -1024,6 +1024,11 @@ namespace fgl {
 		}
 		return true;
 	}
+
+	template<typename Char>
+	bool BasicString<Char>::endsWith(const Char* str) const {
+		return endsWith(str, BasicStringUtils::strlen<Char>(str));
+	}
 	
 	template<typename Char>
 	bool BasicString<Char>::endsWith(const std::basic_string<Char>& str) const {
