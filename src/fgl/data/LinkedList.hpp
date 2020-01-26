@@ -59,8 +59,8 @@ namespace fgl {
 		
 		inline void pushFront(const T& value);
 		inline void pushFront(T&& value);
-		inline void pushFront(const LinkedList<T,Storage>& list);
-		inline void pushFront(LinkedList<T,Storage>&& list);
+		inline void pushFrontList(const LinkedList<T,Storage>& list);
+		inline void pushFrontList(LinkedList<T,Storage>&& list);
 		inline void popFront();
 		inline T extractFront();
 		
@@ -222,12 +222,12 @@ namespace fgl {
 	}
 	
 	template<typename T, template<typename...> typename Storage>
-	void LinkedList<T,Storage>::pushFront(const LinkedList<T,Storage>& list) {
+	void LinkedList<T,Storage>::pushFrontList(const LinkedList<T,Storage>& list) {
 		this->storage.insert(this->begin(), list);
 	}
 	
 	template<typename T, template<typename...> typename Storage>
-	void LinkedList<T,Storage>::pushFront(LinkedList<T,Storage>&& list) {
+	void LinkedList<T,Storage>::pushFrontList(LinkedList<T,Storage>&& list) {
 		this->storage.insert(this->begin(), list);
 	}
 	
