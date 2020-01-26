@@ -334,11 +334,11 @@ namespace fgl {
 	
 	template<typename T, template<typename...> typename Storage>
 	void ArrayList<T,Storage>::pushBackList(const ArrayList<T,Storage>& list) {
-		this->storage.insert(this->end(), list);
+		this->storage.insert(this->end(), list.begin(), list.end());
 	}
 	template<typename T, template<typename...> typename Storage>
 	void ArrayList<T,Storage>::pushBackList(ArrayList<T,Storage>&& list) {
-		this->storage.insert(this->end(), list);
+		this->storage.insert(this->end(), std::make_move_iterator(list.begin()), std::make_move_iterator(list.end()));
 	}
 	
 	template<typename T, template<typename...> typename Storage>

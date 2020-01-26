@@ -223,12 +223,12 @@ namespace fgl {
 	
 	template<typename T, template<typename...> typename Storage>
 	void LinkedList<T,Storage>::pushFrontList(const LinkedList<T,Storage>& list) {
-		this->storage.insert(this->begin(), list);
+		this->storage.insert(this->begin(), list.begin(), list.end());
 	}
 	
 	template<typename T, template<typename...> typename Storage>
 	void LinkedList<T,Storage>::pushFrontList(LinkedList<T,Storage>&& list) {
-		this->storage.insert(this->begin(), list);
+		this->storage.insert(this->begin(), std::make_move_iterator(list.begin()), std::make_move_iterator(list.end()));
 	}
 	
 	template<typename T, template<typename...> typename Storage>
@@ -259,12 +259,12 @@ namespace fgl {
 	
 	template<typename T, template<typename...> typename Storage>
 	void LinkedList<T,Storage>::pushBackList(const LinkedList<T,Storage>& list) {
-		this->storage.insert(this->end(), list);
+		this->storage.insert(this->end(), list.begin(), list.end());
 	}
 	
 	template<typename T, template<typename...> typename Storage>
 	void LinkedList<T,Storage>::pushBackList(LinkedList<T,Storage>&& list) {
-		this->storage.insert(this->end(), list);
+		this->storage.insert(this->end(), std::make_move_iterator(list.begin()), std::make_move_iterator(list.end()));
 	}
 	
 	template<typename T, template<typename...> typename Storage>
