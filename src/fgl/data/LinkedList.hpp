@@ -66,8 +66,8 @@ namespace fgl {
 		
 		inline void pushBack(const T& value);
 		inline void pushBack(T&& value);
-		inline void pushBack(const LinkedList<T,Storage>& list);
-		inline void pushBack(LinkedList<T,Storage>&& list);
+		inline void pushBackList(const LinkedList<T,Storage>& list);
+		inline void pushBackList(LinkedList<T,Storage>&& list);
 		inline void popBack();
 		inline T extractBack();
 		
@@ -258,12 +258,12 @@ namespace fgl {
 	}
 	
 	template<typename T, template<typename...> typename Storage>
-	void LinkedList<T,Storage>::pushBack(const LinkedList<T,Storage>& list) {
+	void LinkedList<T,Storage>::pushBackList(const LinkedList<T,Storage>& list) {
 		this->storage.insert(this->end(), list);
 	}
 	
 	template<typename T, template<typename...> typename Storage>
-	void LinkedList<T,Storage>::pushBack(LinkedList<T,Storage>&& list) {
+	void LinkedList<T,Storage>::pushBackList(LinkedList<T,Storage>&& list) {
 		this->storage.insert(this->end(), list);
 	}
 	
