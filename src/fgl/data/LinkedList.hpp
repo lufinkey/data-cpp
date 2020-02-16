@@ -342,7 +342,7 @@ namespace fgl {
 		auto last = this->rend();
 		for(auto it=this->rbegin(); it!=last; it++) {
 			if(value == *it) {
-				this->storage.erase(it.base() - 1);
+				this->storage.erase(std::prev(it.base(), 1));
 				return true;
 			}
 		}
@@ -391,7 +391,7 @@ namespace fgl {
 		auto last = this->rend();
 		for(auto it=this->rbegin(); it!=last; it++) {
 			if(predicate(*it)) {
-				this->storage.erase(it.base() - 1);
+				this->storage.erase(std::prev(it.base(), 1));
 				return true;
 			}
 		}
