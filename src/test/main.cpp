@@ -30,5 +30,7 @@ int main(int argc, char* argv[]) {
 		printf("got maybeTryResult: %i\n", maybeTryResult.value());
 	}
 	
+	printf("stringified: %s\n", stringify(ArrayList<int>()).c_str());
+	
 	return 0;
 }

@@ -21,6 +21,11 @@ namespace fgl {
 	using OptionalRef = std::optional<std::reference_wrapper<T>>;
 
 	template<typename T>
+	struct is_optional: std::false_type {};
+	template<typename T>
+	struct is_optional<Optional<T>>: std::true_type {};
+
+	template<typename T>
 	struct optionalize_t {
 		using type = Optional<T>;
 	};

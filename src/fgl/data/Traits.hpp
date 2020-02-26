@@ -68,4 +68,48 @@ namespace fgl {
 	template<typename T, typename Container>
 	using IsTypeContainer = typename std::enable_if<
 	(is_container<Container>::value && std::is_same<T,typename Container::value_type>::value)>::type;
+
+
+
+
+	template<typename T>
+	struct is_ptr_container: std::false_type {};
+	template<typename T>
+	struct is_ptr_container<std::shared_ptr<T>>: std::true_type {
+		using content_type = T;
+	};
+	template<typename T>
+	struct is_ptr_container<std::unique_ptr<T>>: std::true_type {
+		using content_type = T;
+	};
+	
+	template<typename T>
+	struct is_weak_ptr: std::false_type {};
+	template<typename T>
+	struct is_weak_ptr<std::weak_ptr<T>>: std::true_type {
+		using content_type = T;
+	};
+
+	template<typename T>
+	struct is_pair: std::false_type {};
+	template<typename T, typename U>
+	struct is_pair<std::pair<T,U>>: std::true_type {
+		using first_type = T;
+		using second_type = U;
+	};
+
+
+
+	#define CREATE_HAS_MEMBER_FUNC(memberName) \
+	template<typename T, typename ReturnType, typename std::enable_if<std::is_class<T>::value, std::nullptr_t>::type = nullptr> \
+	struct has_member_##memberName { \
+	private: \
+		typedef char yes[1]; \
+		typedef char no[2]; \
+		template <typename U, U> struct type_check; \
+		template <typename Q> static yes &chk(type_check<ReturnType(T::*)()const,&Q::memberName>*); \
+		template <typename  > static no  &chk(...); \
+	public: \
+		static constexpr bool value = sizeof(chk<T>(0)) == sizeof(yes); \
+	};
 }
