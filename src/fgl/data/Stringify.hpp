@@ -127,6 +127,9 @@ namespace fgl {
 		else if constexpr(StringifyUtils::has_members<Type>::string_value) {
 			return obj.string_value();
 		}
+		else if constexpr(std::is_base_of<std::exception,Type>::value) {
+			return obj.what();
+		}
 		else if constexpr(is_container<Type>::value) {
 			std::stringstream ss;
 			ss << stringify_type<Type>() << "[";
