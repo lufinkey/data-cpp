@@ -470,6 +470,10 @@ namespace fgl {
 	template<typename Char>
 	bool operator==(const BasicString<Char>& left, const BasicString<Char>& right);
 	template<typename Char>
+	bool operator==(const BasicString<Char>& left, const std::basic_string<Char>& right);
+	template<typename Char>
+	bool operator==(const std::basic_string<Char>& left, const BasicString<Char>& right);
+	template<typename Char>
 	bool operator==(const BasicString<Char>& left, const Char* right);
 	template<typename Char>
 	bool operator==(const Char* left, const BasicString<Char>& right);
