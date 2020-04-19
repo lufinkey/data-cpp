@@ -636,8 +636,9 @@ namespace fgl {
 
 	#ifdef __OBJC__
 
+	template<typename Storage>
 	template<typename Mapper>
-	inline NSMutableArray* BasicList<Storage>::mapToNSArray(Mapper mapper) {
+	NSMutableArray* BasicList<Storage>::mapToNSArray(Mapper mapper) {
 		NSMutableArray* nsArray = [[NSMutableArray alloc] initWithCapacity:(NSUInteger)size()];
 		for(auto& item : *this) {
 			[nsArray addObject:mapper(item)];
@@ -645,8 +646,9 @@ namespace fgl {
 		return nsArray;
 	}
 
+	template<typename Storage>
 	template<typename Mapper>
-	inline NSMutableArray* mapToNSArray(Mapper mapper) const {
+	NSMutableArray* BasicList<Storage>::mapToNSArray(Mapper mapper) const {
 		NSMutableArray* nsArray = [[NSMutableArray alloc] initWithCapacity:(NSUInteger)size()];
 		for(auto& item : *this) {
 			[nsArray addObject:mapper(item)];
