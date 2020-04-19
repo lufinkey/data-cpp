@@ -15,6 +15,9 @@
 #include <fgl/data/Common.hpp>
 #include <fgl/data/Optional.hpp>
 #include <fgl/data/Traits.hpp>
+#ifdef __OBJC__
+#import <Foundation/Foundation.h>
+#endif
 
 namespace fgl {
 	template<typename Storage>
@@ -139,6 +142,13 @@ namespace fgl {
 		inline void stableSort();
 		template<typename Predicate>
 		inline void stableSort(Predicate predicate);
+		
+		#ifdef __OBJC__
+		template<typename Mapper>
+		inline NSMutableArray* mapToNSArray(Mapper mapper);
+		template<typename Mapper>
+		inline NSMutableArray* mapToNSArray(Mapper mapper) const;
+		#endif
 	};
 	
 	
@@ -621,4 +631,28 @@ namespace fgl {
 	void BasicList<Storage>::stableSort(Predicate predicate) {
 		std::stable_sort(begin(), end(), predicate);
 	}
+
+
+
+	#ifdef __OBJC__
+
+	template<typename Mapper>
+	inline NSMutableArray* BasicList<Storage>::mapToNSArray(Mapper mapper) {
+		NSMutableArray* nsArray = [[NSMutableArray alloc] initWithCapacity:(NSUInteger)size()];
+		for(auto& item : *this) {
+			[nsArray addObject:mapper(item)];
+		}
+		return nsArray;
+	}
+
+	template<typename Mapper>
+	inline NSMutableArray* mapToNSArray(Mapper mapper) const {
+		NSMutableArray* nsArray = [[NSMutableArray alloc] initWithCapacity:(NSUInteger)size()];
+		for(auto& item : *this) {
+			[nsArray addObject:mapper(item)];
+		}
+		return nsArray;
+	}
+
+	#endif
 }
