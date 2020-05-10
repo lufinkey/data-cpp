@@ -33,6 +33,11 @@ namespace fgl {
 		using BasicList<Storage<T>>::BasicList;
 		using BasicList<Storage<T>>::operator=;
 		
+		template<typename ListType, typename Transform>
+		LinkedList(const ListType& list, Transform transform);
+		template<typename ListType, typename Transform>
+		LinkedList(ListType&& list, Transform transform);
+		
 		#ifdef __OBJC__
 		LinkedList(NSArray* objcArray, Function<T(NSObject*)> transform);
 		#endif
@@ -115,6 +120,22 @@ namespace fgl {
 	
 	
 #pragma mark LinkedList implementation
+
+	template<typename T, template<typename...> typename Storage>
+	template<typename ListType, typename Transform>
+	LinkedList<T,Storage>::LinkedList(const ListType& list, Transform transform) {
+		for(auto& item : list) {
+			pushBack(transform(item));
+		}
+	}
+
+	template<typename T, template<typename...> typename Storage>
+	template<typename ListType, typename Transform>
+	LinkedList<T,Storage>::LinkedList(ListType&& list, Transform transform) {
+		for(auto& item : list) {
+			pushBack(transform(item));
+		}
+	}
 
 	#ifdef __OBJC__
 

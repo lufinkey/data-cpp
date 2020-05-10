@@ -37,6 +37,11 @@ namespace fgl {
 		using BasicList<Storage<T>>::BasicList;
 		using BasicList<Storage<T>>::operator=;
 		
+		template<typename ListType, typename Transform>
+		ArrayList(const ListType& list, Transform transform);
+		template<typename ListType, typename Transform>
+		ArrayList(ListType&& list, Transform transform);
+		
 		#ifdef __OBJC__
 		ArrayList(NSArray* objcArray, Function<T(NSObject*)> transform);
 		#endif
@@ -136,6 +141,24 @@ namespace fgl {
 	
 	
 #pragma mark ArrayList implementation
+
+	template<typename T, template<typename...> typename Storage>
+	template<typename ListType, typename Transform>
+	ArrayList<T,Storage>::ArrayList(const ListType& list, Transform transform) {
+		reserve(list.size());
+		for(auto& item : list) {
+			pushBack(transform(item));
+		}
+	}
+
+	template<typename T, template<typename...> typename Storage>
+	template<typename ListType, typename Transform>
+	ArrayList<T,Storage>::ArrayList(ListType&& list, Transform transform) {
+		reserve(list.size());
+		for(auto& item : list) {
+			pushBack(transform(item));
+		}
+	}
 
 	#ifdef __OBJC__
 
