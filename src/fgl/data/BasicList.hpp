@@ -145,9 +145,16 @@ namespace fgl {
 		
 		#ifdef __OBJC__
 		template<typename Mapper>
-		inline NSMutableArray* mapToNSArray(Mapper mapper);
+		inline NSMutableArray* toNSArray(Mapper mapper);
 		template<typename Mapper>
-		inline NSMutableArray* mapToNSArray(Mapper mapper) const;
+		inline NSMutableArray* toNSArray(Mapper mapper) const;
+		#endif
+		
+		#ifdef JNIEXPORT
+		template<typename Mapper>
+		jobjectArray toJavaObjectArray(JNIEnv* env, jclass objectClass, Mapper transform);
+		template<typename Mapper>
+		jobjectArray toJavaObjectArray(JNIEnv* env, jclass objectClass, Mapper transform) const;
 		#endif
 	};
 	
@@ -638,9 +645,9 @@ namespace fgl {
 
 	template<typename Storage>
 	template<typename Mapper>
-	NSMutableArray* BasicList<Storage>::mapToNSArray(Mapper mapper) {
+	NSMutableArray* BasicList<Storage>::toNSArray(Mapper mapper) {
 		NSMutableArray* nsArray = [[NSMutableArray alloc] initWithCapacity:(NSUInteger)size()];
-		for(auto& item : *this) {
+		for(auto& item : storage) {
 			[nsArray addObject:mapper(item)];
 		}
 		return nsArray;
@@ -648,12 +655,30 @@ namespace fgl {
 
 	template<typename Storage>
 	template<typename Mapper>
-	NSMutableArray* BasicList<Storage>::mapToNSArray(Mapper mapper) const {
+	NSMutableArray* BasicList<Storage>::toNSArray(Mapper mapper) const {
 		NSMutableArray* nsArray = [[NSMutableArray alloc] initWithCapacity:(NSUInteger)size()];
-		for(auto& item : *this) {
+		for(auto& item : storage) {
 			[nsArray addObject:mapper(item)];
 		}
 		return nsArray;
+	}
+
+	#endif
+
+
+
+	#ifdef JNIEXPORT
+
+	template<typename T, template<typename...> typename Storage>
+	template<typename Mapper>
+	jobjectArray LinkedList<T,Storage>::toJavaObjectArray(JNIEnv* env, jclass objectClass, Mapper transform) const {
+		jobjectArray javaArray = env->NewObjectArray((jsize)size(), objectClass, nullptr);
+		jsize i=0;
+		for(auto& item : storage) {
+			env->SetObjectArrayElement(javaArray, i, transform(env, item));
+			i++;
+		}
+		return javaArray;
 	}
 
 	#endif

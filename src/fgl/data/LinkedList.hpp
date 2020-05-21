@@ -98,14 +98,6 @@ namespace fgl {
 		inline LinkedList<NewT,NewStorage> map(const Function<NewT(T&)>&);
 		template<typename NewT, template<typename...> typename NewStorage = Storage>
 		inline LinkedList<NewT,NewStorage> map(const Function<NewT(const T&)>&) const;
-		
-		#ifdef __OBJC__
-		NSArray* toNSArray(Function<NSObject*(const T&)> transform) const;
-		#endif
-
-		#ifdef JNIEXPORT
-		jobjectArray toJavaObjectArray(JNIEnv* env, jclass objectClass, Function<jobject(JNIEnv*,const T&)> transform) const;
-		#endif
 	};
 
 	template<typename T, template<typename...> typename Storage, typename ListType, typename = IsContainer<ListType>>
@@ -459,36 +451,6 @@ namespace fgl {
 		}
 		return newList;
 	}
-
-
-
-	#ifdef __OBJC__
-
-	template<typename T, template<typename...> typename Storage>
-	NSArray* LinkedList<T,Storage>::toNSArray(Function<NSObject*(const T&)> transform) const {
-		NSMutableArray* objcArray = [[NSMutableArray alloc] init];
-		for(auto& item : this->storage) {
-			[objcArray addObject:transform(item)];
-		}
-		return objcArray;
-	}
-
-	#endif
-
-	#ifdef JNIEXPORT
-
-	template<typename T, template<typename...> typename Storage>
-	jobjectArray LinkedList<T,Storage>::toJavaObjectArray(JNIEnv* env, jclass objectClass, Function<jobject(JNIEnv*,const T&)> transform) const {
-		jobjectArray javaArray = env->NewObjectArray((jsize)this->storage.size(), objectClass, nullptr);
-		jsize i=0;
-		for(auto& item : this->storage) {
-			env->SetObjectArrayElement(javaArray, i, transform(env, item));
-			i++;
-		}
-		return javaArray;
-	}
-
-	#endif
 
 
 
