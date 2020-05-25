@@ -49,10 +49,8 @@ namespace fgl {
 	public:
 		Any();
 		Any(std::nullptr_t);
-		Any(Any& any);
 		Any(Any&& any);
 		Any(const Any& any);
-		Any(const Any&& any);
 		template<typename U>
 		Any(U&& value);
 		~Any();
@@ -151,19 +149,11 @@ namespace fgl {
 		//
 	}
 	
-	Any::Any(Any& any) : ptr(any.cloneBase()) {
-		//
-	}
-	
 	Any::Any(Any&& any) : ptr(any.ptr) {
 		any.ptr = nullptr;
 	}
 	
 	Any::Any(const Any& any) : ptr(any.cloneBase()) {
-		//
-	}
-	
-	Any::Any(const Any&& any) : ptr(any.cloneBase()) {
 		//
 	}
 	
