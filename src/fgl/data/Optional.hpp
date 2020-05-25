@@ -32,6 +32,11 @@ namespace fgl {
 		using std::optional<T>::swap;
 		using std::optional<T>::reset;
 		using std::optional<T>::emplace;
+		template<typename U=T>
+		Optional(U&& value);
+		
+		template<typename U=T>
+		Optional<T>& operator=(U&& value);
 		
 		inline operator std::optional<T>&();
 		inline operator const std::optional<T>&() const;
@@ -139,6 +144,19 @@ namespace fgl {
 
 
 #pragma mark Optional implementation
+
+	template<typename T>
+	template<typename U>
+	Optional<T>::Optional(U&& value): std::optional<T>(value) {
+		//
+	}
+	
+	template<typename T>
+	template<typename U>
+	Optional<T>& Optional<T>::operator=(U&& value) {
+		std::optional<T>::operator=(value);
+		return *this;
+	}
 
 	template<typename T>
 	Optional<T>::operator std::optional<T>&() {
