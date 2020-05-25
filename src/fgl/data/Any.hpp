@@ -24,6 +24,7 @@ namespace fgl {
 			virtual Base* clone() const = 0;
 			virtual void* getPtr() const = 0;
 			virtual String toString() const = 0;
+			virtual std::any toStdAny() const = 0;
 			virtual const std::type_info& type() const = 0;
 		};
 		
@@ -37,6 +38,7 @@ namespace fgl {
 			virtual Base* clone() const override { return new Derived<T>(value); }
 			virtual void* getPtr() const override { return (void*)(&value); }
 			virtual String toString() const override { return fgl::stringify<T>(value); }
+			virtual std::any toStdAny() const override { return std::make_any<T>(value); }
 			virtual const std::type_info& type() const override { return typeid(T); }
 		};
 		
@@ -73,6 +75,9 @@ namespace fgl {
 		
 		template<typename U>
 		bool is() const;
+		
+		operator std::any() const;
+		std::any toStdAny() const;
 		
 		template<typename U>
 		explicit operator U&();
@@ -234,6 +239,20 @@ namespace fgl {
 	bool Any::is() const {
 		using T = typename std::decay<U>::type;
 		return (ptr != nullptr && typeid(T) == ptr->type());
+	}
+
+	Any::operator std::any() const {
+		if(ptr == nullptr) {
+			return std::any();
+		}
+		return ptr->toStdAny();
+	}
+
+	std::any Any::toStdAny() const {
+		if(ptr == nullptr) {
+			return std::any();
+		}
+		return ptr->toStdAny();
 	}
 	
 	template<typename U>
