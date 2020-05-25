@@ -30,6 +30,8 @@ int main(int argc, char* argv[]) {
 	Optional<int> opt1(5);
 	Optional<int> opt2;
 	printf("optional 5 == std::nullopt: %i\n", (int)(opt1 == opt2));
+	printf("optional 5 >= std::nullopt: %i\n", (int)(opt1 >= opt2));
+	printf("optional 5 <= std::nullopt: %i\n", (int)(opt1 <= opt2));
 	
 	return 0;
 }
