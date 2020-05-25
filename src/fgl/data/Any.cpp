@@ -122,7 +122,7 @@ namespace fgl {
 	
 	String Any::toString() const {
 		if(_ptr == nullptr) {
-			return "";
+			return String();
 		}
 		return _ptr->toString();
 	}
@@ -132,5 +132,12 @@ namespace fgl {
 			return typeid(void);
 		}
 		return _ptr->type();
+	}
+
+	String Any::typeName() const {
+		if(_ptr == nullptr) {
+			return String();
+		}
+		return _ptr->typeName();
 	}
 }

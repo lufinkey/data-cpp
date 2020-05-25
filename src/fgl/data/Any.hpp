@@ -26,6 +26,7 @@ namespace fgl {
 			virtual String toString() const = 0;
 			virtual std::any toStdAny() const = 0;
 			virtual const std::type_info& type() const = 0;
+			virtual String typeName() const = 0;
 		};
 		
 		template<typename T>
@@ -40,6 +41,7 @@ namespace fgl {
 			virtual String toString() const override;
 			virtual std::any toStdAny() const override;
 			virtual const std::type_info& type() const override;
+			virtual String typeName() const override;
 		};
 		
 		Base* cloneBase() const;
@@ -93,6 +95,7 @@ namespace fgl {
 		String toString() const;
 		
 		const std::type_info& type() const noexcept;
+		String typeName() const;
 	};
 
 
@@ -132,6 +135,11 @@ namespace fgl {
 	template<typename T>
 	const std::type_info& Any::Derived<T>::type() const {
 		return typeid(T);
+	}
+
+	template<typename T>
+	String Any::Derived<T>::typeName() const {
+		return fgl::stringify_type<T>();
 	}
 	
 	template<typename U>
