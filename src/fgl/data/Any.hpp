@@ -33,13 +33,13 @@ namespace fgl {
 		public:
 			T value;
 			
-			Derived(const T& val) : value(val) {}
-			Derived(T&& val) : value(val) {}
-			virtual Base* clone() const override { return new Derived<T>(value); }
-			virtual void* getPtr() const override { return (void*)(&value); }
-			virtual String toString() const override { return fgl::stringify<T>(value); }
-			virtual std::any toStdAny() const override { return std::make_any<T>(value); }
-			virtual const std::type_info& type() const override { return typeid(T); }
+			Derived(const T& val);
+			Derived(T&& val);
+			virtual Base* clone() const override;
+			virtual void* getPtr() const override;
+			virtual String toString() const override;
+			virtual std::any toStdAny() const override;
+			virtual const std::type_info& type() const override;
 		};
 		
 		Base* cloneBase() const;
@@ -100,6 +100,41 @@ namespace fgl {
 
 
 #pragma mark Any implementation
+
+	template<typename T>
+	Any::Derived<T>::Derived(const T& val): value(val) {
+		//
+	}
+
+	template<typename T>
+	Any::Derived<T>::Derived(T&& val): value(val) {
+		//
+	}
+
+	template<typename T>
+	Any::Base* Any::Derived<T>::clone() const {
+		return new Derived<T>(value);
+	}
+
+	template<typename T>
+	void* Any::Derived<T>::getPtr() const {
+		return (void*)(&value);
+	}
+
+	template<typename T>
+	String Any::Derived<T>::toString() const {
+		return fgl::stringify<T>(value);
+	}
+
+	template<typename T>
+	std::any Any::Derived<T>::toStdAny() const {
+		return std::make_any<T>(value);
+	}
+
+	template<typename T>
+	const std::type_info& Any::Derived<T>::type() const {
+		return typeid(T);
+	}
 
 	Any::Base* Any::cloneBase() const {
 		if(ptr != nullptr) {
