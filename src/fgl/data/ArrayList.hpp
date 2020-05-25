@@ -89,9 +89,12 @@ namespace fgl {
 		
 		inline void pushBack(const T& value);
 		inline void pushBack(T&& value);
+		inline void push_back(const T& value);
+		inline void push_back(T&& value);
 		inline void pushBackList(const ArrayList<T,Storage>& list);
 		inline void pushBackList(ArrayList<T,Storage>&& list);
 		inline void popBack();
+		inline void pop_back();
 		inline T extractBack();
 		
 		inline iterator remove(const_iterator pos);
@@ -346,6 +349,16 @@ namespace fgl {
 	void ArrayList<T,Storage>::pushBack(T&& value) {
 		this->storage.push_back(value);
 	}
+
+	template<typename T, template<typename...> typename Storage>
+	void ArrayList<T,Storage>::push_back(const T& value) {
+		this->storage.push_back(value);
+	}
+	
+	template<typename T, template<typename...> typename Storage>
+	void ArrayList<T,Storage>::push_back(T&& value) {
+		this->storage.push_back(value);
+	}
 	
 	template<typename T, template<typename...> typename Storage>
 	void ArrayList<T,Storage>::pushBackList(const ArrayList<T,Storage>& list) {
@@ -359,6 +372,11 @@ namespace fgl {
 	template<typename T, template<typename...> typename Storage>
 	void ArrayList<T,Storage>::popBack() {
 		FGL_ASSERT(this->size() > 0, "cannot call popBack on empty array");
+		this->storage.pop_back();
+	}
+
+	template<typename T, template<typename...> typename Storage>
+	void ArrayList<T,Storage>::pop_back() {
 		this->storage.pop_back();
 	}
 	

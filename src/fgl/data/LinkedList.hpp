@@ -64,16 +64,22 @@ namespace fgl {
 		
 		inline void pushFront(const T& value);
 		inline void pushFront(T&& value);
+		inline void push_front(const T& value);
+		inline void push_front(T&& value);
 		inline void pushFrontList(const LinkedList<T,Storage>& list);
 		inline void pushFrontList(LinkedList<T,Storage>&& list);
 		inline void popFront();
+		inline void pop_front();
 		inline T extractFront();
 		
 		inline void pushBack(const T& value);
 		inline void pushBack(T&& value);
+		inline void push_back(const T& value);
+		inline void push_back(T&& value);
 		inline void pushBackList(const LinkedList<T,Storage>& list);
 		inline void pushBackList(LinkedList<T,Storage>&& list);
 		inline void popBack();
+		inline void pop_back();
 		inline T extractBack();
 		
 		inline iterator remove(const_iterator pos);
@@ -233,6 +239,16 @@ namespace fgl {
 	void LinkedList<T,Storage>::pushFront(T&& value) {
 		this->storage.push_front(value);
 	}
+
+	template<typename T, template<typename...> typename Storage>
+	void LinkedList<T,Storage>::push_front(const T& value) {
+		this->storage.push_front(value);
+	}
+	
+	template<typename T, template<typename...> typename Storage>
+	void LinkedList<T,Storage>::push_front(T&& value) {
+		this->storage.push_front(value);
+	}
 	
 	template<typename T, template<typename...> typename Storage>
 	void LinkedList<T,Storage>::pushFrontList(const LinkedList<T,Storage>& list) {
@@ -247,6 +263,11 @@ namespace fgl {
 	template<typename T, template<typename...> typename Storage>
 	void LinkedList<T,Storage>::popFront() {
 		FGL_ASSERT(this->size() > 0, "cannot call popFront on empty array");
+		this->storage.pop_front();
+	}
+
+	template<typename T, template<typename...> typename Storage>
+	void LinkedList<T,Storage>::pop_front() {
 		this->storage.pop_front();
 	}
 	
@@ -269,6 +290,16 @@ namespace fgl {
 	void LinkedList<T,Storage>::pushBack(T&& value) {
 		this->storage.push_back(value);
 	}
+
+	template<typename T, template<typename...> typename Storage>
+	void LinkedList<T,Storage>::push_back(const T& value) {
+		this->storage.push_back(value);
+	}
+	
+	template<typename T, template<typename...> typename Storage>
+	void LinkedList<T,Storage>::push_back(T&& value) {
+		this->storage.push_back(value);
+	}
 	
 	template<typename T, template<typename...> typename Storage>
 	void LinkedList<T,Storage>::pushBackList(const LinkedList<T,Storage>& list) {
@@ -283,6 +314,11 @@ namespace fgl {
 	template<typename T, template<typename...> typename Storage>
 	void LinkedList<T,Storage>::popBack() {
 		FGL_ASSERT(this->size() > 0, "cannot call popBack on empty array");
+		this->storage.pop_back();
+	}
+
+	template<typename T, template<typename...> typename Storage>
+	void LinkedList<T,Storage>::pop_back() {
 		this->storage.pop_back();
 	}
 	
