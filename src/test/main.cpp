@@ -18,11 +18,6 @@ int main(int argc, char* argv[]) {
 	ArrayList<int>().maybeAt(0);
 	ArrayList<int>().maybeRefAt(0);
 	
-	Optional<String> optStr = std::nullopt;
-	Optional<String> optStr2 = "ayy";
-	auto chainResult = chain<String>([&](){ return opt(optStr)->append(opt(optStr2).value()); });
-	chain([&](){ return opt(optStr)->append(opt(optStr2).value()); });
-	
 	auto maybeTryResult = maybeTry([]() {
 		return 5;
 	});

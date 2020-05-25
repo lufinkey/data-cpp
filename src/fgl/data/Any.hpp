@@ -11,9 +11,9 @@
 #include <any>
 #include <typeinfo>
 #include <fgl/data/Common.hpp>
+#include <fgl/data/Optional.hpp>
 #include <fgl/data/String.hpp>
 #include <fgl/data/Stringify.hpp>
-#include <fgl/data/Optional.hpp>
 
 namespace fgl {
 	class Any {
@@ -49,15 +49,15 @@ namespace fgl {
 	public:
 		Any();
 		Any(std::nullptr_t);
-		Any(Any&& any);
-		Any(const Any& any);
+		Any(Any&&);
+		Any(const Any&);
 		template<typename U>
-		Any(U&& value);
+		Any(U&&);
 		~Any();
 		
 		Any& operator=(std::nullptr_t);
-		Any& operator=(const Any& any);
-		Any& operator=(Any&& any);
+		Any& operator=(const Any&);
+		Any& operator=(Any&&);
 		
 		template<typename U>
 		U& as();
@@ -212,5 +212,17 @@ namespace fgl {
 	template<typename U>
 	Any::operator const U&() const {
 		return as<U>();
+	}
+
+
+
+#pragma mark Optional implementation
+
+	template<typename T>
+	Any Optional<T>::toAny() const {
+		if(std::optional<T>::has_value()) {
+			return Any(std::optional<T>::value());
+		}
+		return Any();
 	}
 }

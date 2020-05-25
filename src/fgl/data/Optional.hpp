@@ -12,18 +12,41 @@
 #include <functional>
 #include <variant>
 #include <tuple>
+#include <fgl/data/Common.hpp>
 #include <fgl/util/PlatformChecks.hpp>
 
 namespace fgl {
+	class Any;
+
 	template<typename T>
-	using Optional = std::optional<T>;
+	class Optional: public std::optional<T> {
+	public:
+		using std::optional<T>::optional;
+		
+		operator std::optional<T>&();
+		operator const std::optional<T>&() const;
+		operator std::optional<T>&&() &&;
+		
+		inline bool hasValue() const;
+		template<typename U>
+		constexpr T valueOr(U&& defaultValue) const&;
+		template<typename U>
+		constexpr T valueOr(U&& defaultValue) &&;
+		
+		inline Any toAny() const;
+	};
+
+
+
 	template<typename T>
-	using OptionalRef = std::optional<std::reference_wrapper<T>>;
+	using OptionalRef = Optional<std::reference_wrapper<T>>;
 
 	template<typename T>
 	struct is_optional: std::false_type {};
 	template<typename T>
 	struct is_optional<Optional<T>>: std::true_type {};
+	template<typename T>
+	struct is_optional<std::optional<T>>: std::true_type {};
 
 	template<typename T>
 	struct optionalize_t {
@@ -38,99 +61,54 @@ namespace fgl {
 	using Optionalized = typename optionalize_t<T>::type;
 
 	template<typename T>
-	inline Optionalized<T> maybe(T value) {
+	inline Optionalized<T> maybe(T value);
+	template<typename Func>
+	auto maybeTry(Func func) -> Optionalized<decltype(func())>;
+
+
+
+#pragma mark Optional implementation
+
+	template<typename T>
+	Optional<T>::operator std::optional<T>&() {
+		return *this;
+	}
+
+	template<typename T>
+	Optional<T>::operator const std::optional<T>&() const {
+		return *this;
+	}
+
+	template<typename T>
+	Optional<T>::operator std::optional<T>&&() && {
+		return *this;
+	}
+	
+	template<typename T>
+	bool Optional<T>::hasValue() const {
+		return std::optional<T>::has_value();
+	}
+
+	template<typename T>
+	template<typename U>
+	constexpr T Optional<T>::valueOr(U&& defaultValue) const& {
+		return std::optional<T>::template value_or<U>(defaultValue);
+	}
+
+	template<typename T>
+	template<typename U>
+	constexpr T Optional<T>::valueOr(U&& defaultValue) && {
+		return std::optional<T>::template value_or<U>(defaultValue);
+	}
+
+	template<typename T>
+	Optionalized<T> maybe(T value) {
 		if constexpr(std::is_same<T,Optionalized<T>>::value) {
 			return value;
 		} else {
 			return Optionalized<T>(value);
 		}
 	}
-
-	namespace _chain_access {
-		struct noaccess {
-			bool padding = false;
-		};
-		
-		template<typename T>
-		struct OptObject {
-			T& val;
-			
-			inline auto operator->() {
-				if(!val) {
-					throw noaccess();
-				}
-				if constexpr(std::is_pointer<T>::value) {
-					return val;
-				} else {
-					return val.operator->();
-				}
-			}
-			
-			template<typename ...Args>
-			inline auto operator()(Args... args) {
-				if(!val) {
-					throw noaccess();
-				}
-				return val(args...);
-			}
-			
-			#ifndef TARGETPLATFORM_IOS
-			template<typename Type>
-			inline auto get() {
-				try {
-					return std::get<Type>(val);
-				} catch(std::bad_variant_access&) {
-					throw noaccess();
-				}
-			}
-			
-			template<size_t index>
-			inline auto get() {
-				try {
-					return std::get<index>(val);
-				} catch(std::bad_variant_access&) {
-					throw noaccess();
-				}
-			}
-			#endif
-			
-			inline auto value() {
-				if constexpr(std::is_same<typename std::remove_cv<T>::type,Optional<typename T::value_type>>::value) {
-					return val.value();
-				} else {
-					return *val;
-				}
-			}
-		};
-	}
-
-	template<typename T>
-	_chain_access::OptObject<T> opt(T& obj) {
-		return _chain_access::OptObject<T>{ obj };
-	}
-
-	template<typename T, typename Func>
-	inline Optional<T> chain(Func func, Optional<T> defaultValue = std::nullopt) {
-		using namespace _chain_access;
-		try {
-			return func();
-		} catch(noaccess&) {
-			return defaultValue;
-		}
-	}
-
-	template<typename Func>
-	inline bool chain(Func func) {
-		using namespace _chain_access;
-		try {
-			func();
-			return true;
-		} catch(noaccess&) {
-			return false;
-		}
-	}
-
-
 
 	template<typename Func>
 	auto maybeTry(Func func) -> Optionalized<decltype(func())> {

@@ -7,6 +7,7 @@
 //
 
 #include <fgl/data/Any.hpp>
+#include <fgl/data/Optional.hpp>
 
 namespace fgl {
 	Any::Base* Any::cloneBase() const {
