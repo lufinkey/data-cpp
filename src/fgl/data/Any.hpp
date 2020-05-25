@@ -22,7 +22,7 @@ namespace fgl {
 		public:
 			virtual ~Base() {}
 			virtual Base* clone() const = 0;
-			virtual void* getPtr() const = 0;
+			virtual void* ptr() const = 0;
 			virtual String toString() const = 0;
 			virtual std::any toStdAny() const = 0;
 			virtual const std::type_info& type() const = 0;
@@ -36,7 +36,7 @@ namespace fgl {
 			Derived(const T& val);
 			Derived(T&& val);
 			virtual Base* clone() const override;
-			virtual void* getPtr() const override;
+			virtual void* ptr() const override;
 			virtual String toString() const override;
 			virtual std::any toStdAny() const override;
 			virtual const std::type_info& type() const override;
@@ -44,7 +44,7 @@ namespace fgl {
 		
 		Base* cloneBase() const;
 		
-		Base* ptr;
+		Base* _ptr;
 		
 	public:
 		Any();
@@ -88,7 +88,7 @@ namespace fgl {
 		void reset();
 		void swap(Any& any) noexcept;
 		
-		void* getPtr() const;
+		void* ptr() const;
 		
 		String toString() const;
 		
@@ -115,7 +115,7 @@ namespace fgl {
 	}
 
 	template<typename T>
-	void* Any::Derived<T>::getPtr() const {
+	void* Any::Derived<T>::ptr() const {
 		return (void*)(&value);
 	}
 
@@ -135,42 +135,42 @@ namespace fgl {
 	}
 
 	Any::Base* Any::cloneBase() const {
-		if(ptr != nullptr) {
-			return ptr->clone();
+		if(_ptr != nullptr) {
+			return _ptr->clone();
 		}
 		return nullptr;
 	}
 	
-	Any::Any() : ptr(nullptr) {
+	Any::Any(): _ptr(nullptr) {
 		//
 	}
 	
-	Any::Any(std::nullptr_t) : ptr(nullptr) {
+	Any::Any(std::nullptr_t): _ptr(nullptr) {
 		//
 	}
 	
-	Any::Any(Any&& any) : ptr(any.ptr) {
-		any.ptr = nullptr;
+	Any::Any(Any&& any): _ptr(any._ptr) {
+		any._ptr = nullptr;
 	}
 	
-	Any::Any(const Any& any) : ptr(any.cloneBase()) {
+	Any::Any(const Any& any): _ptr(any.cloneBase()) {
 		//
 	}
 	
 	template<typename U>
-	Any::Any(U&& value) : ptr(new Derived<typename std::decay<U>::type>(value)) {
+	Any::Any(U&& value): _ptr(new Derived<typename std::decay<U>::type>(value)) {
 		//
 	}
 	
 	Any::~Any() {
-		if(ptr != nullptr) {
-			delete ptr;
+		if(_ptr != nullptr) {
+			delete _ptr;
 		}
 	}
 	
 	Any& Any::operator=(std::nullptr_t) {
-		Base* old_ptr = ptr;
-		ptr = nullptr;
+		Base* old_ptr = _ptr;
+		_ptr = nullptr;
 		if(old_ptr != nullptr) {
 			delete old_ptr;
 		}
@@ -178,11 +178,11 @@ namespace fgl {
 	}
 	
 	Any& Any::operator=(const Any& any) {
-		if(ptr == any.ptr) {
+		if(_ptr == any._ptr) {
 			return *this;
 		}
-		Base* old_ptr = ptr;
-		ptr = any.cloneBase();
+		Base* old_ptr = _ptr;
+		_ptr = any.cloneBase();
 		if(old_ptr != nullptr) {
 			delete old_ptr;
 		}
@@ -190,13 +190,13 @@ namespace fgl {
 	}
 	
 	Any& Any::operator=(Any&& any) {
-		if(ptr == any.ptr) {
+		if(_ptr == any._ptr) {
 			return *this;
 		}
-		Base* old_ptr = ptr;
-		Base* new_ptr = any.ptr;
-		any.ptr = nullptr;
-		ptr = new_ptr;
+		Base* old_ptr = _ptr;
+		Base* new_ptr = any._ptr;
+		any._ptr = nullptr;
+		_ptr = new_ptr;
 		if(old_ptr != nullptr) {
 			delete old_ptr;
 		}
@@ -206,36 +206,38 @@ namespace fgl {
 	template<typename U>
 	U& Any::as() {
 		using T = typename std::decay<U>::type;
-		if(ptr == nullptr || typeid(T) != ptr->type()) {
+		if(_ptr == nullptr || typeid(T) != _ptr->type()) {
 			throw std::bad_any_cast();
 		}
-		auto derived = static_cast<Derived<T>*>(ptr);
+		auto derived = static_cast<Derived<T>*>(_ptr);
 		return derived->value;
 	}
 	
 	template<typename U>
 	const U& Any::as() const {
 		using T = typename std::decay<U>::type;
-		if(ptr == nullptr || typeid(T) != ptr->type()) {
+		if(_ptr == nullptr || typeid(T) != _ptr->type()) {
 			throw std::bad_any_cast();
 		}
-		auto derived = static_cast<Derived<T>*>(ptr);
+		auto derived = static_cast<Derived<T>*>(_ptr);
 		return derived->value;
 	}
 
 	template<typename U>
 	Optional<U> Any::maybeAs() const {
 		using T = typename std::decay<U>::type;
-		if(ptr == nullptr) {
+		if(_ptr == nullptr) {
 			return std::nullopt;
 		}
-		if(typeid(T) == ptr->type()) {
-			auto derived = static_cast<Derived<T>*>(ptr);
+		if(typeid(T) == _ptr->type()) {
+			auto derived = static_cast<Derived<T>*>(_ptr);
 			return derived->value;
 		}
-		if(typeid(Optionalized<T>) == ptr->type()) {
-			auto derived = static_cast<Derived<Optionalized<T>>*>(ptr);
-			return derived->value;
+		if constexpr(!std::is_same<Optionalized<T>,T>::value) {
+			if(typeid(Optionalized<T>) == _ptr->type()) {
+				auto derived = static_cast<Derived<Optionalized<T>>*>(_ptr);
+				return derived->value;
+			}
 		}
 		return std::nullopt;
 	}
@@ -243,41 +245,41 @@ namespace fgl {
 	template<typename U>
 	OptionalRef<U> Any::maybeRefAs() {
 		using T = typename std::decay<U>::type;
-		if(ptr == nullptr || typeid(T) != ptr->type()) {
+		if(_ptr == nullptr || typeid(T) != _ptr->type()) {
 			return std::nullopt;
 		}
-		auto derived = static_cast<Derived<T>*>(ptr);
+		auto derived = static_cast<Derived<T>*>(_ptr);
 		return std::ref(derived->value);
 	}
 
 	template<typename U>
 	OptionalRef<const U> Any::maybeRefAs() const {
 		using T = typename std::decay<U>::type;
-		if(ptr == nullptr || typeid(T) != ptr->type()) {
+		if(_ptr == nullptr || typeid(T) != _ptr->type()) {
 			return std::nullopt;
 		}
-		auto derived = static_cast<Derived<T>*>(ptr);
+		auto derived = static_cast<Derived<T>*>(_ptr);
 		return std::ref(derived->value);
 	}
 	
 	template<typename U>
 	bool Any::is() const {
 		using T = typename std::decay<U>::type;
-		return (ptr != nullptr && typeid(T) == ptr->type());
+		return (_ptr != nullptr && typeid(T) == _ptr->type());
 	}
 
 	Any::operator std::any() const {
-		if(ptr == nullptr) {
+		if(_ptr == nullptr) {
 			return std::any();
 		}
-		return ptr->toStdAny();
+		return _ptr->toStdAny();
 	}
 
 	std::any Any::toStdAny() const {
-		if(ptr == nullptr) {
+		if(_ptr == nullptr) {
 			return std::any();
 		}
-		return ptr->toStdAny();
+		return _ptr->toStdAny();
 	}
 	
 	template<typename U>
@@ -291,48 +293,48 @@ namespace fgl {
 	}
 	
 	bool Any::empty() const {
-		return (ptr == nullptr);
+		return (_ptr == nullptr);
 	}
 
 	bool Any::hasValue() const {
-		return (ptr != nullptr);
+		return (_ptr != nullptr);
 	}
 
 	bool Any::has_value() const {
-		return (ptr != nullptr);
+		return (_ptr != nullptr);
 	}
 
 	void Any::reset() {
-		if(ptr != nullptr) {
-			delete ptr;
-			ptr = nullptr;
+		if(_ptr != nullptr) {
+			delete _ptr;
+			_ptr = nullptr;
 		}
 	}
 
 	void Any::swap(Any& any) noexcept {
-		Base* tmpPtr = any.ptr;
-		any.ptr = ptr;
-		ptr = tmpPtr;
+		Base* tmpPtr = any._ptr;
+		any._ptr = _ptr;
+		_ptr = tmpPtr;
 	}
 	
-	void* Any::getPtr() const {
-		if(ptr == nullptr) {
+	void* Any::ptr() const {
+		if(_ptr == nullptr) {
 			return nullptr;
 		}
-		return ptr->getPtr();
+		return _ptr->ptr();
 	}
 	
 	String Any::toString() const {
-		if(ptr == nullptr) {
+		if(_ptr == nullptr) {
 			return "";
 		}
-		return ptr->toString();
+		return _ptr->toString();
 	}
 	
 	const std::type_info& Any::type() const noexcept {
-		if(ptr == nullptr) {
+		if(_ptr == nullptr) {
 			return typeid(void);
 		}
-		return ptr->type();
+		return _ptr->type();
 	}
 }
