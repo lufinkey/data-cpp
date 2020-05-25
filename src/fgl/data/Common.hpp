@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include <any>
 #include <exception>
 #include <functional>
 #include <iostream>
@@ -21,7 +20,6 @@
 namespace fgl {
 	template<typename T>
 	using Function = std::function<T>;
-	using Any = std::any;
 
 	template<typename T>
 	using $ = std::shared_ptr<T>;
