@@ -78,10 +78,10 @@ namespace fgl {
 			if(obj == nullptr) {
 				return "null";
 			}
-			return stringify<typename is_ptr_container<Type>::content_type>(obj.get());
+			return stringify<typename is_ptr_container<Type>::content_type*>(obj.get());
 		}
 		else if constexpr(is_weak_ptr<Type>::value) {
-			return "weak_ptr<"+stringify_type<typename is_weak_ptr<Type>::content_type>()+">";
+			return "weak_ptr<"+stringify_type<typename is_weak_ptr<Type>::content_type>()+">(use_count="+std::to_string(obj.use_count())+")";
 		}
 		else if constexpr(is_pair<Type>::value) {
 			return "pair( "+stringify(obj.first)+" , "+stringify(obj.second)+" )";
@@ -146,7 +146,7 @@ namespace fgl {
 		}
 		else {
 			std::stringstream ss;
-			ss << stringify_type<T>() << " @ 0x" << std::setfill('0') << std::setw(sizeof(obj)*2) << std::hex << ((uintptr_t)obj);
+			ss << stringify_type<T>() << " @ 0x" << std::setfill('0') << std::setw(sizeof(&obj)*2) << std::hex << ((uintptr_t)&obj);
 			return ss.str();
 		}
 	}
