@@ -36,8 +36,6 @@ namespace fgl {
 		inline Any toAny() const;
 	};
 
-
-
 	template<typename T>
 	using OptionalRef = Optional<std::reference_wrapper<T>>;
 
