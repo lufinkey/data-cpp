@@ -220,7 +220,7 @@ namespace fgl {
 
 	template<typename T>
 	Any Optional<T>::toAny() const {
-		if(std::optional<T>::has_value()) {
+		if(has_value()) {
 			return Any(value());
 		}
 		return Any();
