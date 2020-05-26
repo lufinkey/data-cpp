@@ -136,6 +136,11 @@ namespace fgl {
 		template<typename Predicate>
 		inline bool containsWhere(Predicate predicate) const;
 		
+		template<typename T, typename Predicate>
+		T reduce(T initialValue, Predicate callback);
+		template<typename T, typename Predicate>
+		T reduce(T initialValue, Predicate callback) const;
+		
 		inline void sort();
 		template<typename Predicate>
 		inline void sort(Predicate predicate);
@@ -613,6 +618,30 @@ namespace fgl {
 	template<typename Predicate>
 	bool BasicList<Storage>::containsWhere(Predicate predicate) const {
 		return findWhere(predicate) != end();
+	}
+
+
+
+	template<typename Storage>
+	template<typename T, typename Predicate>
+	T BasicList<Storage>::reduce(T value, Predicate callback) {
+		size_t i=0;
+		for(auto& item : storage) {
+			value = std::move(callback(std::move(value), item, i, this));
+			i++;
+		}
+		return value;
+	}
+
+	template<typename Storage>
+	template<typename T, typename Predicate>
+	T BasicList<Storage>::reduce(T value, Predicate callback) const {
+		size_t i=0;
+		for(auto& item : storage) {
+			value = std::move(callback(std::move(value), item, i, this));
+			i++;
+		}
+		return value;
 	}
 	
 	
