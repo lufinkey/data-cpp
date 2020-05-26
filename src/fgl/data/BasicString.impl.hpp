@@ -1357,6 +1357,11 @@ namespace fgl {
 		}
 		return joined;
 	}
+
+	template<typename Char>
+	BasicString<Char> BasicString<Char>::join(std::initializer_list<BasicString<Char>> list, const BasicString<Char>& separator) {
+		return join<std::initializer_list<BasicString<Char>>>(list, separator);
+	}
 	
 	
 

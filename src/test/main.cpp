@@ -33,5 +33,7 @@ int main(int argc, char* argv[]) {
 	printf("optional 5 >= std::nullopt: %i\n", (int)(opt1 >= opt2));
 	printf("optional 5 <= std::nullopt: %i\n", (int)(opt1 <= opt2));
 	
+	printf("String::join: %s\n", String::join({"hello","world","whats","up"}, " ").c_str());
+	
 	return 0;
 }
