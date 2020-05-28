@@ -376,26 +376,22 @@ namespace fgl {
 	
 	template<typename T, template<typename...> typename Storage>
 	bool LinkedList<T,Storage>::removeFirstEqual(const T& value) {
-		auto last = this->end();
-		for(auto it=this->begin(); it!=last; it++) {
-			if(value == *it) {
-				this->storage.erase(it);
-				return true;
-			}
+		auto it = this->findEqual(value);
+		if(it == this->end()) {
+			return false;
 		}
-		return false;
+		this->storage.erase(it);
+		return true;
 	}
 	
 	template<typename T, template<typename...> typename Storage>
 	bool LinkedList<T,Storage>::removeLastEqual(const T& value) {
-		auto last = this->rend();
-		for(auto it=this->rbegin(); it!=last; it++) {
-			if(value == *it) {
-				this->storage.erase(std::prev(it.base(), 1));
-				return true;
-			}
+		auto it = this->findLastEqual(value);
+		if(it == this->end()) {
+			return false;
 		}
-		return false;
+		this->storage.erase(it);
+		return true;
 	}
 	
 	template<typename T, template<typename...> typename Storage>

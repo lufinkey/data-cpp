@@ -447,7 +447,7 @@ namespace fgl {
 	
 	template<typename T, template<typename...> typename Storage>
 	bool ArrayList<T,Storage>::removeFirstEqual(const T& value) {
-		auto it = findEqual(value);
+		auto it = this->findEqual(value);
 		if(it == this->end()) {
 			return false;
 		}
@@ -457,7 +457,7 @@ namespace fgl {
 	
 	template<typename T, template<typename...> typename Storage>
 	bool ArrayList<T,Storage>::removeLastEqual(const T& value) {
-		auto it = findLastEqual(value);
+		auto it = this->findLastEqual(value);
 		if(it == this->end()) {
 			return false;
 		}
