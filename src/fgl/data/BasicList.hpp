@@ -446,7 +446,9 @@ namespace fgl {
 		if(it == rend()) {
 			return end();
 		}
-		return it.base() - 1;
+		auto retIt = it.base();
+		retIt--;
+		return retIt;
 	}
 	
 	template<typename Storage>
@@ -455,7 +457,9 @@ namespace fgl {
 		if(it == rend()) {
 			return end();
 		}
-		return it.base() - 1;
+		auto retIt = it.base();
+		retIt--;
+		return retIt;
 	}
 	
 	template<typename Storage>
@@ -477,7 +481,9 @@ namespace fgl {
 		if(it == rend()) {
 			return end();
 		}
-		return it.base() - 1;
+		auto retIt = it.base();
+		retIt--;
+		return retIt;
 	}
 	
 	template<typename Storage>
@@ -487,7 +493,9 @@ namespace fgl {
 		if(it == rend()) {
 			return end();
 		}
-		return it.base() - 1;
+		auto retIt = it.base();
+		retIt--;
+		return retIt;
 	}
 	
 	
