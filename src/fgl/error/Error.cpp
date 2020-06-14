@@ -19,7 +19,7 @@ namespace fgl {
 		return this->getMessage();
 	}
 
-	Any Error::getDetail(String key) const {
+	Any Error::getDetail(const String& key) const {
 		return Any();
 	}
 }

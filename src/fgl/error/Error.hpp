@@ -31,6 +31,6 @@ namespace fgl {
 		
 		/*! Gets a detail of the Error
 		 \returns an object for a particular error detail, or an empty Any, if no matching detail exists */
-		virtual Any getDetail(String key) const;
+		virtual Any getDetail(const String& key) const;
 	};
 }
