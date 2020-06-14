@@ -8,6 +8,7 @@
 
 #include "Error.hpp"
 #include <fgl/data/String.hpp>
+#include <fgl/data/Any.hpp>
 
 namespace fgl {
 	Error::~Error() {
@@ -16,5 +17,9 @@ namespace fgl {
 	
 	String Error::toString() const {
 		return this->getMessage();
+	}
+
+	Any Error::getDetail(String key) const {
+		return Any();
 	}
 }

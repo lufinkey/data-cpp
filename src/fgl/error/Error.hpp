@@ -13,6 +13,8 @@
 #include <fgl/data/BasicString.hpp>
 
 namespace fgl {
+	class Any;
+
 	/*! An error interface to conform to for errors */
 	class Error {
 	public:
@@ -26,5 +28,9 @@ namespace fgl {
 		/*! Gets a String representation of the Error
 		 \returns a String representation of the error */
 		virtual String toString() const;
+		
+		/*! Gets a detail of the Error
+		 \returns an object for a particular error detail, or an empty Any, if no matching detail exists */
+		virtual Any getDetail(String key) const;
 	};
 }
