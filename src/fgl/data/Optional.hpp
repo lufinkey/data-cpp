@@ -181,13 +181,13 @@ namespace fgl {
 	template<typename T>
 	template<typename U>
 	constexpr T Optional<T>::valueOr(U&& defaultValue) const& {
-		return std::optional<T>::template value_or<U>(defaultValue);
+		return value_or(defaultValue);
 	}
 
 	template<typename T>
 	template<typename U>
 	constexpr T Optional<T>::valueOr(U&& defaultValue) && {
-		return std::optional<T>::template value_or<U>(defaultValue);
+		return value_or(defaultValue);
 	}
 
 	template<typename T>
