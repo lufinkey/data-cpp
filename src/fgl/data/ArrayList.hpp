@@ -37,6 +37,24 @@ namespace fgl {
 		using BasicList<Storage<T>>::BasicList;
 		using BasicList<Storage<T>>::operator=;
 		
+		using BasicList<Storage<T>>::size;
+		using BasicList<Storage<T>>::front;
+		using BasicList<Storage<T>>::back;
+		
+		using BasicList<Storage<T>>::begin;
+		using BasicList<Storage<T>>::cbegin;
+		using BasicList<Storage<T>>::rbegin;
+		using BasicList<Storage<T>>::crbegin;
+		using BasicList<Storage<T>>::end;
+		using BasicList<Storage<T>>::cend;
+		using BasicList<Storage<T>>::rend;
+		using BasicList<Storage<T>>::crend;
+		
+		using BasicList<Storage<T>>::storage;
+		
+		using BasicList<Storage<T>>::findEqual;
+		using BasicList<Storage<T>>::findLastEqual;
+		
 		template<typename ListType, typename Transform>
 		ArrayList(const ListType& list, Transform transform);
 		template<typename ListType, typename Transform>
@@ -128,6 +146,13 @@ namespace fgl {
 		inline ArrayList<NewT,NewStorage> map(const Function<NewT(T&)>&);
 		template<typename NewT, template<typename...> typename NewStorage = Storage>
 		inline ArrayList<NewT,NewStorage> map(const Function<NewT(const T&)>&) const;
+		
+		inline void sort();
+		template<typename Predicate>
+		inline void sort(Predicate predicate);
+		inline void unstableSort();
+		template<typename Predicate>
+		inline void unstableSort(Predicate predicate);
 	};
 
 	template<typename T, template<typename...> typename Storage, typename ListType, typename = IsContainer<ListType>>
@@ -182,208 +207,208 @@ namespace fgl {
 	
 	template<typename T, template<typename...> typename Storage>
 	T& ArrayList<T,Storage>::operator[](size_type index) {
-		FGL_ASSERT(index >= 0 && index < this->size(), "index out of bounds");
-		return this->storage[index];
+		FGL_ASSERT(index >= 0 && index < size(), "index out of bounds");
+		return storage[index];
 	}
 	
 	template<typename T, template<typename...> typename Storage>
 	const T& ArrayList<T,Storage>::operator[](size_type index) const {
-		FGL_ASSERT(index >= 0 && index < this->size(), "index out of bounds");
-		return this->storage[index];
+		FGL_ASSERT(index >= 0 && index < size(), "index out of bounds");
+		return storage[index];
 	}
 	
 	template<typename T, template<typename...> typename Storage>
 	T& ArrayList<T,Storage>::at(size_type index) {
-		FGL_ASSERT(index >= 0 && index < this->size(), "index out of bounds");
-		return this->storage.at(index);
+		FGL_ASSERT(index >= 0 && index < size(), "index out of bounds");
+		return storage.at(index);
 	}
 	
 	template<typename T, template<typename...> typename Storage>
 	const T& ArrayList<T,Storage>::at(size_type index) const {
-		FGL_ASSERT(index >= 0 && index < this->size(), "index out of bounds");
-		return this->storage.at(index);
+		FGL_ASSERT(index >= 0 && index < size(), "index out of bounds");
+		return storage.at(index);
 	}
 	
 
 
 	template<typename T, template<typename...> typename Storage>
 	Optional<T> ArrayList<T,Storage>::maybeAt(size_type index) const {
-		if(index >= this->storage.size()) {
+		if(index >= storage.size()) {
 			return std::nullopt;
 		}
-		return this->storage[index];
+		return storage[index];
 	}
 	
 	template<typename T, template<typename...> typename Storage>
 	Optional<std::reference_wrapper<T>> ArrayList<T,Storage>::maybeRefAt(size_type index) {
-		if(index >= this->storage.size()) {
+		if(index >= storage.size()) {
 			return std::nullopt;
 		}
-		return std::ref<T>(this->storage[index]);
+		return std::ref<T>(storage[index]);
 	}
 	
 	template<typename T, template<typename...> typename Storage>
 	Optional<std::reference_wrapper<const T>> ArrayList<T,Storage>::maybeRefAt(size_type index) const {
-		if(index >= this->storage.size()) {
+		if(index >= storage.size()) {
 			return std::nullopt;
 		}
-		return std::ref<const T>(this->storage[index]);
+		return std::ref<const T>(storage[index]);
 	}
 	
 	
 	
 	template<typename T, template<typename...> typename Storage>
 	const T* ArrayList<T,Storage>::data() const {
-		return this->storage.data();
+		return storage.data();
 	}
 	
 	template<typename T, template<typename...> typename Storage>
 	typename ArrayList<T,Storage>::size_type ArrayList<T,Storage>::capacity() const {
-		return this->storage.capacity();
+		return storage.capacity();
 	}
 	
 	template<typename T, template<typename...> typename Storage>
 	void ArrayList<T,Storage>::reserve(size_type size) {
-		this->storage.reserve(size);
+		storage.reserve(size);
 	}
 	
 	template<typename T, template<typename...> typename Storage>
 	void ArrayList<T,Storage>::shrinkToFit() {
-		this->storage.shrink_to_fit();
+		storage.shrink_to_fit();
 	}
 	
 	template<typename T, template<typename...> typename Storage>
 	void ArrayList<T,Storage>::resize(size_type count) {
-		this->storage.resize(count);
+		storage.resize(count);
 	}
 	
 	template<typename T, template<typename...> typename Storage>
 	void ArrayList<T,Storage>::resize(size_type count, const T& value) {
-		this->storage.resize(count, value);
+		storage.resize(count, value);
 	}
 	
 	
 	
 	template<typename T, template<typename...> typename Storage>
 	typename ArrayList<T,Storage>::iterator ArrayList<T,Storage>::insert(const_iterator pos, const T& value) {
-		return this->storage.insert(pos, value);
+		return storage.insert(pos, value);
 	}
 	
 	template<typename T, template<typename...> typename Storage>
 	typename ArrayList<T,Storage>::iterator ArrayList<T,Storage>::insert(const_iterator pos, T&& value) {
-		return this->storage.insert(pos, value);
+		return storage.insert(pos, value);
 	}
 	
 	template<typename T, template<typename...> typename Storage>
 	typename ArrayList<T,Storage>::iterator ArrayList<T,Storage>::insert(const_iterator pos, size_type count, const T& value) {
-		return this->storage.insert(pos, count, value);
+		return storage.insert(pos, count, value);
 	}
 	
 	template<typename T, template<typename...> typename Storage>
 	template<typename InputIterator, typename _>
 	typename ArrayList<T,Storage>::iterator ArrayList<T,Storage>::insert(const_iterator pos, InputIterator first, InputIterator last) {
-		return this->storage.insert(pos, first, last);
+		return storage.insert(pos, first, last);
 	}
 	
 	template<typename T, template<typename...> typename Storage>
 	typename ArrayList<T,Storage>::iterator ArrayList<T,Storage>::insert(const_iterator pos, std::initializer_list<T> list) {
-		return this->storage.insert(pos, list);
+		return storage.insert(pos, list);
 	}
 	
 	template<typename T, template<typename...> typename Storage>
 	typename ArrayList<T,Storage>::iterator ArrayList<T,Storage>::insert(const_iterator pos, const ArrayList<T,Storage>& list) {
-		return this->storage.insert(pos, list.begin(), list.end());
+		return storage.insert(pos, list.begin(), list.end());
 	}
 	
 	template<typename T, template<typename...> typename Storage>
 	typename ArrayList<T,Storage>::iterator ArrayList<T,Storage>::insert(const_iterator pos, ArrayList<T,Storage>&& list) {
-		return this->storage.insert(pos, std::make_move_iterator(list.begin()), std::make_move_iterator(list.end()));
+		return storage.insert(pos, std::make_move_iterator(list.begin()), std::make_move_iterator(list.end()));
 	}
 	
 	
 	
 	template<typename T, template<typename...> typename Storage>
 	typename ArrayList<T,Storage>::iterator ArrayList<T,Storage>::insert(size_type pos, const T& value) {
-		return this->storage.insert(this->begin()+pos, value);
+		return storage.insert(begin()+pos, value);
 	}
 	
 	template<typename T, template<typename...> typename Storage>
 	typename ArrayList<T,Storage>::iterator ArrayList<T,Storage>::insert(size_type pos, T&& value) {
-		return this->storage.insert(this->begin()+pos, value);
+		return storage.insert(begin()+pos, value);
 	}
 	
 	template<typename T, template<typename...> typename Storage>
 	typename ArrayList<T,Storage>::iterator ArrayList<T,Storage>::insert(size_type pos, size_type count, const T& value) {
-		return this->storage.insert(this->begin()+pos, count, value);
+		return storage.insert(begin()+pos, count, value);
 	}
 	
 	template<typename T, template<typename...> typename Storage>
 	template<typename InputIterator, typename _>
 	typename ArrayList<T,Storage>::iterator ArrayList<T,Storage>::insert(size_type pos, InputIterator first, InputIterator last) {
-		return this->storage.insert(this->begin()+pos, first, last);
+		return storage.insert(begin()+pos, first, last);
 	}
 	
 	template<typename T, template<typename...> typename Storage>
 	typename ArrayList<T,Storage>::iterator ArrayList<T,Storage>::insert(size_type pos, std::initializer_list<T> list) {
-		return this->storage.insert(this->begin()+pos, list);
+		return storage.insert(begin()+pos, list);
 	}
 	
 	template<typename T, template<typename...> typename Storage>
 	typename ArrayList<T,Storage>::iterator ArrayList<T,Storage>::insert(size_type pos, const ArrayList<T,Storage>& list) {
-		return this->storage.insert(this->begin()+pos, list.begin(), list.end());
+		return storage.insert(begin()+pos, list.begin(), list.end());
 	}
 	
 	template<typename T, template<typename...> typename Storage>
 	typename ArrayList<T,Storage>::iterator ArrayList<T,Storage>::insert(size_type pos, ArrayList<T,Storage>&& list) {
-		return this->storage.insert(this->begin()+pos, std::make_move_iterator(list.begin()), std::make_move_iterator(list.end()));
+		return storage.insert(begin()+pos, std::make_move_iterator(list.begin()), std::make_move_iterator(list.end()));
 	}
 	
 	
 	
 	template<typename T, template<typename...> typename Storage>
 	void ArrayList<T,Storage>::pushBack(const T& value) {
-		this->storage.push_back(value);
+		storage.push_back(value);
 	}
 	
 	template<typename T, template<typename...> typename Storage>
 	void ArrayList<T,Storage>::pushBack(T&& value) {
-		this->storage.push_back(value);
+		storage.push_back(value);
 	}
 
 	template<typename T, template<typename...> typename Storage>
 	void ArrayList<T,Storage>::push_back(const T& value) {
-		this->storage.push_back(value);
+		storage.push_back(value);
 	}
 	
 	template<typename T, template<typename...> typename Storage>
 	void ArrayList<T,Storage>::push_back(T&& value) {
-		this->storage.push_back(value);
+		storage.push_back(value);
 	}
 	
 	template<typename T, template<typename...> typename Storage>
 	void ArrayList<T,Storage>::pushBackList(const ArrayList<T,Storage>& list) {
-		this->storage.insert(this->end(), list.begin(), list.end());
+		storage.insert(end(), list.begin(), list.end());
 	}
 	template<typename T, template<typename...> typename Storage>
 	void ArrayList<T,Storage>::pushBackList(ArrayList<T,Storage>&& list) {
-		this->storage.insert(this->end(), std::make_move_iterator(list.begin()), std::make_move_iterator(list.end()));
+		storage.insert(end(), std::make_move_iterator(list.begin()), std::make_move_iterator(list.end()));
 	}
 	
 	template<typename T, template<typename...> typename Storage>
 	void ArrayList<T,Storage>::popBack() {
-		FGL_ASSERT(this->size() > 0, "cannot call popBack on empty array");
-		this->storage.pop_back();
+		FGL_ASSERT(size() > 0, "cannot call popBack on empty array");
+		storage.pop_back();
 	}
 
 	template<typename T, template<typename...> typename Storage>
 	void ArrayList<T,Storage>::pop_back() {
-		this->storage.pop_back();
+		storage.pop_back();
 	}
 	
 	template<typename T, template<typename...> typename Storage>
 	T ArrayList<T,Storage>::extractBack() {
-		FGL_ASSERT(this->size() > 0, "cannot call extractBack on empty array");
-		auto value = std::move(this->back());
+		FGL_ASSERT(size() > 0, "cannot call extractBack on empty array");
+		auto value = std::move(back());
 		popBack();
 		return value;
 	}
@@ -392,41 +417,41 @@ namespace fgl {
 	
 	template<typename T, template<typename...> typename Storage>
 	typename ArrayList<T,Storage>::iterator ArrayList<T,Storage>::remove(const_iterator pos) {
-		return this->storage.erase(pos);
+		return storage.erase(pos);
 	}
 	
 	template<typename T, template<typename...> typename Storage>
 	typename ArrayList<T,Storage>::iterator ArrayList<T,Storage>::remove(const_iterator first, const_iterator last) {
-		return this->storage.erase(first, last);
+		return storage.erase(first, last);
 	}
 	
 	template<typename T, template<typename...> typename Storage>
 	typename ArrayList<T,Storage>::iterator ArrayList<T,Storage>::erase(const_iterator pos) {
-		return this->storage.erase(pos);
+		return storage.erase(pos);
 	}
 	
 	template<typename T, template<typename...> typename Storage>
 	typename ArrayList<T,Storage>::iterator ArrayList<T,Storage>::erase(const_iterator first, const_iterator last) {
-		return this->storage.erase(first, last);
+		return storage.erase(first, last);
 	}
 	
 	template<typename T, template<typename...> typename Storage>
 	typename ArrayList<T,Storage>::iterator ArrayList<T,Storage>::removeAt(size_type pos) {
-		return this->storage.erase(this->begin()+pos);
+		return storage.erase(begin()+pos);
 	}
 	
 	template<typename T, template<typename...> typename Storage>
 	typename ArrayList<T,Storage>::iterator ArrayList<T,Storage>::removeAt(size_type pos, size_type count) {
-		auto start = this->begin() + pos;
-		return this->storage.erase(start, start+count);
+		auto start = begin() + pos;
+		return storage.erase(start, start+count);
 	}
 	
 	template<typename T, template<typename...> typename Storage>
 	typename ArrayList<T,Storage>::size_type ArrayList<T,Storage>::removeEqual(const T& value) {
 		size_type removeCount = 0;
 		size_t firstRemoveIndex = -1;
-		for(size_t i=(this->size()-1); i!=-1; i--) {
-			if(this->storage[i] == value) {
+		for(size_t i=(size()-1); i!=-1; i--) {
+			if(storage[i] == value) {
 				removeCount++;
 				if(firstRemoveIndex == -1) {
 					firstRemoveIndex = i;
@@ -434,34 +459,34 @@ namespace fgl {
 			}
 			else {
 				if(firstRemoveIndex != -1) {
-					this->storage.erase(this->begin()+i+1, this->begin()+firstRemoveIndex+1);
+					storage.erase(begin()+i+1, begin()+firstRemoveIndex+1);
 					firstRemoveIndex = -1;
 				}
 			}
 		}
 		if(firstRemoveIndex != -1) {
-			this->storage.erase(this->begin(), this->begin()+firstRemoveIndex+1);
+			storage.erase(begin(), begin()+firstRemoveIndex+1);
 		}
 		return removeCount;
 	}
 	
 	template<typename T, template<typename...> typename Storage>
 	bool ArrayList<T,Storage>::removeFirstEqual(const T& value) {
-		auto it = this->findEqual(value);
-		if(it == this->end()) {
+		auto it = findEqual(value);
+		if(it == end()) {
 			return false;
 		}
-		this->storage.erase(it);
+		storage.erase(it);
 		return true;
 	}
 	
 	template<typename T, template<typename...> typename Storage>
 	bool ArrayList<T,Storage>::removeLastEqual(const T& value) {
-		auto it = this->findLastEqual(value);
-		if(it == this->end()) {
+		auto it = findLastEqual(value);
+		if(it == end()) {
 			return false;
 		}
-		this->storage.erase(it);
+		storage.erase(it);
 		return true;
 	}
 	
@@ -470,8 +495,8 @@ namespace fgl {
 	typename ArrayList<T,Storage>::size_type ArrayList<T,Storage>::removeWhere(Predicate predicate) {
 		size_type removeCount = 0;
 		size_t firstRemoveIndex = -1;
-		for(size_t i=(this->size()-1); i!=-1; i--) {
-			if(predicate(this->storage[i])) {
+		for(size_t i=(size()-1); i!=-1; i--) {
+			if(predicate(storage[i])) {
 				removeCount++;
 				if(firstRemoveIndex == -1) {
 					firstRemoveIndex = i;
@@ -479,13 +504,13 @@ namespace fgl {
 			}
 			else {
 				if(firstRemoveIndex != -1) {
-					this->storage.erase(this->begin()+i+1, this->begin()+firstRemoveIndex+1);
+					storage.erase(begin()+i+1, begin()+firstRemoveIndex+1);
 					firstRemoveIndex = -1;
 				}
 			}
 		}
 		if(firstRemoveIndex != -1) {
-			this->storage.erase(this->begin(), this->begin()+firstRemoveIndex+1);
+			storage.erase(begin(), begin()+firstRemoveIndex+1);
 		}
 		return removeCount;
 	}
@@ -494,10 +519,10 @@ namespace fgl {
 	template<typename Predicate>
 	bool ArrayList<T,Storage>::removeFirstWhere(Predicate predicate) {
 		auto it = findWhere(predicate);
-		if(it == this->end()) {
+		if(it == end()) {
 			return false;
 		}
-		this->storage.erase(it);
+		storage.erase(it);
 		return true;
 	}
 	
@@ -505,40 +530,40 @@ namespace fgl {
 	template<typename Predicate>
 	bool ArrayList<T,Storage>::removeLastWhere(Predicate predicate) {
 		auto it = findLastWhere(predicate);
-		if(it == this->end()) {
+		if(it == end()) {
 			return false;
 		}
-		this->storage.erase(it);
+		storage.erase(it);
 		return true;
 	}
 	
 	template<typename T, template<typename...> typename Storage>
 	void ArrayList<T,Storage>::clear() {
-		this->storage.clear();
+		storage.clear();
 	}
 	
 	
 	
 	template<typename T, template<typename...> typename Storage>
 	typename ArrayList<T,Storage>::size_type ArrayList<T,Storage>::indexOf(const T& value) const {
-		return findEqual(value) - this->begin();
+		return findEqual(value) - begin();
 	}
 	
 	template<typename T, template<typename...> typename Storage>
 	typename ArrayList<T,Storage>::size_type ArrayList<T,Storage>::lastIndexOf(const T& value) const {
-		return findLastEqual(value) - this->begin();
+		return findLastEqual(value) - begin();
 	}
 	
 	template<typename T, template<typename...> typename Storage>
 	template<typename Predicate>
 	typename ArrayList<T,Storage>::size_type ArrayList<T,Storage>::indexWhere(Predicate predicate) const {
-		return findWhere(predicate) - this->begin();
+		return findWhere(predicate) - begin();
 	}
 	
 	template<typename T, template<typename...> typename Storage>
 	template<typename Predicate>
 	typename ArrayList<T,Storage>::size_type ArrayList<T,Storage>::lastIndexWhere(Predicate predicate) const {
-		return findLastWhere(predicate) - this->begin();
+		return findLastWhere(predicate) - begin();
 	}
 
 
@@ -547,7 +572,7 @@ namespace fgl {
 	template<typename Predicate>
 	ArrayList<T,Storage> ArrayList<T,Storage>::where(Predicate predicate) const {
 		std::list<T> newList;
-		for(auto& item : this->storage) {
+		for(auto& item : storage) {
 			if(predicate(item)) {
 				newList.push_back(item);
 			}
@@ -561,8 +586,8 @@ namespace fgl {
 	template<typename NewT, template<typename...> typename NewStorage>
 	ArrayList<NewT,NewStorage> ArrayList<T,Storage>::map(const Function<NewT(T&)>& transform) {
 		ArrayList<NewT,NewStorage> newArray;
-		newArray.reserve(this->size());
-		for(auto& item : this->storage) {
+		newArray.reserve(size());
+		for(auto& item : storage) {
 			newArray.pushBack(transform(item));
 		}
 		return newArray;
@@ -572,11 +597,35 @@ namespace fgl {
 	template<typename NewT, template<typename...> typename NewStorage>
 	ArrayList<NewT,NewStorage> ArrayList<T,Storage>::map(const Function<NewT(const T&)>& transform) const {
 		ArrayList<NewT,NewStorage> newArray;
-		newArray.reserve(this->size());
-		for(auto& item : this->storage) {
+		newArray.reserve(size());
+		for(auto& item : storage) {
 			newArray.pushBack(transform(item));
 		}
 		return newArray;
+	}
+
+
+
+	template<typename T, template<typename...> typename Storage>
+	void ArrayList<T,Storage>::sort() {
+		std::stable_sort(begin(), end());
+	}
+	
+	template<typename T, template<typename...> typename Storage>
+	template<typename Predicate>
+	void ArrayList<T,Storage>::sort(Predicate predicate) {
+		std::stable_sort(begin(), end(), predicate);
+	}
+	
+	template<typename T, template<typename...> typename Storage>
+	void ArrayList<T,Storage>::unstableSort() {
+		std::sort(begin(), end());
+	}
+	
+	template<typename T, template<typename...> typename Storage>
+	template<typename Predicate>
+	void ArrayList<T,Storage>::unstableSort(Predicate predicate) {
+		std::sort(begin(), end(), predicate);
 	}
 	
 	

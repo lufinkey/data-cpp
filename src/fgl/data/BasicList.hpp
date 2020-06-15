@@ -141,13 +141,6 @@ namespace fgl {
 		template<typename T, typename Predicate>
 		T reduce(T initialValue, Predicate callback) const;
 		
-		inline void sort();
-		template<typename Predicate>
-		inline void sort(Predicate predicate);
-		inline void stableSort();
-		template<typename Predicate>
-		inline void stableSort(Predicate predicate);
-		
 		#ifdef __OBJC__
 		template<typename Mapper>
 		inline NSMutableArray* toNSArray(Mapper mapper);
@@ -650,30 +643,6 @@ namespace fgl {
 			i++;
 		}
 		return value;
-	}
-	
-	
-	
-	template<typename Storage>
-	void BasicList<Storage>::sort() {
-		std::sort(begin(), end());
-	}
-	
-	template<typename Storage>
-	template<typename Predicate>
-	void BasicList<Storage>::sort(Predicate predicate) {
-		std::sort(begin(), end(), predicate);
-	}
-	
-	template<typename Storage>
-	void BasicList<Storage>::stableSort() {
-		std::stable_sort(begin(), end());
-	}
-	
-	template<typename Storage>
-	template<typename Predicate>
-	void BasicList<Storage>::stableSort(Predicate predicate) {
-		std::stable_sort(begin(), end(), predicate);
 	}
 
 
