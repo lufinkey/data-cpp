@@ -89,6 +89,7 @@ namespace fgl {
 		inline void popFront();
 		inline void pop_front();
 		inline T extractFront();
+		inline LinkedList<T,Storage> extractListFront(size_t count = 1);
 		
 		inline void pushBack(const T& value);
 		inline void pushBack(T&& value);
@@ -99,6 +100,7 @@ namespace fgl {
 		inline void popBack();
 		inline void pop_back();
 		inline T extractBack();
+		inline LinkedList<T,Storage> extractListBack(size_t count = 1);
 		
 		inline iterator remove(const_iterator pos);
 		inline iterator remove(const_iterator begin, const_iterator end);
@@ -300,6 +302,17 @@ namespace fgl {
 		popFront();
 		return value;
 	}
+
+	template<typename T, template<typename...> typename Storage>
+	LinkedList<T,Storage> LinkedList<T,Storage>::extractListFront(size_t count) {
+		LinkedList<T,Storage> extracted;
+		while(extracted.size() < count && storage.size() > 0) {
+			auto value = std::move(front());
+			popFront();
+			extracted.pushBack(value);
+		}
+		return extracted;
+	}
 	
 	
 	
@@ -350,6 +363,17 @@ namespace fgl {
 		auto value = std::move(back());
 		popBack();
 		return value;
+	}
+
+	template<typename T, template<typename...> typename Storage>
+	LinkedList<T,Storage> LinkedList<T,Storage>::extractListBack(size_t count) {
+		LinkedList<T,Storage> extracted;
+		while(extracted.size() < count && storage.size() > 0) {
+			auto value = std::move(back());
+			popBack();
+			extracted.pushFront(value);
+		}
+		return extracted;
 	}
 	
 	
