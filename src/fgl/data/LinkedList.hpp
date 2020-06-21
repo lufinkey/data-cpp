@@ -12,6 +12,8 @@
 #include <list>
 #include <fgl/data/Common.hpp>
 #include <fgl/data/BasicList.hpp>
+#include <fgl/data/BasicString.hpp>
+#include <fgl/data/Stringify.hpp>
 #include <fgl/data/Traits.hpp>
 
 namespace fgl {
@@ -128,6 +130,8 @@ namespace fgl {
 		inline void sort();
 		template<typename Predicate>
 		inline void sort(Predicate predicate);
+		
+		String toString() const;
 	};
 
 	template<typename T, template<typename...> typename Storage, typename ListType, typename = IsContainer<ListType>>
@@ -541,6 +545,17 @@ namespace fgl {
 	template<typename Predicate>
 	void LinkedList<T,Storage>::sort(Predicate predicate) {
 		storage.sort(predicate);
+	}
+
+
+
+	template<typename T, template<typename...> typename Storage>
+	String LinkedList<T,Storage>::toString() const {
+		return String::join({
+			"LinkedList<", stringify_type<T>(), ">{ ",
+			String::join(map<String>([](const T& item) {
+				return stringify(item);
+			})), "}" });
 	}
 
 

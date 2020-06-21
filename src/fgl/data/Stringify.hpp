@@ -10,7 +10,7 @@
 
 #include <fgl/data/Common.hpp>
 #include <fgl/data/Optional.hpp>
-#include <fgl/data/String.hpp>
+#include <fgl/data/BasicString.hpp>
 #include <fgl/data/Traits.hpp>
 
 namespace fgl {

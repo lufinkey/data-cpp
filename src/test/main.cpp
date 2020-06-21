@@ -14,6 +14,8 @@ int main(int argc, char* argv[]) {
 	BasicString<char> str = String::join(std::vector<String>{ String("hello"), String(" "), String("world") });
 	
 	auto result = LinkedList<int>() + ArrayList<int>();
+	printf("%s\n", ArrayList<int>{ 1, 2, 5 }.toString().c_str());
+	printf("%s\n", LinkedList<int>{ 1, 2, 5 }.toString().c_str());
 	
 	ArrayList<int>().maybeAt(0);
 	ArrayList<int>().maybeRefAt(0);

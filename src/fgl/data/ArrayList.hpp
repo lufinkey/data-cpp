@@ -12,7 +12,9 @@
 #include <vector>
 #include <fgl/data/Common.hpp>
 #include <fgl/data/BasicList.hpp>
+#include <fgl/data/BasicString.hpp>
 #include <fgl/data/Optional.hpp>
+#include <fgl/data/Stringify.hpp>
 #include <fgl/data/Traits.hpp>
 #ifdef __OBJC__
 #import <Foundation/Foundation.h>
@@ -153,6 +155,8 @@ namespace fgl {
 		inline void unstableSort();
 		template<typename Predicate>
 		inline void unstableSort(Predicate predicate);
+		
+		String toString() const;
 	};
 
 	template<typename T, template<typename...> typename Storage, typename ListType, typename = IsContainer<ListType>>
@@ -626,6 +630,17 @@ namespace fgl {
 	template<typename Predicate>
 	void ArrayList<T,Storage>::unstableSort(Predicate predicate) {
 		std::sort(begin(), end(), predicate);
+	}
+
+
+
+	template<typename T, template<typename...> typename Storage>
+	String ArrayList<T,Storage>::toString() const {
+		return String::join({
+			"ArrayList<", stringify_type<T>(), ">{ ",
+			String::join(map<String>([](const T& item) {
+				return stringify(item);
+			})), "}" });
 	}
 	
 	
