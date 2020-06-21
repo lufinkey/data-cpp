@@ -640,7 +640,7 @@ namespace fgl {
 			"ArrayList<", stringify_type<T>(), ">{ ",
 			String::join(map<String>([](const T& item) {
 				return stringify(item);
-			}), ", "), "}" });
+			}), ", "), " }" });
 	}
 	
 	
