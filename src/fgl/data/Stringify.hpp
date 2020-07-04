@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <list>
 #include <fgl/data/Common.hpp>
 #include <fgl/data/Optional.hpp>
 #include <fgl/data/BasicString.hpp>
@@ -75,10 +76,10 @@ namespace fgl {
 			return (String)obj;
 		}
 		else if constexpr(is_optional<Type>::value) {
-			return obj ? ("Optional( "+stringify(obj.value())+" )") : "Optional()";
+			return obj ? String::join({"Optional{ ",stringify(obj.value())," }"}) : "Optional{}";
 		}
 		else if constexpr(is_weak_ptr<Type>::value) {
-			return "weak_ptr<"+stringify_type<typename is_weak_ptr<Type>::content_type>()+">(use_count="+std::to_string(obj.use_count())+")";
+			return String::join({"weak_ptr<",stringify_type<typename is_weak_ptr<Type>::content_type>(),">(use_count=",std::to_string(obj.use_count()),")"});
 		}
 		else if constexpr(is_ptr_container<Type>::value) {
 			if(obj == nullptr) {
@@ -87,23 +88,23 @@ namespace fgl {
 			return stringify<typename is_ptr_container<Type>::content_type*>(obj.get());
 		}
 		else if constexpr(is_pair<Type>::value) {
-			return "pair( "+stringify(obj.first)+" , "+stringify(obj.second)+" )";
+			return String::join({"pair( ",stringify(obj.first)," , ",stringify(obj.second)," )"});
 		}
 		else if constexpr(std::is_array<Type>::value) {
 			size_t arraySize = sizeof(Type) / sizeof(typename std::remove_extent<Type>::type);
 			if(arraySize == 0) {
 				return "[]";
 			}
-			std::stringstream ss;
-			ss << "[\n";
+			std::list<String> strParts;
+			strParts.push_back("[ ");
 			for(size_t i=0; i<arraySize; i++) {
-				ss << "\t" << stringify(obj[i]);
-				if(i != (arraySize-1)) {
-					ss << ",\n";
+				if(i != 0) {
+					strParts.push_back(", ");
 				}
+				strParts.push_back(stringify(obj[i]));
 			}
-			ss << "]";
-			return ss.str();
+			strParts.push_back(" ]");
+			return String::join(strParts);
 		}
 		else if constexpr(std::is_pointer<Type>::value) {
 			if(obj == nullptr) {
@@ -127,25 +128,25 @@ namespace fgl {
 		else if constexpr(StringifyUtils::has_members<Type>::to_string) {
 			return obj.to_string();
 		}
-		else if constexpr(StringifyUtils::has_members<Type>::string_value) {
-			return obj.string_value();
-		}
 		else if constexpr(std::is_base_of<std::exception,Type>::value) {
 			return obj.what();
 		}
 		else if constexpr(is_container<Type>::value) {
-			std::stringstream ss;
-			ss << stringify_type<Type>() << "[";
-			for(auto begin=obj.begin(), end=obj.end(), it=begin; it!=end; it++) {
-				if(it == begin) {
-					ss << "\n";
-				} else {
-					ss << ",\n";
-				}
-				ss << "\t" << stringify(*it);
+			auto begin = obj.begin();
+			auto end = obj.end();
+			if(begin == end) {
+				return "[]";
 			}
-			ss << "]";
-			return ss.str();
+			std::list<String> strParts;
+			strParts.push_back("[ ");
+			for(auto it=begin; it!=end; it++) {
+				if(it != begin) {
+					strParts.push_back(", ");
+				}
+				strParts.push_back(stringify(*it));
+			}
+			strParts.push_back(" ]");
+			return String::join(strParts);
 		}
 		else {
 			std::stringstream ss;

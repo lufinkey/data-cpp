@@ -636,11 +636,14 @@ namespace fgl {
 
 	template<typename T, template<typename...> typename Storage>
 	String ArrayList<T,Storage>::toString() const {
+		if(storage.size() == 0) {
+			return String::join({"ArrayList<", stringify_type<T>(), ">[]"});
+		}
 		return String::join({
-			"ArrayList<", stringify_type<T>(), ">[\n",
+			"ArrayList<", stringify_type<T>(), ">[\n\t",
 			String::join(map<String>([](const T& item) {
-				return "\t"+stringify(item);
-			}), ",\n"), "]" });
+				return stringify(item);
+			}), ",\n\t"), "\n]" });
 	}
 	
 	
