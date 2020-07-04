@@ -26,6 +26,12 @@ int main(int argc, char* argv[]) {
 	if(maybeTryResult) {
 		printf("got maybeTryResult: %i\n", maybeTryResult.value());
 	}
+	auto maybeTryResult2 = maybeTry([]() -> void {
+		printf("we in the maybeTry void\n");
+	});
+	if(maybeTryResult2) {
+		printf("we got the maybeTry void\n");
+	}
 	
 	printf("stringified: %s\n", stringify(ArrayList<int>()).c_str());
 	

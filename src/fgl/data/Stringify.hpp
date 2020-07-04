@@ -65,7 +65,10 @@ namespace fgl {
 	template<typename T>
 	String stringify(const T& obj) {
 		using Type = typename std::remove_cv<typename std::remove_reference<T>::type>::type;
-		if constexpr(std::is_same<String,Type>::value || std::is_same<std::string,Type>::value
+		if constexpr(std::is_same<T,std::nullptr_t>::value) {
+			return "nullptr_t";
+		}
+		else if constexpr(std::is_same<String,Type>::value || std::is_same<std::string,Type>::value
 		   || std::is_same<char*,Type>::value || std::is_same<const char*,Type>::value || std::is_same<char,Type>::value
 		   || std::is_same<std::wstring,Type>::value || std::is_same<const wchar_t*,Type>::value
 		   || std::is_same<wchar_t*,Type>::value || std::is_same<wchar_t,Type>::value) {
@@ -74,14 +77,14 @@ namespace fgl {
 		else if constexpr(is_optional<Type>::value) {
 			return obj ? ("Optional( "+stringify(obj.value())+" )") : "Optional()";
 		}
+		else if constexpr(is_weak_ptr<Type>::value) {
+			return "weak_ptr<"+stringify_type<typename is_weak_ptr<Type>::content_type>()+">(use_count="+std::to_string(obj.use_count())+")";
+		}
 		else if constexpr(is_ptr_container<Type>::value) {
 			if(obj == nullptr) {
 				return "null";
 			}
 			return stringify<typename is_ptr_container<Type>::content_type*>(obj.get());
-		}
-		else if constexpr(is_weak_ptr<Type>::value) {
-			return "weak_ptr<"+stringify_type<typename is_weak_ptr<Type>::content_type>()+">(use_count="+std::to_string(obj.use_count())+")";
 		}
 		else if constexpr(is_pair<Type>::value) {
 			return "pair( "+stringify(obj.first)+" , "+stringify(obj.second)+" )";

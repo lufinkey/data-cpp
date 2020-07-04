@@ -552,10 +552,10 @@ namespace fgl {
 	template<typename T, template<typename...> typename Storage>
 	String LinkedList<T,Storage>::toString() const {
 		return String::join({
-			"LinkedList<", stringify_type<T>(), ">{ ",
+			"LinkedList<", stringify_type<T>(), ">[\n",
 			String::join(map<String>([](const T& item) {
-				return stringify(item);
-			}), ", "), " }" });
+				return "\t"+stringify(item);
+			}), ",\n"), "]" });
 	}
 
 

@@ -144,6 +144,8 @@ namespace fgl {
 	inline Optionalized<T> maybe(T value);
 	template<typename Func>
 	auto maybeTry(Func func) -> Optionalized<decltype(func())>;
+	template<typename Func, typename DefaultValue>
+	auto maybeTry(Func func, DefaultValue defaultValue) -> decltype(func());
 
 
 
@@ -206,9 +208,23 @@ namespace fgl {
 	template<typename Func>
 	auto maybeTry(Func func) -> Optionalized<decltype(func())> {
 		try {
-			return func();
+			if constexpr(std::is_same<void,decltype(func())>::value) {
+				func();
+				return nullptr;
+			} else {
+				return func();
+			}
 		} catch(...) {
 			return std::nullopt;
+		}
+	}
+
+	template<typename Func, typename DefaultValue>
+	auto maybeTry(Func func, DefaultValue defaultValue) -> decltype(func()) {
+		try {
+			return func();
+		} catch(...) {
+			return defaultValue;
 		}
 	}
 
