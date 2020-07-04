@@ -7,6 +7,7 @@
 //
 
 #include <fgl/data/Stringify.hpp>
+#include <fgl/data/String.hpp>
 #include <cxxabi.h>
 
 namespace fgl {
