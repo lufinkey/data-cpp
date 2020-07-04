@@ -33,13 +33,13 @@ namespace fgl {
 	template<typename Char>
 	BasicString<Char>::BasicString(const Char* str, size_type length)
 	: storage(str, length) {
-		//
+		FGL_ASSERT(str != nullptr, "str cannot be null");
 	}
 	
 	template<typename Char>
 	BasicString<Char>::BasicString(const Char* str)
 	: storage(str) {
-		//
+		FGL_ASSERT(str != nullptr, "str cannot be null");
 	}
 	
 	template<typename Char>
@@ -183,7 +183,7 @@ namespace fgl {
 		typename BasicStringUtils::same_size_convertable_strings<Char,OtherChar>::null_type>
 	BasicString<Char>::BasicString(const OtherChar* str, size_type length)
 	: storage((const Char*)str, length) {
-		//
+		FGL_ASSERT(str != nullptr, "str cannot be null");
 	}
 	
 	template<typename Char>
@@ -199,6 +199,7 @@ namespace fgl {
 		typename BasicStringUtils::same_size_convertable_strings<Char,OtherChar>::null_type>
 	BasicString<Char>::BasicString(const OtherChar* str)
 	: storage((const Char*)str) {
+		FGL_ASSERT(str != nullptr, "str cannot be null");
 		// same char size
 	}
 	
@@ -429,12 +430,14 @@ namespace fgl {
 	
 	template<typename Char>
 	BasicString<Char>& BasicString<Char>::assign(const Char* str, size_type length) {
+		FGL_ASSERT(str != nullptr, "str cannot be null");
 		storage.assign(str, length);
 		return *this;
 	}
 	
 	template<typename Char>
 	BasicString<Char>& BasicString<Char>::assign(const Char* str) {
+		FGL_ASSERT(str != nullptr, "str cannot be null");
 		storage.assign(str);
 		return *this;
 	}
@@ -472,6 +475,7 @@ namespace fgl {
 	
 	template<typename Char>
 	BasicString<Char>& BasicString<Char>::operator=(const Char* str) {
+		FGL_ASSERT(str != nullptr, "str cannot be null");
 		storage.operator=(str);
 		return *this;
 	}
@@ -632,12 +636,14 @@ namespace fgl {
 	
 	template<typename Char>
 	BasicString<Char>& BasicString<Char>::append(const Char* str, size_type length) {
+		FGL_ASSERT(str != nullptr, "str cannot be null");
 		storage.append(str,length);
 		return *this;
 	}
 	
 	template<typename Char>
 	BasicString<Char>& BasicString<Char>::append(const Char* str) {
+		FGL_ASSERT(str != nullptr, "str cannot be null");
 		storage.append(str);
 		return *this;
 	}
@@ -675,6 +681,7 @@ namespace fgl {
 	
 	template<typename Char>
 	BasicString<Char>& BasicString<Char>::operator+=(const Char* str) {
+		FGL_ASSERT(str != nullptr, "str cannot be null");
 		storage.operator+=(str);
 		return *this;
 	}
@@ -829,11 +836,13 @@ namespace fgl {
 	
 	template<typename Char>
 	int BasicString<Char>::compare(const Char* cmp, size_type length) const noexcept {
+		FGL_ASSERT(cmp != nullptr, "cmp cannot be null");
 		return storage.compare(0, length, cmp);
 	}
 	
 	template<typename Char>
 	int BasicString<Char>::compare(const Char* cmp) const noexcept {
+		FGL_ASSERT(cmp != nullptr, "cmp cannot be null");
 		return storage.compare(cmp);
 	}
 	
@@ -849,11 +858,13 @@ namespace fgl {
 	
 	template<typename Char>
 	int BasicString<Char>::compare(const Char* cmp, size_type length, const std::locale& locale) const {
+		FGL_ASSERT(cmp != nullptr, "cmp cannot be null");
 		return std::use_facet<std::collate<Char>>(locale).compare(storage.data(), storage.data()+storage.length(), cmp, cmp+length);
 	}
 	
 	template<typename Char>
 	int BasicString<Char>::compare(const Char* cmp, const std::locale& locale) const {
+		FGL_ASSERT(cmp != nullptr, "cmp cannot be null");
 		return compare(cmp, BasicStringUtils::strlen<Char>(cmp), locale);
 	}
 	
@@ -869,6 +880,7 @@ namespace fgl {
 	
 	template<typename Char>
 	bool BasicString<Char>::equals(const Char* str, size_type length) const {
+		FGL_ASSERT(str != nullptr, "str cannot be null");
 		if(storage.length() == length) {
 			for(size_t i=0; i<length; i++) {
 				if(storage[i] != str[i]) {
@@ -985,6 +997,7 @@ namespace fgl {
 	
 	template<typename Char>
 	typename BasicString<Char>::size_type BasicString<Char>::indexOf(const Char* find, size_type startIndex) const {
+		FGL_ASSERT(find != nullptr, "find cannot be null");
 		return storage.find(find, startIndex);
 	}
 	
@@ -1005,11 +1018,13 @@ namespace fgl {
 	
 	template<typename Char>
 	typename BasicString<Char>::size_type BasicString<Char>::lastIndexOf(const Char* find, size_type startIndex) const {
+		FGL_ASSERT(find != nullptr, "find cannot be null");
 		return storage.rfind(find, startIndex);
 	}
 	
 	template<typename Char>
 	bool BasicString<Char>::startsWith(const Char* str, size_type length) const {
+		FGL_ASSERT(str != nullptr, "str cannot be null");
 		if(length > storage.length()) {
 			return false;
 		}
@@ -1023,6 +1038,7 @@ namespace fgl {
 	
 	template<typename Char>
 	bool BasicString<Char>::startsWith(const Char* str) const {
+		FGL_ASSERT(str != nullptr, "str cannot be null");
 		return startsWith(str, BasicStringUtils::strlen<Char>(str));
 	}
 	
@@ -1038,6 +1054,7 @@ namespace fgl {
 	
 	template<typename Char>
 	bool BasicString<Char>::endsWith(const Char* str, size_type length) const {
+		FGL_ASSERT(str != nullptr, "str cannot be null");
 		if(length > storage.length()) {
 			return false;
 		}
@@ -1054,6 +1071,7 @@ namespace fgl {
 
 	template<typename Char>
 	bool BasicString<Char>::endsWith(const Char* str) const {
+		FGL_ASSERT(str != nullptr, "str cannot be null");
 		return endsWith(str, BasicStringUtils::strlen<Char>(str));
 	}
 	
@@ -1188,6 +1206,7 @@ namespace fgl {
 	
 	template<typename Char>
 	LinkedList<BasicString<Char>> BasicString<Char>::split(const Char* delim) const {
+		FGL_ASSERT(delim != nullptr, "delim cannot be null");
 		size_t delim_size = BasicStringUtils::strlen<Char>(delim);
 		if(delim_size == 0 || delim_size > storage.length()) {
 			LinkedList<BasicString<Char>> elements;
@@ -1475,11 +1494,13 @@ namespace fgl {
 	
 	template<typename Char>
 	bool operator==(const BasicString<Char>& left, const Char* right) {
+		FGL_ASSERT(right != nullptr, "right cannot be null");
 		return left.equals(right);
 	}
 	
 	template<typename Char>
 	bool operator==(const Char* left, const BasicString<Char>& right) {
+		FGL_ASSERT(left != nullptr, "left cannot be null");
 		return right.equals(left);
 	}
 	
@@ -1502,6 +1523,7 @@ namespace fgl {
 	
 	template<typename Char>
 	bool operator!=(const BasicString<Char>& left, const Char* right) {
+		FGL_ASSERT(right != nullptr, "right cannot be null");
 		return !left.equals(right);
 	}
 	
@@ -1529,11 +1551,13 @@ namespace fgl {
 	
 	template<typename Char>
 	bool operator<(const BasicString<Char>& left, const Char* right) {
+		FGL_ASSERT(right != nullptr, "right cannot be null");
 		return (left.compare(right) < 0);
 	}
 	
 	template<typename Char>
 	bool operator<(const Char* left, const BasicString<Char>& right) {
+		FGL_ASSERT(left != nullptr, "left cannot be null");
 		return (right.compare(left) > 0);
 	}
 	
@@ -1544,11 +1568,13 @@ namespace fgl {
 	
 	template<typename Char>
 	bool operator<=(const BasicString<Char>& left, const Char* right) {
+		FGL_ASSERT(right != nullptr, "right cannot be null");
 		return (left.compare(right) <= 0);
 	}
 	
 	template<typename Char>
 	bool operator<=(const Char* left, const BasicString<Char>& right) {
+		FGL_ASSERT(left != nullptr, "left cannot be null");
 		return (right.compare(left) >= 0);
 	}
 	
@@ -1559,11 +1585,13 @@ namespace fgl {
 	
 	template<typename Char>
 	bool operator>(const BasicString<Char>& left, const Char* right) {
+		FGL_ASSERT(right != nullptr, "right cannot be null");
 		return (left.compare(right) > 0);
 	}
 	
 	template<typename Char>
 	bool operator>(const Char* left, const BasicString<Char>& right) {
+		FGL_ASSERT(left != nullptr, "left cannot be null");
 		return (right.compare(left) < 0);
 	}
 	
@@ -1574,11 +1602,13 @@ namespace fgl {
 	
 	template<typename Char>
 	bool operator>=(const BasicString<Char>& left, const Char* right) {
+		FGL_ASSERT(right != nullptr, "right cannot be null");
 		return (left.compare(right) >= 0);
 	}
 	
 	template<typename Char>
 	bool operator>=(const Char* left, const BasicString<Char>& right) {
+		FGL_ASSERT(left != nullptr, "left cannot be null");
 		return (right.compare(left) <= 0);
 	}
 }

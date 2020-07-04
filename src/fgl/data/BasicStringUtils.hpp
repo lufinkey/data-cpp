@@ -438,6 +438,7 @@ namespace fgl {
 	
 	template<typename Char>
 	size_t BasicStringUtils::strlen(const Char* str) noexcept {
+		FGL_ASSERT(str != nullptr, "str cannot be null");
 		size_t size = 0;
 		while(str[size] != NULLCHAR) {
 			size++;
@@ -447,6 +448,8 @@ namespace fgl {
 	
 	template<typename Char>
 	bool BasicStringUtils::streq(const Char* left, const Char* right) noexcept {
+		FGL_ASSERT(left != nullptr, "left cannot be null");
+		FGL_ASSERT(right != nullptr, "right cannot be null");
 		size_t counter = 0;
 		do {
 			Char c1 = left[counter];
@@ -531,6 +534,7 @@ namespace fgl {
 		typename std::enable_if<(sizeof(Char) == sizeof(InputChar)
 			&& BasicStringUtils::can_convert_string_types<Char,InputChar>::value), std::nullptr_t>::type>
 	std::basic_string<Char> BasicStringUtils::convert(const InputChar* str, size_t length) {
+		FGL_ASSERT(str != nullptr, "str cannot be null");
 		return std::basic_string<Char>((const Char*)str, length);
 	}
 	
@@ -599,6 +603,7 @@ namespace fgl {
 		typename std::enable_if<(sizeof(Char) > 1 && sizeof(InputChar) == 1
 			&& BasicStringUtils::can_convert_string_types<Char,InputChar>::value), std::nullptr_t>::type>
 	std::basic_string<Char> BasicStringUtils::convert(const InputChar* str, size_t length) {
+		FGL_ASSERT(str != nullptr, "str cannot be null");
 		typedef typename utf_eqv<Char>::type UTFChar;
 		if constexpr(sizeof(Char) == 2) {
 			std::wstring_convert<std::codecvt_utf8_utf16<UTFChar>, UTFChar> convert;
@@ -638,6 +643,7 @@ namespace fgl {
 	
 	template<typename Char>
 	BasicString<Char> BasicStringUtils::concat(const BasicString<Char>& left, const Char* right) {
+		FGL_ASSERT(right != nullptr, "right cannot be null");
 		size_t right_size = strlen<Char>(right);
 		size_t size_new = get_safe_resize<Char>(left.size(), right_size);
 		BasicString<Char> newStr;
@@ -649,6 +655,7 @@ namespace fgl {
 	
 	template<typename Char>
 	BasicString<Char> BasicStringUtils::concat(const Char* left, const BasicString<Char>& right) {
+		FGL_ASSERT(left != nullptr, "left cannot be null");
 		size_t left_size = strlen<Char>(left);
 		size_t size_new = get_safe_resize<Char>(left_size, right.size());
 		BasicString<Char> newStr;
@@ -820,6 +827,7 @@ namespace fgl {
 	template<typename Char, typename OtherChar,
 		typename BasicStringUtils::same_size_convertable_strings<Char,OtherChar>::null_type>
 	BasicString<Char> BasicStringUtils::concat(const BasicString<Char>& left, const OtherChar* right) {
+		FGL_ASSERT(right != nullptr, "right cannot be null");
 		const Char* right_chars = (const Char*)right;
 		size_t right_size = strlen<Char>(right_chars);
 		size_t size_new = get_safe_resize<Char>(left.size(), right_size);
@@ -833,6 +841,7 @@ namespace fgl {
 	template<typename Char, typename OtherChar,
 		typename BasicStringUtils::diff_size_convertable_strings<Char,OtherChar>::null_type>
 	BasicString<Char> BasicStringUtils::concat(const BasicString<Char>& left, const OtherChar* right) {
+		FGL_ASSERT(right != nullptr, "right cannot be null");
 		auto right_str = convert<Char,OtherChar>(right, strlen<OtherChar>(right));
 		size_t size_new = get_safe_resize<Char>(left.size(), right_str.size());
 		BasicString<Char> newStr;
@@ -845,6 +854,7 @@ namespace fgl {
 	template<typename Char, typename OtherChar,
 		typename BasicStringUtils::same_size_convertable_strings<Char,OtherChar>::null_type>
 	BasicString<Char> BasicStringUtils::concat(const Char* left, const BasicString<OtherChar>& right) {
+		FGL_ASSERT(left != nullptr, "left cannot be null");
 		size_t left_size = strlen<Char>(left);
 		size_t size_new = get_safe_resize<Char>(left_size, right.size());
 		BasicString<Char> newStr;
@@ -857,6 +867,7 @@ namespace fgl {
 	template<typename Char, typename OtherChar,
 		typename BasicStringUtils::diff_size_convertable_strings<Char,OtherChar>::null_type>
 	BasicString<Char> BasicStringUtils::concat(const Char* left, const BasicString<OtherChar>& right) {
+		FGL_ASSERT(left != nullptr, "left cannot be null");
 		size_t left_size = strlen<Char>(left);
 		auto right_str = convert<Char,OtherChar>(right.data(), right.size());\
 		size_t size_new = get_safe_resize<Char>(left_size, right_str.size());
