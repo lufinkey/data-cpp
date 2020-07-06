@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include <exception>
 #include <fgl/data/Common.hpp>
 #include <fgl/data/BasicString.hpp>
+#include <exception>
 
 namespace fgl {
 	class Any;

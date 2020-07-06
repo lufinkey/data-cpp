@@ -14,6 +14,7 @@
 #include <memory>
 #include <stdexcept>
 #include <type_traits>
+
 #ifdef NAPI_MODULE
 #include <fgl/util/NAPI.h>
 #endif

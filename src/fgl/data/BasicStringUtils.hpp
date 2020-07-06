@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <fgl/data/Common.hpp>
 #include <codecvt>
 #include <iomanip>
 #include <memory>
@@ -17,7 +18,6 @@
 #ifdef __OBJC__
 	#import <Foundation/Foundation.h>
 #endif
-#include <fgl/data/Common.hpp>
 
 namespace fgl {
 	#define NULLCHAR 0

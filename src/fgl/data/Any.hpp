@@ -8,12 +8,12 @@
 
 #pragma once
 
-#include <any>
-#include <typeinfo>
 #include <fgl/data/Common.hpp>
 #include <fgl/data/Optional.hpp>
 #include <fgl/data/String.hpp>
 #include <fgl/data/Stringify.hpp>
+#include <any>
+#include <typeinfo>
 
 namespace fgl {
 	class Any {

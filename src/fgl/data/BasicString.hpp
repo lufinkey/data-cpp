@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include <fgl/data/Common.hpp>
+#include <fgl/data/BasicStringUtils.hpp>
 #include <initializer_list>
 #include <list>
 #include <locale>
@@ -16,8 +18,6 @@
 #ifdef __OBJC__
 	#import <Foundation/Foundation.h>
 #endif
-#include <fgl/data/Common.hpp>
-#include <fgl/data/BasicStringUtils.hpp>
 
 namespace fgl {
 	template<typename T, template<typename...> typename Storage>

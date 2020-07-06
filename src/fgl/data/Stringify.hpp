@@ -8,11 +8,11 @@
 
 #pragma once
 
-#include <list>
 #include <fgl/data/Common.hpp>
 #include <fgl/data/Optional.hpp>
 #include <fgl/data/BasicString.hpp>
 #include <fgl/data/Traits.hpp>
+#include <list>
 
 namespace fgl {
 	namespace StringifyUtils {

@@ -8,13 +8,13 @@
 
 #pragma once
 
+#include <fgl/data/Common.hpp>
+#include <fgl/data/Optional.hpp>
+#include <fgl/data/Traits.hpp>
 #include <algorithm>
 #include <initializer_list>
 #include <stdexcept>
 #include <type_traits>
-#include <fgl/data/Common.hpp>
-#include <fgl/data/Optional.hpp>
-#include <fgl/data/Traits.hpp>
 #ifdef __OBJC__
 #import <Foundation/Foundation.h>
 #endif

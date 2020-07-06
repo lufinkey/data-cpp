@@ -8,14 +8,14 @@
 
 #pragma once
 
-#include <initializer_list>
-#include <vector>
 #include <fgl/data/Common.hpp>
 #include <fgl/data/BasicList.hpp>
 #include <fgl/data/BasicString.hpp>
 #include <fgl/data/Optional.hpp>
 #include <fgl/data/Stringify.hpp>
 #include <fgl/data/Traits.hpp>
+#include <initializer_list>
+#include <vector>
 #ifdef __OBJC__
 #import <Foundation/Foundation.h>
 #endif

@@ -8,12 +8,12 @@
 
 #pragma once
 
+#include <fgl/data/Common.hpp>
+#include <fgl/util/PlatformChecks.hpp>
 #include <optional>
 #include <functional>
 #include <variant>
 #include <tuple>
-#include <fgl/data/Common.hpp>
-#include <fgl/util/PlatformChecks.hpp>
 
 namespace fgl {
 	class Any;

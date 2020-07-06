@@ -6,9 +6,9 @@
 //  Copyright © 2019 Luis Finke. All rights reserved.
 //
 
-#include "Error.hpp"
 #include <fgl/data/String.hpp>
 #include <fgl/data/Any.hpp>
+#include <fgl/error/Error.hpp>
 
 namespace fgl {
 	Error::~Error() {
