@@ -41,8 +41,39 @@ int main(int argc, char* argv[]) {
 	printf("optional 5 >= std::nullopt: %i\n", (int)(opt1 >= opt2));
 	printf("optional 5 <= std::nullopt: %i\n", (int)(opt1 <= opt2));
 	
-	printf("String::join: %s\n", String::join({"hello","world","whats","up"}, " ").c_str());
-	printf("stringify(std::list{}): %s\n", stringify(std::list<String>{"hello","world","whats","up"}).c_str());
+	auto testList = std::list<String>{"hello","world","whats","up"};
+	
+	printf("String::join: %s\n", String::join(testList, " ").c_str());
+	printf("stringify(std::list{}): %s\n", stringify(testList).c_str());
+	
+	printf("enumerate:\n");
+	for(auto [i, item] : enumerate(testList)) {
+		printf("%s", String::join({
+			"\t",
+			stringify_type<decltype(i)>(),": ",stringify(i),", ",
+			stringify_type<decltype(item)>(),": ",stringify(item),"\n"
+		}).c_str());
+		if(item == "whats") {
+			item = "what the hecc is";
+		}
+	}
+	printf("\nmodified list to:\n%s\n", stringify(testList).c_str());
+	
+	printf("range(6) (%s): ", stringify_type<decltype(*range(6).begin())>().c_str());
+	for(auto i : range(6)) {
+		printf("%i, ", (int)i);
+	}
+	printf("\n");
+	printf("range(0, 5, 2) (%s): ", stringify_type<decltype(*range(0, 5, 2).begin())>().c_str());
+	for(auto i : range(0, 5, 2)) {
+		printf("%i, ", (int)i);
+	}
+	printf("\n");
+	printf("range(0.0.3279875724, 5.6819, (2.0/3.0)) (%s): ", stringify_type<decltype(*range(0.3279875724, 5.6819, (1.0/3.0)).begin())>().c_str());
+	for(auto i : range(0.3279875724, 5.6819, (1.0/3.0))) {
+		printf("%f, ", (double)i);
+	}
+	printf("\n");
 	
 	return 0;
 }
