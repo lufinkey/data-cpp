@@ -27,6 +27,11 @@ namespace fgl {
 	template<typename Value, typename Step>
 	constexpr auto range(Value start, Value stop, Step step);
 
+	template <typename Iterable,
+		typename Iterator = decltype(std::begin(std::declval<Iterable>())),
+		typename = decltype(std::end(std::declval<Iterable>()))>
+	constexpr auto reversed(Iterable&& iterable);
+
 
 
 #pragma mark Iterator implementation
@@ -151,9 +156,9 @@ namespace fgl {
 			}
 			else if(std::fmod((stop - start), step) != 0) {
 				size_t count = (size_t)std::floor((stop - start) / step);
-				if((start + (step * (Step)count)) != stop) {
+				if(static_cast<Value>(start + (step * (Step)count)) != stop) {
 					count++;
-					endValue = start + (step * (Step)count);
+					endValue = static_cast<Value>(start + (step * (Step)count));
 					FGL_ASSERT((step > 0 && (endValue > stop || endValue < start)) || (step < 0 && (endValue < stop || endValue > start)), "Invalid range causes overflow");
 				}
 			}
@@ -174,5 +179,31 @@ namespace fgl {
 	template<typename Value, typename Step>
 	constexpr auto range(Value start, Value stop, Step step) {
 		return valuerange_iterable<Value,Step>{ start, stop, step };
+	}
+
+
+
+	template <typename Iterable,
+		typename Iterator = decltype(std::begin(std::declval<Iterable>())),
+		typename = decltype(std::end(std::declval<Iterable>()))>
+	struct reversed_iterator_wrapper {
+		Iterable& iterable;
+		inline auto begin() {
+			return std::make_reverse_iterator<Iterator>(iterable.begin());
+		}
+		inline auto begin() const {
+			return std::make_reverse_iterator<Iterator>(iterable.begin());
+		}
+		inline auto end() {
+			return std::make_reverse_iterator<Iterator>(iterable.end());
+		}
+		inline auto end() const {
+			return std::make_reverse_iterator<Iterator>(iterable.end());
+		}
+	};
+
+	template <typename Iterable, typename Iterator, typename _>
+	constexpr auto reversed(Iterable&& iterable) {
+		return reversed_iterator_wrapper<Iterable, Iterator>{ std::forward<Iterable>(iterable) };
 	}
 }
