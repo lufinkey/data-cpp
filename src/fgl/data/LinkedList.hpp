@@ -81,6 +81,12 @@ namespace fgl {
 		inline void splice(const_iterator pos, LinkedList<T,Storage>&& list, const_iterator list_pos);
 		inline void splice(const_iterator pos, LinkedList<T,Storage>& list, const_iterator begin, const_iterator end);
 		inline void splice(const_iterator pos, LinkedList<T,Storage>&& list, const_iterator begin, const_iterator end);
+		inline void splice(const_iterator pos, Storage<T>& list);
+		inline void splice(const_iterator pos, Storage<T>&& list);
+		inline void splice(const_iterator pos, Storage<T>& list, const_iterator list_pos);
+		inline void splice(const_iterator pos, Storage<T>&& list, const_iterator list_pos);
+		inline void splice(const_iterator pos, Storage<T>& list, const_iterator begin, const_iterator end);
+		inline void splice(const_iterator pos, Storage<T>&& list, const_iterator begin, const_iterator end);
 		
 		inline void pushFront(const T& value);
 		inline void pushFront(T&& value);
@@ -248,11 +254,41 @@ namespace fgl {
 	
 	template<typename T, template<typename...> typename Storage>
 	void LinkedList<T,Storage>::splice(const_iterator pos, LinkedList<T,Storage>& list, const_iterator first, const_iterator last) {
-		storage.splice(pos, list, first, last);
+		storage.splice(pos, list.storage, first, last);
 	}
 	
 	template<typename T, template<typename...> typename Storage>
 	void LinkedList<T,Storage>::splice(const_iterator pos, LinkedList<T,Storage>&& list, const_iterator first, const_iterator last) {
+		storage.splice(pos, list.storage, first, last);
+	}
+
+	template<typename T, template<typename...> typename Storage>
+	void LinkedList<T,Storage>::splice(const_iterator pos, Storage<T>& list) {
+		storage.splice(pos, list);
+	}
+	
+	template<typename T, template<typename...> typename Storage>
+	void LinkedList<T,Storage>::splice(const_iterator pos, Storage<T>&& list) {
+		storage.splice(pos, list);
+	}
+	
+	template<typename T, template<typename...> typename Storage>
+	void LinkedList<T,Storage>::splice(const_iterator pos, Storage<T>& list, const_iterator list_pos) {
+		storage.splice(pos, list, list_pos);
+	}
+	
+	template<typename T, template<typename...> typename Storage>
+	void LinkedList<T,Storage>::splice(const_iterator pos, Storage<T>&& list, const_iterator list_pos) {
+		storage.splice(pos, list, list_pos);
+	}
+	
+	template<typename T, template<typename...> typename Storage>
+	void LinkedList<T,Storage>::splice(const_iterator pos, Storage<T>& list, const_iterator first, const_iterator last) {
+		storage.splice(pos, list, first, last);
+	}
+	
+	template<typename T, template<typename...> typename Storage>
+	void LinkedList<T,Storage>::splice(const_iterator pos, Storage<T>&& list, const_iterator first, const_iterator last) {
 		storage.splice(pos, list, first, last);
 	}
 	
