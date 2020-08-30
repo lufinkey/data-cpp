@@ -125,8 +125,10 @@ namespace fgl {
 		
 		
 		inline explicit operator const Char*() const noexcept;
-		inline operator std::basic_string<Char>&() noexcept;
-		inline operator const std::basic_string<Char>&() const noexcept;
+		inline operator std::basic_string<Char>&() & noexcept;
+		inline operator std::basic_string<Char>&&() && noexcept;
+		inline operator const std::basic_string<Char>&() const& noexcept;
+		inline operator const std::basic_string<Char>&&() const&& noexcept;
 		inline operator const std::basic_string_view<Char>() const noexcept;
 		
 		
@@ -179,8 +181,7 @@ namespace fgl {
 		inline BasicString<SomeChar> toBasicString() const;
 		
 		template<typename _Char=Char,
-			typename BasicStringUtils::is_same<_Char,Char>::null_type = nullptr,
-			typename BasicStringUtils::can_convert_string_type<Char>::null_type = nullptr>
+			typename BasicStringUtils::can_convert_string_types<Char,char>::null_type = nullptr>
 		inline BasicString<char> toString() const;
 		
 		

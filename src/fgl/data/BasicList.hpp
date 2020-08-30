@@ -60,6 +60,11 @@ namespace fgl {
 		inline BasicList<Storage>& operator=(Container&&);
 		inline BasicList<Storage>& operator=(std::initializer_list<ValueType> list);
 		
+		operator Storage&() & noexcept;
+		operator Storage&&() && noexcept;
+		operator const Storage&() const& noexcept;
+		operator const Storage&&() const&& noexcept;
+		
 		inline iterator begin();
 		inline const_iterator begin() const;
 		inline const_iterator cbegin() const;
@@ -252,6 +257,28 @@ namespace fgl {
 	BasicList<Storage>& BasicList<Storage>::operator=(std::initializer_list<ValueType> list) {
 		storage.assign(list);
 		return *this;
+	}
+
+
+
+	template<typename Storage>
+	BasicList<Storage>::operator Storage&() & noexcept {
+		return storage;
+	}
+
+	template<typename Storage>
+	BasicList<Storage>::operator Storage&&() && noexcept {
+		return storage;
+	}
+
+	template<typename Storage>
+	BasicList<Storage>::operator const Storage&() const& noexcept {
+		return storage;
+	}
+
+	template<typename Storage>
+	BasicList<Storage>::operator const Storage&&() const&& noexcept {
+		return storage;
 	}
 	
 	

@@ -268,12 +268,22 @@ namespace fgl {
 	}
 	
 	template<typename Char>
-	BasicString<Char>::operator std::basic_string<Char>&() noexcept {
+	BasicString<Char>::operator std::basic_string<Char>&() & noexcept {
+		return storage;
+	}
+
+	template<typename Char>
+	BasicString<Char>::operator std::basic_string<Char>&&() && noexcept {
 		return storage;
 	}
 	
 	template<typename Char>
-	BasicString<Char>::operator const std::basic_string<Char>&() const noexcept {
+	BasicString<Char>::operator const std::basic_string<Char>&() const& noexcept {
+		return storage;
+	}
+
+	template<typename Char>
+	BasicString<Char>::operator const std::basic_string<Char>&&() const&& noexcept {
 		return storage;
 	}
 	
@@ -397,9 +407,11 @@ namespace fgl {
 	
 	template<typename Char>
 	template<typename _Char,
-		typename BasicStringUtils::is_same<_Char, Char>::null_type,
-		typename BasicStringUtils::can_convert_string_type<Char>::null_type>
+		typename BasicStringUtils::can_convert_string_types<Char,char>::null_type>
 	BasicString<char> BasicString<Char>::toString() const {
+		if constexpr(std::is_same<Char,char>::value) {
+			return *this;
+		}
 		return BasicStringUtils::convert<char,Char>(storage.data(),storage.length());
 	}
 	

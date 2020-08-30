@@ -62,9 +62,13 @@ namespace fgl {
 		Any& operator=(Any&&);
 		
 		template<typename U>
-		U& as();
+		U& as() &;
 		template<typename U>
-		const U& as() const;
+		U&& as() &&;
+		template<typename U>
+		const U& as() const&;
+		template<typename U>
+		const U&& as() const&&;
 		
 		template<typename U>
 		Optional<U> maybeAs() const;
@@ -80,9 +84,13 @@ namespace fgl {
 		std::any toStdAny() const;
 		
 		template<typename U>
-		explicit operator U&();
+		explicit operator U&() &;
 		template<typename U>
-		explicit operator const U&() const;
+		explicit operator U&&() &&;
+		template<typename U>
+		explicit operator const U&() const&;
+		template<typename U>
+		explicit operator const U&&() const&&;
 		
 		bool empty() const;
 		bool hasValue() const;
@@ -148,7 +156,7 @@ namespace fgl {
 	}
 	
 	template<typename U>
-	U& Any::as() {
+	U& Any::as() & {
 		using T = typename std::decay<U>::type;
 		if(_ptr == nullptr || typeid(T) != _ptr->type()) {
 			throw std::bad_any_cast();
@@ -156,15 +164,35 @@ namespace fgl {
 		auto derived = static_cast<Derived<T>*>(_ptr);
 		return derived->value;
 	}
+
+	template<typename U>
+	U&& Any::as() && {
+		using T = typename std::decay<U>::type;
+		if(_ptr == nullptr || typeid(T) != _ptr->type()) {
+			throw std::bad_any_cast();
+		}
+		auto derived = static_cast<Derived<T>*>(_ptr);
+		return std::move(derived->value);
+	}
 	
 	template<typename U>
-	const U& Any::as() const {
+	const U& Any::as() const& {
 		using T = typename std::decay<U>::type;
 		if(_ptr == nullptr || typeid(T) != _ptr->type()) {
 			throw std::bad_any_cast();
 		}
 		auto derived = static_cast<Derived<T>*>(_ptr);
 		return derived->value;
+	}
+
+	template<typename U>
+	const U&& Any::as() const&& {
+		using T = typename std::decay<U>::type;
+		if(_ptr == nullptr || typeid(T) != _ptr->type()) {
+			throw std::bad_any_cast();
+		}
+		auto derived = static_cast<Derived<T>*>(_ptr);
+		return std::move(derived->value);
 	}
 
 	template<typename U>
@@ -213,12 +241,22 @@ namespace fgl {
 	}
 
 	template<typename U>
-	Any::operator U&() {
+	Any::operator U&() & {
+		return as<U>();
+	}
+
+	template<typename U>
+	Any::operator U&&() && {
+		return as<U>();
+	}
+
+	template<typename U>
+	Any::operator const U&() const& {
 		return as<U>();
 	}
 	
 	template<typename U>
-	Any::operator const U&() const {
+	Any::operator const U&&() const&& {
 		return as<U>();
 	}
 
