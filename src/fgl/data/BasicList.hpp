@@ -63,7 +63,6 @@ namespace fgl {
 		operator Storage&() & noexcept;
 		operator Storage&&() && noexcept;
 		operator const Storage&() const& noexcept;
-		operator const Storage&&() const&& noexcept;
 		
 		inline iterator begin();
 		inline const_iterator begin() const;
@@ -273,11 +272,6 @@ namespace fgl {
 
 	template<typename Storage>
 	BasicList<Storage>::operator const Storage&() const& noexcept {
-		return storage;
-	}
-
-	template<typename Storage>
-	BasicList<Storage>::operator const Storage&&() const&& noexcept {
 		return storage;
 	}
 	

@@ -67,8 +67,6 @@ namespace fgl {
 		U&& as() &&;
 		template<typename U>
 		const U& as() const&;
-		template<typename U>
-		const U&& as() const&&;
 		
 		template<typename U>
 		Optional<U> maybeAs() const;
@@ -89,8 +87,6 @@ namespace fgl {
 		explicit operator U&&() &&;
 		template<typename U>
 		explicit operator const U&() const&;
-		template<typename U>
-		explicit operator const U&&() const&&;
 		
 		bool empty() const;
 		bool hasValue() const;
@@ -186,16 +182,6 @@ namespace fgl {
 	}
 
 	template<typename U>
-	const U&& Any::as() const&& {
-		using T = typename std::decay<U>::type;
-		if(_ptr == nullptr || typeid(T) != _ptr->type()) {
-			throw std::bad_any_cast();
-		}
-		auto derived = static_cast<Derived<T>*>(_ptr);
-		return std::move(derived->value);
-	}
-
-	template<typename U>
 	Optional<U> Any::maybeAs() const {
 		using T = typename std::decay<U>::type;
 		if(_ptr == nullptr) {
@@ -252,11 +238,6 @@ namespace fgl {
 
 	template<typename U>
 	Any::operator const U&() const& {
-		return as<U>();
-	}
-	
-	template<typename U>
-	Any::operator const U&&() const&& {
 		return as<U>();
 	}
 

@@ -281,11 +281,6 @@ namespace fgl {
 	BasicString<Char>::operator const std::basic_string<Char>&() const& noexcept {
 		return storage;
 	}
-
-	template<typename Char>
-	BasicString<Char>::operator const std::basic_string<Char>&&() const&& noexcept {
-		return storage;
-	}
 	
 	template<typename Char>
 	BasicString<Char>::operator const std::basic_string_view<Char>() const noexcept {

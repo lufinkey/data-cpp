@@ -37,7 +37,6 @@ namespace fgl {
 		using BasicList<Storage<T>>::operator Storage<T>&;
 		using BasicList<Storage<T>>::operator Storage<T>&&;
 		using BasicList<Storage<T>>::operator const Storage<T>&;
-		using BasicList<Storage<T>>::operator const Storage<T>&&;
 		
 		using BasicList<Storage<T>>::size;
 		using BasicList<Storage<T>>::front;

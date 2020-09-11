@@ -128,7 +128,6 @@ namespace fgl {
 		inline operator std::basic_string<Char>&() & noexcept;
 		inline operator std::basic_string<Char>&&() && noexcept;
 		inline operator const std::basic_string<Char>&() const& noexcept;
-		inline operator const std::basic_string<Char>&&() const&& noexcept;
 		inline operator const std::basic_string_view<Char>() const noexcept;
 		
 		
