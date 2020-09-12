@@ -82,13 +82,6 @@ namespace fgl {
 		#endif
 		
 		template<typename OtherChar,
-			typename BasicStringUtils::same_size_convertable_with_char_type<Char,OtherChar>::null_type = nullptr>
-		inline explicit BasicString(OtherChar c);
-		template<typename OtherChar,
-			typename BasicStringUtils::diff_size_convertable_with_char_type<Char,OtherChar>::null_type = nullptr>
-		inline explicit BasicString(OtherChar c);
-		
-		template<typename OtherChar,
 			typename BasicStringUtils::same_size_convertable_strings<Char,OtherChar>::null_type = nullptr>
 		inline BasicString(const OtherChar* str, size_type length);
 		template<typename OtherChar,

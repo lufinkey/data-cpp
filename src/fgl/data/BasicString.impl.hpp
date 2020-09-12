@@ -165,22 +165,6 @@ namespace fgl {
 
 	template<typename Char>
 	template<typename OtherChar,
-		typename BasicStringUtils::same_size_convertable_with_char_type<Char,OtherChar>::null_type>
-	BasicString<Char>::BasicString(OtherChar c)
-	: storage(1, (Char)c) {
-		//
-	}
-	
-	template<typename Char>
-	template<typename OtherChar,
-		typename BasicStringUtils::diff_size_convertable_with_char_type<Char,OtherChar>::null_type>
-	BasicString<Char>::BasicString(OtherChar c)
-	: storage(BasicStringUtils::convert<Char,OtherChar>(std::basic_string<OtherChar>(1,c).data(), 1)){
-		//
-	}
-	
-	template<typename Char>
-	template<typename OtherChar,
 		typename BasicStringUtils::same_size_convertable_strings<Char,OtherChar>::null_type>
 	BasicString<Char>::BasicString(const OtherChar* str, size_type length)
 	: storage((const Char*)str, length) {
