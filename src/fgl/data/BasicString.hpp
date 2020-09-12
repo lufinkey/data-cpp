@@ -47,7 +47,6 @@ namespace fgl {
 		inline BasicString(const Char* str);
 		inline BasicString(const std::basic_string<Char>& str);
 		inline BasicString(std::basic_string<Char>&& str) noexcept;
-		inline BasicString(Char c);
 		inline BasicString(std::initializer_list<Char>);
 		template<typename InputIt>
 		inline BasicString(InputIt first, InputIt last);

@@ -56,12 +56,6 @@ namespace fgl {
 	}
 	
 	template<typename Char>
-	BasicString<Char>::BasicString(Char c)
-	: storage(1, c) {
-		//
-	}
-	
-	template<typename Char>
 	BasicString<Char>::BasicString(std::initializer_list<Char> list)
 	: storage(list) {
 		//
