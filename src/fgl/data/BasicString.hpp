@@ -191,7 +191,6 @@ namespace fgl {
 		inline BasicString<Char>& operator=(const std::basic_string<Char>& str);
 		inline BasicString<Char>& operator=(std::basic_string<Char>&& str) noexcept;
 		inline BasicString<Char>& operator=(const Char* str);
-		inline BasicString<Char>& operator=(Char c);
 		inline BasicString<Char>& operator=(std::initializer_list<Char>);
 		
 		#ifdef __OBJC__
@@ -211,13 +210,6 @@ namespace fgl {
 				&& sizeof(unichar)!=sizeof(_Char) && sizeof(_Char)!=sizeof(char)), std::nullptr_t>::type = nullptr>
 		BasicString<Char>& operator=(NSString* nsString);
 		#endif
-		
-		template<typename OtherChar,
-			typename BasicStringUtils::same_size_convertable_with_char_type<Char, OtherChar>::null_type = nullptr>
-		inline BasicString<Char>& operator=(OtherChar c);
-		template<typename OtherChar,
-			typename BasicStringUtils::diff_size_convertable_with_char_type<Char, OtherChar>::null_type = nullptr>
-		inline BasicString<Char>& operator=(OtherChar c);
 		
 		template<typename OtherChar,
 			typename BasicStringUtils::same_size_convertable_strings<Char, OtherChar>::null_type = nullptr>

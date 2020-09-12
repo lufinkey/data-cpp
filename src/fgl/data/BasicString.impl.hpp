@@ -467,12 +467,6 @@ namespace fgl {
 	}
 	
 	template<typename Char>
-	BasicString<Char>& BasicString<Char>::operator=(Char c) {
-		storage.operator=(c);
-		return *this;
-	}
-	
-	template<typename Char>
 	BasicString<Char>& BasicString<Char>::operator=(std::initializer_list<Char> list) {
 		storage.operator=(list);
 		return *this;
@@ -534,23 +528,6 @@ namespace fgl {
 	}
 	
 	#endif
-	
-	template<typename Char>
-	template<typename OtherChar,
-		typename BasicStringUtils::same_size_convertable_with_char_type<Char, OtherChar>::null_type>
-	BasicString<Char>& BasicString<Char>::operator=(OtherChar c) {
-		storage.assign(1, (Char)c);
-		return *this;
-	}
-	
-	template<typename Char>
-	template<typename OtherChar,
-		typename BasicStringUtils::diff_size_convertable_with_char_type<Char, OtherChar>::null_type>
-	BasicString<Char>& BasicString<Char>::operator=(OtherChar c) {
-		// different char size
-		storage = BasicStringUtils::convert<Char,OtherChar>(std::basic_string<Char>(1,c).data(), 1);
-		return *this;
-	}
 	
 	template<typename Char>
 	template<typename OtherChar,
