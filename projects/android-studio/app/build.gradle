@@ -5,13 +5,13 @@ android {
     defaultConfig {
         applicationId "com.lufinkey.datacpp"
         minSdkVersion 23
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
             cmake {
-                cppFlags "-std=c++14"
+                cppFlags "-std=c++17"
             }
         }
     }

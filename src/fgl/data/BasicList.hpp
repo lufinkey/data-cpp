@@ -696,9 +696,9 @@ namespace fgl {
 
 	#ifdef JNIEXPORT
 
-	template<typename T, template<typename...> typename Storage>
+	template<typename Storage>
 	template<typename Mapper>
-	jobjectArray LinkedList<T,Storage>::toJavaObjectArray(JNIEnv* env, jclass objectClass, Mapper transform) const {
+	jobjectArray BasicList<Storage>::toJavaObjectArray(JNIEnv* env, jclass objectClass, Mapper transform) const {
 		jobjectArray javaArray = env->NewObjectArray((jsize)size(), objectClass, nullptr);
 		jsize i=0;
 		for(auto& item : storage) {
