@@ -16,11 +16,14 @@ add_library(DataCpp SHARED
 		DataCpp_android.cpp
 		${DATACPP_SOURCES})
 
+target_include_directories(
+		DataCpp
+		PUBLIC
+		"${DATACPP_ROOT}/src")
+
 find_library(
 		log-lib
 		log)
-
 target_link_libraries(
 		DataCpp
-
 		${log-lib})
