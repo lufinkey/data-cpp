@@ -21,9 +21,8 @@ target_include_directories(
 		PUBLIC
 		"${DATACPP_ROOT}/src")
 
-find_library(
-		log-lib
-		log)
+find_library(log-lib log)
+
 target_link_libraries(
 		DataCpp
 		${log-lib})
