@@ -11,17 +11,12 @@ cmake_minimum_required(VERSION 3.4.1)
 # Gradle automatically packages shared libraries with your APK.
 
 set( DATACPP_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../.." )
-
-add_subdirectory(
-		"${CMAKE_CURRENT_SOURCE_DIR}/../../../../libdatacpp/src/main/cpp"
-		"${CMAKE_CURRENT_SOURCE_DIR}/../../../build/libdatacpp")
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/../../../../libdatacpp/src/main/cpp" "${CMAKE_CURRENT_SOURCE_DIR}/../../../build/libdatacpp")
 
 add_library( # Sets the name of the library.
 		native-lib
-
 		# Sets the library as a shared library.
 		SHARED
-
 		# Provides a relative path to your source file(s).
 		native-lib.cpp)
 
