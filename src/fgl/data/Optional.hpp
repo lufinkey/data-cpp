@@ -52,6 +52,69 @@ namespace fgl {
 	};
 
 	template<typename T>
+	inline bool operator==(const Optional<T>& left, const Optional<T>& right);
+	template<typename T>
+	inline bool operator!=(const Optional<T>& left, const Optional<T>& right);
+	template<typename T>
+	inline bool operator<(const Optional<T>& left, const Optional<T>& right);
+	template<typename T>
+	inline bool operator<=(const Optional<T>& left, const Optional<T>& right);
+	template<typename T>
+	inline bool operator>(const Optional<T>& left, const Optional<T>& right);
+	template<typename T>
+	inline bool operator>=(const Optional<T>& left, const Optional<T>& right);
+
+	template<typename T>
+	inline bool operator==(const Optional<T>& left, std::nullopt_t right);
+	template<typename T>
+	inline bool operator==(std::nullopt_t left, const Optional<T>& right);
+	template<typename T>
+	inline bool operator!=(const Optional<T>& left, std::nullopt_t right);
+	template<typename T>
+	inline bool operator!=(std::nullopt_t left, const Optional<T>& right);
+	template<typename T>
+	inline bool operator<(const Optional<T>& left, std::nullopt_t right);
+	template<typename T>
+	inline bool operator<(std::nullopt_t left, const Optional<T>& right);
+	template<typename T>
+	inline bool operator<=(const Optional<T>& left, std::nullopt_t right);
+	template<typename T>
+	inline bool operator<=(std::nullopt_t left, const Optional<T>& right);
+	template<typename T>
+	inline bool operator>(const Optional<T>& left, std::nullopt_t right);
+	template<typename T>
+	inline bool operator>(std::nullopt_t left, const Optional<T>& right);
+	template<typename T>
+	inline bool operator>=(const Optional<T>& left, std::nullopt_t right);
+	template<typename T>
+	inline bool operator>=(std::nullopt_t left, const Optional<T>& right);
+
+	template<typename T, typename U>
+	inline bool operator==(const Optional<T>& left, const U& right);
+	template<typename T, typename U>
+	inline bool operator==(const U& left, const Optional<T>& right);
+	template<typename T, typename U>
+	inline bool operator!=(const Optional<T>& left, const U& right);
+	template<typename T, typename U>
+	inline bool operator!=(const U& left, const Optional<T>& right);
+	template<typename T, typename U>
+	inline bool operator<(const Optional<T>& left, const U& right);
+	template<typename T, typename U>
+	inline bool operator<(const U& left, const Optional<T>& right);
+	template<typename T, typename U>
+	inline bool operator<=(const Optional<T>& left, const U& right);
+	template<typename T, typename U>
+	inline bool operator<=(const U& left, const Optional<T>& right);
+	template<typename T, typename U>
+	inline bool operator>(const Optional<T>& left, const U& right);
+	template<typename T, typename U>
+	inline bool operator>(const U& left, const Optional<T>& right);
+	template<typename T, typename U>
+	inline bool operator>=(const Optional<T>& left, const U& right);
+	template<typename T, typename U>
+	inline bool operator>=(const U& left, const Optional<T>& right);
+
+	template<typename T>
 	using OptionalRef = Optional<std::reference_wrapper<T>>;
 
 	template<typename T>
@@ -163,5 +226,157 @@ namespace fgl {
 		} catch(...) {
 			return defaultValue;
 		}
+	}
+
+
+
+	template<typename T>
+	bool operator==(const Optional<T>& left, const Optional<T>& right) {
+		return operator==((const std::optional<T>&)left, (const std::optional<T>&)right);
+	}
+
+	template<typename T>
+	bool operator!=(const Optional<T>& left, const Optional<T>& right) {
+		return operator!=((const std::optional<T>&)left, (const std::optional<T>&)right);
+	}
+
+	template<typename T>
+	bool operator<(const Optional<T>& left, const Optional<T>& right) {
+		return operator<((const std::optional<T>&)left, (const std::optional<T>&)right);
+	}
+
+	template<typename T>
+	bool operator<=(const Optional<T>& left, const Optional<T>& right) {
+		return operator<=((const std::optional<T>&)left, (const std::optional<T>&)right);
+	}
+
+	template<typename T>
+	bool operator>(const Optional<T>& left, const Optional<T>& right) {
+		return operator>((const std::optional<T>&)left, (const std::optional<T>&)right);
+	}
+
+	template<typename T>
+	bool operator>=(const Optional<T>& left, const Optional<T>& right) {
+		return operator>=((const std::optional<T>&)left, (const std::optional<T>&)right);
+	}
+
+	template<typename T>
+	bool operator==(const Optional<T>& left, std::nullopt_t right) {
+		return operator==((const std::optional<T>&)left, right);
+	}
+
+	template<typename T>
+	bool operator==(std::nullopt_t left, const Optional<T>& right) {
+		return operator==(left, (const std::optional<T>&)right);
+	}
+
+	template<typename T>
+	bool operator!=(const Optional<T>& left, std::nullopt_t right) {
+		return operator!=((const std::optional<T>&)left, right);
+	}
+
+	template<typename T>
+	bool operator!=(std::nullopt_t left, const Optional<T>& right) {
+		return operator!=(left, (const std::optional<T>&)right);
+	}
+
+	template<typename T>
+	bool operator<(const Optional<T>& left, std::nullopt_t right) {
+		return operator<((const std::optional<T>&)left, right);
+	}
+
+	template<typename T>
+	bool operator<(std::nullopt_t left, const Optional<T>& right) {
+		return operator<(left, (const std::optional<T>&)right);
+	}
+
+	template<typename T>
+	bool operator<=(const Optional<T>& left, std::nullopt_t right) {
+		return operator<=((const std::optional<T>&)left, right);
+	}
+
+	template<typename T>
+	bool operator<=(std::nullopt_t left, const Optional<T>& right) {
+		return operator<=(left, (const std::optional<T>&)right);
+	}
+
+	template<typename T>
+	bool operator>(const Optional<T>& left, std::nullopt_t right) {
+		return operator>((const std::optional<T>&)left, right);
+	}
+
+	template<typename T>
+	bool operator>(std::nullopt_t left, const Optional<T>& right) {
+		return operator>(left, (const std::optional<T>&)right);
+	}
+
+	template<typename T>
+	bool operator>=(const Optional<T>& left, std::nullopt_t right) {
+		return operator>=((const std::optional<T>&)left, right);
+	}
+
+	template<typename T>
+	bool operator>=(std::nullopt_t left, const Optional<T>& right) {
+		return operator>=(left, (const std::optional<T>&)right);
+	}
+
+	template<typename T, typename U>
+	bool operator==(const Optional<T>& left, const U& right) {
+		return operator==((const std::optional<T>&)left, right);
+	}
+
+	template<typename T, typename U>
+	bool operator==(const U& left, const Optional<T>& right) {
+		return operator==(left, (const std::optional<T>&)right);
+	}
+
+	template<typename T, typename U>
+	bool operator!=(const Optional<T>& left, const U& right) {
+		return operator!=((const std::optional<T>&)left, right);
+	}
+
+	template<typename T, typename U>
+	bool operator!=(const U& left, const Optional<T>& right) {
+		return operator!=(left, (const std::optional<T>&)right);
+	}
+
+	template<typename T, typename U>
+	bool operator<(const Optional<T>& left, const U& right) {
+		return operator<((const std::optional<T>&)left, right);
+	}
+
+	template<typename T, typename U>
+	bool operator<(const U& left, const Optional<T>& right) {
+		return operator<(left, (const std::optional<T>&)right);
+	}
+
+	template<typename T, typename U>
+	bool operator<=(const Optional<T>& left, const U& right) {
+		return operator<=((const std::optional<T>&)left, right);
+	}
+
+	template<typename T, typename U>
+	bool operator<=(const U& left, const Optional<T>& right) {
+		return operator<=(left, (const std::optional<T>&)right);
+	}
+
+	template<typename T, typename U>
+	bool operator>(const Optional<T>& left, const U& right) {
+		return operator>((const std::optional<T>&)left, right);
+	}
+
+	template<typename T, typename U>
+	bool operator>(const U& left, const Optional<T>& right) {
+		return operator>(left, (const std::optional<T>&)right);
+	}
+
+	template<typename T, typename U>
+	bool operator>=(const Optional<T>& left, const U& right) {
+		return operator>=((const std::optional<T>&)left, right);
+	}
+
+	template<typename T, typename U>
+	bool operator>=(const U& left, const Optional<T>& right) {
+		return operator>=(left, (const std::optional<T>&)right);
 	}
 }
