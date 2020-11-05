@@ -32,6 +32,7 @@ namespace fgl {
 		using std::optional<T>::swap;
 		using std::optional<T>::reset;
 		using std::optional<T>::emplace;
+		
 		template<typename U=T>
 		Optional(U&& value);
 		
@@ -41,6 +42,12 @@ namespace fgl {
 		inline operator std::optional<T>&();
 		inline operator const std::optional<T>&() const;
 		inline operator std::optional<T>&&() &&;
+		template<typename U,
+			typename std::enable_if<std::is_convertible_v<T,U>,std::nullptr_t>::type = nullptr>
+		inline explicit operator std::optional<U>() const;
+		template<typename U,
+			typename std::enable_if<std::is_convertible_v<T,U>,std::nullptr_t>::type = nullptr>
+		inline explicit operator Optional<U>() const;
 		
 		inline bool hasValue() const;
 		template<typename U>
@@ -177,6 +184,20 @@ namespace fgl {
 	template<typename T>
 	Optional<T>::operator std::optional<T>&&() && {
 		return *this;
+	}
+
+	template<typename T>
+	template<typename U,
+		typename std::enable_if<std::is_convertible_v<T,U>,std::nullptr_t>::type>
+	Optional<T>::operator std::optional<U>() const {
+		return static_cast<std::optional<U>>((const std::optional<T>&)*this);
+	}
+
+	template<typename T>
+	template<typename U,
+		typename std::enable_if<std::is_convertible_v<T,U>,std::nullptr_t>::type>
+	Optional<T>::operator Optional<U>() const {
+		return Optional<U>(static_cast<std::optional<U>>((const std::optional<T>&)*this));
 	}
 	
 	template<typename T>
