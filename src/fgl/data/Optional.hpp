@@ -255,14 +255,26 @@ namespace fgl {
 	bool operator==(const Optional<T>& left, const Optional<T>& right) {
 		const std::optional<T>& left1 = left;
 		const std::optional<T>& right1 = right;
-		return left1 == right1;
+		if(static_cast<bool>(left1) != static_cast<bool>(right1)) {
+			return false;
+		}
+		if(!static_cast<bool>(left1)) {
+			return true;
+		}
+		return left1.value() == right1.value();
 	}
 
 	template<typename T>
 	bool operator!=(const Optional<T>& left, const Optional<T>& right) {
 		const std::optional<T>& left1 = left;
 		const std::optional<T>& right1 = right;
-		return left1 != right1;
+		if(static_cast<bool>(left1) != static_cast<bool>(right1)) {
+			return true;
+		}
+		if(!static_cast<bool>(left1)) {
+			return false;
+		}
+		return left1.value() != right1.value();
 	}
 
 	template<typename T>
