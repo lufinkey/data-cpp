@@ -308,7 +308,7 @@ namespace fgl {
 		inline int compare(const BasicString<Char>& cmp, const std::locale& locale) const;
 		inline int compare(const std::basic_string<Char>& cmp, const std::locale& locale) const;
 		
-		bool equals(const Char* str, size_type length) const;
+		constexpr bool equals(const Char* str, size_type length) const;
 		inline bool equals(const Char* str) const;
 		inline bool equals(const BasicString<Char>& str) const;
 		

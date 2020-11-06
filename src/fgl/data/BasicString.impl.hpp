@@ -842,7 +842,7 @@ namespace fgl {
 	}
 	
 	template<typename Char>
-	bool BasicString<Char>::equals(const Char* str, size_type length) const {
+	constexpr bool BasicString<Char>::equals(const Char* str, size_type length) const {
 		FGL_ASSERT(str != nullptr, "str cannot be null");
 		if(storage.length() == length) {
 			for(size_t i=0; i<length; i++) {
