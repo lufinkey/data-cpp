@@ -154,4 +154,8 @@ namespace fgl {
 			return ss.str();
 		}
 	}
+
+	#ifndef STRINGIFY_TOKEN
+		#define STRINGIFY_TOKEN(token) #token
+	#endif
 }
