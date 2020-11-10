@@ -28,6 +28,9 @@
 		A5AE3F0E247C10D700FB9AFF /* Any.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A5AE3F0D247C10D700FB9AFF /* Any.hpp */; };
 		A5AE3F14247C222800FB9AFF /* Any.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A5AE3F13247C222800FB9AFF /* Any.cpp */; };
 		A5AE3F15247C222800FB9AFF /* Any.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A5AE3F13247C222800FB9AFF /* Any.cpp */; };
+		A5D9EEC3255A597C00E4762A /* DateTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A5D9EEC1255A597C00E4762A /* DateTime.cpp */; };
+		A5D9EEC4255A597C00E4762A /* DateTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A5D9EEC1255A597C00E4762A /* DateTime.cpp */; };
+		A5D9EEC5255A597C00E4762A /* DateTime.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A5D9EEC2255A597C00E4762A /* DateTime.hpp */; };
 		A5E360C524071C4600840E28 /* Stringify.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A5E360C424071C4600840E28 /* Stringify.hpp */; };
 		A5E360C824072CEC00840E28 /* Stringify.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A5E360C724072CEC00840E28 /* Stringify.cpp */; };
 		A5E360C924072CEC00840E28 /* Stringify.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A5E360C724072CEC00840E28 /* Stringify.cpp */; };
@@ -78,6 +81,8 @@
 		A5AE3F0D247C10D700FB9AFF /* Any.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Any.hpp; sourceTree = "<group>"; };
 		A5AE3F13247C222800FB9AFF /* Any.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Any.cpp; sourceTree = "<group>"; };
 		A5B9734D2381C51000FB3F1C /* Optional.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Optional.hpp; sourceTree = "<group>"; };
+		A5D9EEC1255A597C00E4762A /* DateTime.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = DateTime.cpp; sourceTree = "<group>"; };
+		A5D9EEC2255A597C00E4762A /* DateTime.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = DateTime.hpp; sourceTree = "<group>"; };
 		A5E360C424071C4600840E28 /* Stringify.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Stringify.hpp; sourceTree = "<group>"; };
 		A5E360C724072CEC00840E28 /* Stringify.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Stringify.cpp; sourceTree = "<group>"; };
 		A5E851AD2357C7610001F74D /* NAPI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NAPI.h; sourceTree = "<group>"; };
@@ -116,6 +121,7 @@
 				A564E01923091D590018787F /* data.hpp */,
 				A53E4E6823048C62000BB7D8 /* data */,
 				A53E4E6923048D63000BB7D8 /* error */,
+				A5D9EEC0255A596600E4762A /* time */,
 				A571E1372332C9D600603E14 /* util */,
 			);
 			path = fgl;
@@ -208,6 +214,15 @@
 			path = ../../src;
 			sourceTree = "<group>";
 		};
+		A5D9EEC0255A596600E4762A /* time */ = {
+			isa = PBXGroup;
+			children = (
+				A5D9EEC2255A597C00E4762A /* DateTime.hpp */,
+				A5D9EEC1255A597C00E4762A /* DateTime.cpp */,
+			);
+			path = time;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -218,6 +233,7 @@
 				A564E037230935B30018787F /* data.hpp in Headers */,
 				A5133ADD234A5C4D006DDCB4 /* Traits.hpp in Headers */,
 				A53E4EBA23063C24000BB7D8 /* Error.hpp in Headers */,
+				A5D9EEC5255A597C00E4762A /* DateTime.hpp in Headers */,
 				A5133AD0234A5C44006DDCB4 /* ObjectiveCpp.h in Headers */,
 				A5E360C524071C4600840E28 /* Stringify.hpp in Headers */,
 				A5AE3F0E247C10D700FB9AFF /* Any.hpp in Headers */,
@@ -334,6 +350,7 @@
 			files = (
 				A5AE3F14247C222800FB9AFF /* Any.cpp in Sources */,
 				A564E02E230934A10018787F /* Error.cpp in Sources */,
+				A5D9EEC3255A597C00E4762A /* DateTime.cpp in Sources */,
 				A5E360C824072CEC00840E28 /* Stringify.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -352,6 +369,7 @@
 			files = (
 				A5AE3F15247C222800FB9AFF /* Any.cpp in Sources */,
 				A5224A342315E8100006D213 /* Error.cpp in Sources */,
+				A5D9EEC4255A597C00E4762A /* DateTime.cpp in Sources */,
 				A5E360C924072CEC00840E28 /* Stringify.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
