@@ -24,22 +24,22 @@ namespace fgl {
 		struct has_members {
 		public:
 			static constexpr bool toString =
-				(has_member_toString<T, String>::value
-				|| has_member_toString<T, std::string>::value
-				|| has_member_toString<T, char*>::value
-				|| has_member_toString<T, const char*>::value);
+				(has_memberfunc_toString<T, String>::value
+				|| has_memberfunc_toString<T, std::string>::value
+				|| has_memberfunc_toString<T, char*>::value
+				|| has_memberfunc_toString<T, const char*>::value);
 			
 			static constexpr bool to_string =
-				(has_member_to_string<T, String>::value
-				|| has_member_to_string<T, std::string>::value
-				|| has_member_to_string<T, char*>::value
-				|| has_member_to_string<T, const char*>::value);
+				(has_memberfunc_to_string<T, String>::value
+				|| has_memberfunc_to_string<T, std::string>::value
+				|| has_memberfunc_to_string<T, char*>::value
+				|| has_memberfunc_to_string<T, const char*>::value);
 			
 			static constexpr bool string_value =
-				(has_member_string_value<T, String>::value
-				|| has_member_string_value<T, std::string>::value
-				|| has_member_string_value<T, char*>::value
-				|| has_member_string_value<T, const char*>::value);
+				(has_memberfunc_string_value<T, String>::value
+				|| has_memberfunc_string_value<T, std::string>::value
+				|| has_memberfunc_string_value<T, char*>::value
+				|| has_memberfunc_string_value<T, const char*>::value);
 		};
 	}
 

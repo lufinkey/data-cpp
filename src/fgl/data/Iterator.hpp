@@ -9,16 +9,37 @@
 #pragma once
 
 #include <fgl/data/Common.hpp>
+#include <fgl/data/Traits.hpp>
 #include <iterator>
 #include <memory>
 #include <tuple>
+#include <type_traits>
 #include <cmath>
 
 namespace fgl {
+	template<typename Iterable>
+	using BeginIteratorOf = decltype(std::begin(std::declval<Iterable>()));
+	template<typename Iterable>
+	using EndIteratorOf = decltype(std::end(std::declval<Iterable>()));
+
+
+	template<typename Iterable>
+	using InstBeginIteratorOf = BeginIteratorOf<add_lref_if_nonref<Iterable>>;
+	template<typename Iterable>
+	using InstEndIteratorOf = EndIteratorOf<add_lref_if_nonref<Iterable>>;
+
+
+	template<typename Iterable>
+	using TransferredBeginIteratorOf = BeginIteratorOf<make_lref_if_rref_or_nonref<Iterable>>;
+	template<typename Iterable>
+	using TransferredEndIteratorOf = EndIteratorOf<make_lref_if_rref_or_nonref<Iterable>>;
+
+
 	template <typename Iterable,
-		typename Iterator = decltype(std::begin(std::declval<Iterable>())),
-		typename = decltype(std::end(std::declval<Iterable>()))>
+		typename = TransferredBeginIteratorOf<Iterable>,
+		typename = TransferredEndIteratorOf<Iterable>>
 	constexpr auto enumerate(Iterable&& iterable);
+
 
 	template<typename Value>
 	constexpr auto range(Value stop);
@@ -27,17 +48,29 @@ namespace fgl {
 	template<typename Value, typename Step>
 	constexpr auto range(Value start, Value stop, Step step);
 
+
 	template <typename Iterable,
-		typename Iterator = decltype(std::begin(std::declval<Iterable>())),
-		typename = decltype(std::end(std::declval<Iterable>()))>
+		typename = TransferredBeginIteratorOf<Iterable>,
+		typename = TransferredEndIteratorOf<Iterable>>
 	constexpr auto reversed(Iterable&& iterable);
 
 
 
+
 #pragma mark Iterator implementation
+	
+
+
+	#pragma mark enumerate
 
 	template <typename InnerIterator>
 	struct enumerate_iterator {
+		using difference_type = typename std::iterator_traits<InnerIterator>::difference_type;
+		using value_type = std::tuple<size_t,decltype(*std::declval<InnerIterator>())>;
+		using pointer = void;
+		using reference = value_type;
+		using iterator_category = typename std::iterator_traits<InnerIterator>::iterator_category;
+		
 		size_t i;
 		InnerIterator iter;
 		
@@ -69,6 +102,7 @@ namespace fgl {
 			return std::tuple<size_t,decltype(*iter)>{ i, *iter };
 		}
 		
+		
 		inline void increment() {
 			iter++;
 			i++;
@@ -80,24 +114,42 @@ namespace fgl {
 	};
 
 	template <typename Iterable,
-		typename Iterator = decltype(std::begin(std::declval<Iterable>())),
-		typename = decltype(std::end(std::declval<Iterable>()))>
+		typename = InstBeginIteratorOf<Iterable>,
+		typename = InstEndIteratorOf<Iterable>>
 	struct enumerate_iterable_wrapper {
-		Iterable& iterable;
+		using InnerBeginIterator = InstBeginIteratorOf<Iterable>;
+		using InnerEndIterator = InstEndIteratorOf<Iterable>;
+		Iterable iterable;
+		inline auto distance() {
+			using IterableType = std::remove_const_t<std::remove_reference_t<Iterable>>;
+			if constexpr(has_memberfunc_size<IterableType,size_t>::value) {
+				return std::size(iterable);
+			} else {
+				return std::distance(std::begin(iterable),std::end(iterable));
+			}
+		}
 		inline auto begin() {
-			return enumerate_iterator<Iterator>{ 0, std::begin(iterable) };
+			return enumerate_iterator<InnerBeginIterator>{ 0, std::begin(iterable) };
 		}
 		inline auto end() {
-			return enumerate_iterator<Iterator>{ 0, std::end(iterable) };
+			return enumerate_iterator<InnerEndIterator>{ distance(), std::end(iterable) };
 		}
 	};
 
-	template <typename Iterable, typename Iterator, typename _>
+	template <typename Iterable, typename _, typename _2>
 	constexpr auto enumerate(Iterable&& iterable) {
-		return enumerate_iterable_wrapper<Iterable,Iterator>{ std::forward<Iterable>(iterable) };
+		using ForwardedType = decltype(std::forward<Iterable>(iterable));
+		if constexpr(std::is_rvalue_reference_v<ForwardedType>) {
+			using IterableType = std::remove_const_t<std::remove_reference_t<Iterable>>;
+			return enumerate_iterable_wrapper<IterableType>{ std::forward<Iterable>(iterable) };
+		} else {
+			return enumerate_iterable_wrapper<ForwardedType>{ std::forward<Iterable>(iterable) };
+		}
 	}
 
 
+
+	#pragma mark range
 
 	template<typename Value, typename Step = Value>
 	struct valuerange_iterator {
@@ -183,27 +235,31 @@ namespace fgl {
 
 
 
+	#pragma mark reverse
+
 	template <typename Iterable,
-		typename Iterator = decltype(std::begin(std::declval<Iterable>())),
-		typename = decltype(std::end(std::declval<Iterable>()))>
+		typename = InstBeginIteratorOf<Iterable>,
+		typename = InstEndIteratorOf<Iterable>>
 	struct reversed_iterator_wrapper {
-		Iterable& iterable;
+		using InnerBeginIterator = InstBeginIteratorOf<Iterable>;
+		using InnerEndIterator = InstEndIteratorOf<Iterable>;
+		Iterable iterable;
 		inline auto begin() {
-			return std::make_reverse_iterator<Iterator>(iterable.begin());
-		}
-		inline auto begin() const {
-			return std::make_reverse_iterator<Iterator>(iterable.begin());
+			return std::make_reverse_iterator<InnerEndIterator>(iterable.end());
 		}
 		inline auto end() {
-			return std::make_reverse_iterator<Iterator>(iterable.end());
-		}
-		inline auto end() const {
-			return std::make_reverse_iterator<Iterator>(iterable.end());
+			return std::make_reverse_iterator<InnerBeginIterator>(iterable.begin());
 		}
 	};
 
-	template <typename Iterable, typename Iterator, typename _>
+	template <typename Iterable, typename _, typename _2>
 	constexpr auto reversed(Iterable&& iterable) {
-		return reversed_iterator_wrapper<Iterable, Iterator>{ std::forward<Iterable>(iterable) };
+		using ForwardedType = decltype(std::forward<Iterable>(iterable));
+		if constexpr(std::is_rvalue_reference_v<ForwardedType>) {
+			using IterableType = std::remove_const_t<std::remove_reference_t<Iterable>>;
+			return reversed_iterator_wrapper<IterableType>{ std::forward<Iterable>(iterable) };
+		} else {
+			return reversed_iterator_wrapper<ForwardedType>{ std::forward<Iterable>(iterable) };
+		}
 	}
 }

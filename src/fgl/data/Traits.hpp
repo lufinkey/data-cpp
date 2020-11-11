@@ -102,7 +102,7 @@ namespace fgl {
 
 	#define CREATE_HAS_MEMBER_FUNC(memberName) \
 	template<typename T, typename ReturnType, typename std::enable_if<std::is_class<T>::value, std::nullptr_t>::type = nullptr> \
-	struct has_member_##memberName { \
+	struct has_memberfunc_##memberName { \
 	private: \
 		typedef char yes[1]; \
 		typedef char no[2]; \
@@ -112,4 +112,19 @@ namespace fgl {
 	public: \
 		static constexpr bool value = sizeof(chk<T>(0)) == sizeof(yes); \
 	};
+
+
+
+	template<typename T>
+	using add_lref_if_nonref = typename std::conditional<std::is_reference_v<T>,T,T&>::type;
+
+	template<typename T>
+	using make_lref_if_rref_or_nonref = typename std::conditional<std::is_rvalue_reference_v<T>,
+		std::add_lvalue_reference_t<std::remove_const_t<std::remove_reference_t<T>>>,
+		add_lref_if_nonref<T>>::type;
+
+
+
+
+	CREATE_HAS_MEMBER_FUNC(size)
 }

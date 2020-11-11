@@ -10,7 +10,12 @@
 
 using namespace fgl;
 
-int main(int argc, char* argv[]) {
+template<typename T>
+void printInner(T&& t) {
+	printf("printInner: %s\n", stringify_type<T>().c_str());
+}
+
+void runTests() {
 	BasicString<char> str = String::join(std::vector<String>{ String("hello"), String(" "), String("world") });
 	
 	auto result = LinkedList<int>() + ArrayList<int>();
@@ -46,7 +51,13 @@ int main(int argc, char* argv[]) {
 	printf("String::join: %s\n", String::join(testList, " ").c_str());
 	printf("stringify(std::list{}): %s\n", stringify(testList).c_str());
 	
-	printf("enumerate:\n");
+	printf("reversed:\n");
+	for(auto& item : reversed(testList)) {
+		printf("%s ", item.c_str());
+	}
+	printf("\n");
+	
+	printf("enumerate: %s \n", stringify_type<decltype(enumerate(testList))>().c_str());
 	for(auto [i, item] : enumerate(testList)) {
 		printf("%s", String::join({
 			"\t",
@@ -57,7 +68,13 @@ int main(int argc, char* argv[]) {
 			item = "what the hecc is";
 		}
 	}
-	printf("\nmodified list to:\n%s\n", stringify(testList).c_str());
+	printf("modified list to: %s\n", stringify(testList).c_str());
+	
+	printf("reversed enumerate: %s\n", stringify_type<decltype(reversed(enumerate(testList)))>().c_str());
+	for(auto [i, item] : reversed(enumerate(testList))) {
+		printf("\t %i %s\n", (int)i, item.c_str());
+	}
+	printf("done enumerating in reverse\n");
 	
 	printf("range(6) (%s): ", stringify_type<decltype(*range(6).begin())>().c_str());
 	for(auto i : range(6)) {
@@ -74,6 +91,11 @@ int main(int argc, char* argv[]) {
 		printf("%f, ", (double)i);
 	}
 	printf("\n");
-	
+}
+
+
+int main(int argc, char* argv[]) {
+	runTests();
+	printf("done running tests\n");
 	return 0;
 }
