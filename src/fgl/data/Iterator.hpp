@@ -132,7 +132,7 @@ namespace fgl {
 			return enumerate_iterator<InnerBeginIterator>{ 0, std::begin(iterable) };
 		}
 		inline auto end() {
-			return enumerate_iterator<InnerEndIterator>{ distance(), std::end(iterable) };
+			return enumerate_iterator<InnerEndIterator>{ (size_t)distance(), std::end(iterable) };
 		}
 	};
 
