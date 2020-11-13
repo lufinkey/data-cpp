@@ -10,6 +10,7 @@
 
 #include <fgl/data/BasicString.hpp>
 #include <fgl/data/LinkedList.hpp>
+#include <cstdlib>
 #include <iterator>
 #include <memory>
 #include <stdexcept>
@@ -1343,6 +1344,18 @@ namespace fgl {
 	template<typename Char>
 	BasicString<Char> BasicString<Char>::join(std::initializer_list<BasicString<Char>> list, const BasicString<Char>& separator) {
 		return join<std::initializer_list<BasicString<Char>>>(list, separator);
+	}
+
+
+	template<typename Char>
+	BasicString<Char> random(size_t length, std::vector<Char> charSet) {
+		BasicString<Char> str;
+		str.reserve(length);
+		for(size_t i=0; i<length; i++) {
+			size_t randIndex = (size_t)(((double)rand() / (double)RAND_MAX) * charSet.size());
+			str.append(1, charSet[randIndex]);
+		}
+		return str;
 	}
 	
 	

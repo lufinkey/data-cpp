@@ -388,6 +388,8 @@ namespace fgl {
 			typename std::enable_if<std::is_same<BasicString<Char>,typename ListType::value_type>::value, std::nullptr_t>::type = nullptr>
 		static BasicString<Char> join(const ListType& list, const BasicString<Char>& separator = BasicString<Char>());
 		static BasicString<Char> join(std::initializer_list<BasicString<Char>> list, const BasicString<Char>& separator = BasicString<Char>());
+		
+		static BasicString<Char> random(size_t length, std::vector<Char> charSet);
 
 		template<typename StreamableType>
 		static BasicString<Char> stream(StreamableType streamable) {
