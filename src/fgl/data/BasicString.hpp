@@ -389,7 +389,8 @@ namespace fgl {
 		static BasicString<Char> join(const ListType& list, const BasicString<Char>& separator = BasicString<Char>());
 		static BasicString<Char> join(std::initializer_list<BasicString<Char>> list, const BasicString<Char>& separator = BasicString<Char>());
 		
-		static BasicString<Char> random(size_t length, std::vector<Char> charSet);
+		static BasicString<Char> random(size_t length, const std::vector<Char>& charSet);
+		static BasicString<Char> random(size_t length, const std::string& charSet);
 
 		template<typename StreamableType>
 		static BasicString<Char> stream(StreamableType streamable) {
