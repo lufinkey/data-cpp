@@ -1348,7 +1348,7 @@ namespace fgl {
 
 
 	template<typename Char>
-	BasicString<Char> random(size_t length, const std::vector<Char>& charSet) {
+	BasicString<Char> BasicString<Char>::random(size_t length, const std::vector<Char>& charSet) {
 		BasicString<Char> str;
 		str.reserve(length);
 		for(size_t i=0; i<length; i++) {
@@ -1359,7 +1359,7 @@ namespace fgl {
 	}
 
 	template<typename Char>
-	BasicString<Char> random(size_t length, const std::string& charSet) {
+	BasicString<Char> BasicString<Char>::random(size_t length, const std::string& charSet) {
 		BasicString<Char> str;
 		str.reserve(length);
 		for(size_t i=0; i<length; i++) {
