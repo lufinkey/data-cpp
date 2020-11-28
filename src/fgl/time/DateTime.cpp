@@ -17,31 +17,7 @@
 #define DATETIME_TM_BASEYEAR 1900
 
 namespace fgl {
-	DateTime::DateTime()
-	: DateTime(std::chrono::system_clock::now()) {
-		//
-	}
-
-	DateTime::DateTime(std::chrono::system_clock::time_point timePoint)
-	: DateTime(std::chrono::system_clock::to_time_t(timePoint)) {
-		auto us = std::chrono::time_point_cast<std::chrono::microseconds>(timePoint) - std::chrono::time_point_cast<std::chrono::seconds>(timePoint);
-		usec = (int)std::chrono::duration_cast<std::chrono::microseconds>(us).count();
-	}
-
-	DateTime::DateTime(time_t timeVal) {
-		struct tm lcl = *localtime(&timeVal);
-		usec = 0;
-		sec = (uint8_t)lcl.tm_sec;
-		min = (uint8_t)lcl.tm_min;
-		hour = (uint8_t)lcl.tm_hour;
-		mday = (uint8_t)lcl.tm_mday;
-		mon = (uint8_t)(lcl.tm_mon + 1);
-		year = (int32_t)(lcl.tm_year + DATETIME_TM_BASEYEAR);
-		wday = (uint8_t)(lcl.tm_wday + 1);
-		yday = (uint16_t)(lcl.tm_yday + 1);
-	}
-
-	int DateTime::getLocalUTCOffset() {
+	int DateTime::getLocalGMTOffset() {
 		time_t now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 		struct tm lcl = *localtime(&now);
 		struct tm gmt = *gmtime(&now);
@@ -50,99 +26,121 @@ namespace fgl {
 		return (int)((lcl_total - gmt_total)/60);
 	}
 
-	uint32_t DateTime::getMicrosecond() const {
-		return usec;
+
+	DateTime::DateTime()
+	: DateTime(std::chrono::system_clock::now()) {
+		//
 	}
 
-	uint32_t DateTime::getMillisecond() const {
-		return usec / 1000;
-	}
-	
-	uint8_t DateTime::getSecond() const {
-		return sec;
-	}
-	
-	uint8_t DateTime::getMinute() const {
-		return min;
-	}
-	
-	uint8_t DateTime::getHour() const {
-		return hour;
-	}
-	
-	uint8_t DateTime::getDayOfMonth() const {
-		return mday;
-	}
-	
-	uint8_t DateTime::getDayOfWeek() const {
-		return wday;
-	}
-	
-	uint16_t DateTime::getDayOfYear() const {
-		return yday;
-	}
-	
-	uint8_t DateTime::getMonth() const {
-		return mon;
-	}
-	
-	int32_t DateTime::getYear() const {
-		return year;
+	DateTime::DateTime(std::chrono::system_clock::time_point timePoint)
+	: timePoint(timePoint) {
+		//
 	}
 
+	DateTime::DateTime(time_t timeVal)
+	: DateTime(std::chrono::system_clock::from_time_t(timeVal)) {
+		//
+	}
 
-
-	struct tm DateTime::toTm() const {
-		struct tm tmTime;
-		tmTime.tm_sec = (int)sec;
-		tmTime.tm_min = (int)min;
-		tmTime.tm_hour = (int)hour;
-		tmTime.tm_mday = (int)mday;
-		tmTime.tm_mon = (int)mon - 1;
-		tmTime.tm_year = (int)year - DATETIME_TM_BASEYEAR;
-		tmTime.tm_wday = (int)wday - 1;
-		tmTime.tm_yday = (int)yday - 1;
-		tmTime.tm_isdst = -1;
-		#ifdef HAVE_TM_GMTOFF
-			tmTime.tm_gmtoff = 0;
+	DateTime DateTime::fromGmTm(struct tm timeVal) {
+		#ifdef _WIN32
+			return DateTime(_mkgmtime(&timeVal));
+		#else
+			return DateTime(timegm(&timeVal));
 		#endif
-		return tmTime;
+	}
+
+	DateTime DateTime::fromLocalTm(struct tm timeVal) {
+		#ifdef _WIN32
+			return DateTime(mktime(&timeVal));
+		#else
+			return DateTime(timelocal(&timeVal));
+		#endif
+	}
+
+	Optional<DateTime> DateTime::fromGmtString(const char* dateString, const char* format) {
+		struct tm timeTm;
+		if(strptime(dateString, format, &timeTm) == nullptr) {
+			return std::nullopt;
+		}
+		return fromGmTm(timeTm);
+	}
+
+	Optional<DateTime> DateTime::fromGmtString(const std::string& dateString, const std::string& format) {
+		return fromGmtString(dateString.c_str(), format.c_str());
+	}
+
+	Optional<DateTime> DateTime::fromLocalString(const char* dateString, const char* format) {
+		struct tm timeTm;
+		if(strptime(dateString, format, &timeTm) == nullptr) {
+			return std::nullopt;
+		}
+		return fromLocalTm(timeTm);
+	}
+
+	Optional<DateTime> DateTime::fromLocalString(const std::string& dateString, const std::string& format) {
+		return fromLocalString(dateString.c_str(), format.c_str());
+	}
+
+
+
+	struct tm DateTime::toGmTm() const {
+		time_t timeVal = std::chrono::system_clock::to_time_t(timePoint);
+		struct tm timeTm;
+		auto tmPtr = gmtime_r(&timeVal, &timeTm);
+		if(tmPtr == nullptr) {
+			throw std::runtime_error("Failed to convert date to GMT tm value");
+		}
+		return *tmPtr;
+	}
+
+	struct tm DateTime::toLocalTm() const {
+		time_t timeVal = std::chrono::system_clock::to_time_t(timePoint);
+		struct tm timeTm;
+		auto tmPtr = localtime_r(&timeVal, &timeTm);
+		if(tmPtr == nullptr) {
+			throw std::runtime_error("Failed to convert date to local tm value");
+		}
+		return *tmPtr;
 	}
 
 	time_t DateTime::toTimeType() const {
-		struct tm tmTime = toTm();
-		#ifdef _WIN32
-		time_t timeVal = _mkgmtime(&tmTime);
-		#else
-		time_t timeVal = timegm(&tmTime);
-		#endif
-		return timeVal;
+		return std::chrono::system_clock::to_time_t(timePoint);
 	}
 
-	std::chrono::system_clock::time_point DateTime::toChronoTimePoint() const {
-		auto timePoint = std::chrono::system_clock::from_time_t(toTimeType());
-		return timePoint + std::chrono::microseconds(usec);
+	const std::chrono::system_clock::time_point& DateTime::getTimePoint() const {
+		return timePoint;
 	}
 
 
+	String DateTime::toString() const {
+		return toGmtString();
+	}
 
-	String DateTime::toString(const char format[]) const {
-		struct tm tmTime = toTm();
+	String DateTime::toGmtString(const char format[]) const {
+		auto timeTm = toGmTm();
 		char buffer[1024];
-		strftime(buffer, 1024, format, &tmTime);
-		return buffer;
+		size_t bufferLength = strftime(buffer, 1024, format, &timeTm);
+		return String(buffer, bufferLength);
 	}
 
-	String DateTime::toISO8601String(int utcOffset) const {
-		struct tm tmTime = toTm();
+	String DateTime::toLocalString(const char format[]) const {
+		auto timeTm = toLocalTm();
+		char buffer[1024];
+		size_t bufferLength = strftime(buffer, 1024, format, &timeTm);
+		return String(buffer, bufferLength);
+	}
+
+	String DateTime::toISO8601String(int gmtOffset) const {
+		struct tm tmTime = toGmTm();
 		char buffer[56];
 		strftime(buffer, 56, "%Y-%m-%dT%H:%M:%S", &tmTime);
 		String str = buffer;
 		
-		if(utcOffset == 0) {
+		if(gmtOffset == 0) {
 			str += 'Z';
 		} else {
-			int gmtoff = std::abs(utcOffset);
+			int gmtoff = std::abs(gmtOffset);
 
 			int gmtoff_min = gmtoff % 60;
 			String gmtoff_min_str;
@@ -158,10 +156,9 @@ namespace fgl {
 				gmtoff_hour_str = '0' + gmtoff_hour_str;
 			}
 			
-			if(utcOffset < 0) {
+			if(gmtOffset < 0) {
 				str += '-';
-			}
-			else {
+			} else {
 				str += '+';
 			}
 			str += gmtoff_hour;

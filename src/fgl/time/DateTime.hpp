@@ -9,6 +9,7 @@
 #pragma once
 
 #include <fgl/data/Common.hpp>
+#include <fgl/data/Optional.hpp>
 #include <fgl/data/String.hpp>
 #include <chrono>
 #include <ctime>
@@ -16,51 +17,30 @@
 namespace fgl {
 	class DateTime {
 	public:
-		/* Constructs a DateTime object with the current date and time */
+		static int getLocalGMTOffset();
+		
 		DateTime();
-		/* Constructs a DateTime object with the give system clock time point */
-		DateTime(std::chrono::system_clock::time_point timePoint);
-		/* Constructs local DateTime from GMT time_t */
 		DateTime(time_t);
+		DateTime(std::chrono::system_clock::time_point timePoint);
 		
-		static int getLocalUTCOffset();
+		static DateTime fromGmTm(struct tm);
+		static DateTime fromLocalTm(struct tm);
+		static Optional<DateTime> fromGmtString(const char* dateString, const char* format);
+		static Optional<DateTime> fromGmtString(const std::string& dateString, const std::string& format);
+		static Optional<DateTime> fromLocalString(const char* dateString, const char* format);
+		static Optional<DateTime> fromLocalString(const std::string& dateString, const std::string& format);
 		
-		uint32_t getMicrosecond() const;
-		uint32_t getMillisecond() const;
-		uint8_t getSecond() const;
-		uint8_t getMinute() const;
-		uint8_t getHour() const;
-		uint8_t getDayOfMonth() const;
-		uint8_t getDayOfWeek() const;
-		uint16_t getDayOfYear() const;
-		uint8_t getMonth() const;
-		int32_t getYear() const;
-		
-		struct tm toTm() const;
+		struct tm toGmTm() const;
+		struct tm toLocalTm() const;
 		time_t toTimeType() const;
-		std::chrono::system_clock::time_point toChronoTimePoint() const;
+		const std::chrono::system_clock::time_point& getTimePoint() const;
 		
-		String toString(const char format[] = "%Y-%m-%d %H:%M:%S") const;
-		String toISO8601String(int utcOffset = getLocalUTCOffset()) const;
+		String toString() const;
+		String toGmtString(const char format[] = "%Y-%m-%d %H:%M:%S") const;
+		String toLocalString(const char format[] = "%Y-%m-%d %H:%M:%S") const;
+		String toISO8601String(int gmtOffset = 0) const;
 		
 	private:
-		/* microsecond (000000-999999) */
-		uint32_t usec;
-		/* second (00-61) (generally 00-59. the extra 2 seconds are for leap seconds) */
-		uint8_t sec;
-		/* minute (00-59) */
-		uint8_t min;
-		/* hour (00-23) */
-		uint8_t hour;
-		/* day of the month (01-31) */
-		uint8_t mday;
-		/* month (01-12) */
-		uint8_t mon;
-		/* year (0000-9999) */
-		int32_t year;
-		/* day of the week (sunday=1) (1-7) */
-		uint8_t wday;
-		/* day of the year (001-366) */
-		uint16_t yday;
+		std::chrono::system_clock::time_point timePoint;
 	};
 }
