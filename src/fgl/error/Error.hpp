@@ -33,4 +33,9 @@ namespace fgl {
 		 \returns an object for a particular error detail, or an empty Any, if no matching detail exists */
 		virtual Any getDetail(const String& key) const;
 	};
+
+	template<typename Exception = std::exception>
+	class BasicError: public Exception, public Error {
+		//
+	};
 }
