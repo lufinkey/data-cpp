@@ -144,14 +144,14 @@ namespace fgl {
 
 			int gmtoff_min = gmtoff % 60;
 			String gmtoff_min_str;
-			gmtoff_min_str += gmtoff_min;
+			gmtoff_min_str += std::to_string(gmtoff_min);
 			while(gmtoff_min_str.length() < 2) {
 				gmtoff_min_str = '0' + gmtoff_min_str;
 			}
 
-			int gmtoff_hour = gmtoff/60;
+			int gmtoff_hour = gmtoff / 60;
 			String gmtoff_hour_str;
-			gmtoff_hour_str += gmtoff_hour;
+			gmtoff_hour_str += std::to_string(gmtoff_hour);
 			while(gmtoff_hour_str.length() < 2) {
 				gmtoff_hour_str = '0' + gmtoff_hour_str;
 			}
@@ -161,9 +161,9 @@ namespace fgl {
 			} else {
 				str += '+';
 			}
-			str += gmtoff_hour;
+			str += gmtoff_hour_str;
 			str += ':';
-			str += gmtoff_min;
+			str += gmtoff_min_str;
 		}
 		return str;
 	}
