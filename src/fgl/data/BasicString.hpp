@@ -436,10 +436,10 @@ namespace fgl {
 	
 	template<typename Char, typename OtherChar,
 		typename BasicStringUtils::string_type_convertable_with_char_type<Char,OtherChar>::null_type = nullptr>
-	BasicString<Char> operator+(const BasicString<Char>& left, const OtherChar& right);
+	BasicString<Char> operator+(const BasicString<Char>& left, OtherChar right);
 	template<typename Char, typename OtherChar,
 		typename BasicStringUtils::string_type_convertable_with_char_type<Char,OtherChar>::null_type = nullptr>
-	BasicString<Char> operator+(const Char& left, const BasicString<OtherChar>& right);
+	BasicString<Char> operator+(Char left, const BasicString<OtherChar>& right);
 	
 	template<typename Char, typename Bool,
 		typename BasicStringUtils::string_type_convertable_with_bool<Char,Bool>::null_type = nullptr>

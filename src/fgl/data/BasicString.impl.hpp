@@ -1380,31 +1380,31 @@ namespace fgl {
 
 	
 	template<typename Char, typename OtherChar,
-		typename BasicStringUtils::can_convert_string_types<Char, OtherChar>::null_type>
+		typename BasicStringUtils::can_convert_string_types<Char,OtherChar>::null_type>
 	BasicString<Char> operator+(const BasicString<Char>& left, const BasicString<OtherChar>& right) {
 		return BasicStringUtils::concat(left, right);
 	}
 	
 	template<typename Char, typename OtherChar,
-		typename BasicStringUtils::can_convert_string_types<Char, OtherChar>::null_type>
+		typename BasicStringUtils::can_convert_string_types<Char,OtherChar>::null_type>
 	BasicString<Char> operator+(const BasicString<Char>& left, const OtherChar* right) {
 		return BasicStringUtils::concat(left, right);
 	}
 	
 	template<typename Char, typename OtherChar,
-		typename BasicStringUtils::can_convert_string_types<Char, OtherChar>::null_type>
+		typename BasicStringUtils::can_convert_string_types<Char,OtherChar>::null_type>
 	BasicString<Char> operator+(const Char* left, const BasicString<OtherChar>& right) {
 		return BasicStringUtils::concat(left, right);
 	}
 	
 	template<typename Char, typename OtherChar,
-		typename BasicStringUtils::can_convert_string_types<Char, OtherChar>::null_type>
+		typename BasicStringUtils::can_convert_string_types<Char,OtherChar>::null_type>
 	BasicString<Char> operator+(const BasicString<Char>& left, const std::basic_string<OtherChar>& right) {
 		return BasicStringUtils::concat(left, right);
 	}
 	
 	template<typename Char, typename OtherChar,
-		typename BasicStringUtils::can_convert_string_types<Char, OtherChar>::null_type>
+		typename BasicStringUtils::can_convert_string_types<Char,OtherChar>::null_type>
 	BasicString<Char> operator+(const std::basic_string<Char>& left, const BasicString<OtherChar>& right) {
 		return BasicStringUtils::concat(left, right);
 	}
@@ -1412,13 +1412,13 @@ namespace fgl {
 	#ifdef __OBJC__
 	
 	template<typename Char,
-		typename BasicStringUtils::can_convert_string_types<Char, unichar>::null_type>
+		typename BasicStringUtils::can_convert_string_types<Char,unichar>::null_type>
 	BasicString<Char> operator+(const BasicString<Char>& left, NSString* right) {
 		return BasicStringUtils::concat(left, right);
 	}
 	
 	template<typename Char,
-		typename BasicStringUtils::can_convert_string_types<Char, unichar>::null_type>
+		typename BasicStringUtils::can_convert_string_types<Char,unichar>::null_type>
 	BasicString<Char> operator+(NSString* left, const BasicString<Char>& right) {
 		return BasicStringUtils::concat(left, right);
 	}
@@ -1426,14 +1426,14 @@ namespace fgl {
 	#endif
 	
 	template<typename Char, typename OtherChar,
-		typename BasicStringUtils::string_type_convertable_with_char_type<Char, OtherChar>::null_type>
-	BasicString<Char> operator+(const BasicString<Char>& left, const OtherChar& right) {
+		typename BasicStringUtils::string_type_convertable_with_char_type<Char,OtherChar>::null_type>
+	BasicString<Char> operator+(const BasicString<Char>& left, OtherChar right) {
 		return BasicStringUtils::concat(left, right);
 	}
 	
 	template<typename Char, typename OtherChar,
-		typename BasicStringUtils::string_type_convertable_with_char_type<OtherChar, Char>::null_type>
-	BasicString<Char> operator+(const Char& left, const BasicString<OtherChar>& right) {
+		typename BasicStringUtils::string_type_convertable_with_char_type<Char,OtherChar>::null_type>
+	BasicString<Char> operator+(Char left, const BasicString<OtherChar>& right) {
 		return BasicStringUtils::concat(left, right);
 	}
 	

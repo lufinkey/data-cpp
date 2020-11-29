@@ -133,8 +133,8 @@ namespace fgl {
 
 	String DateTime::toISO8601String(int gmtOffset) const {
 		struct tm tmTime = toGmTm();
-		char buffer[56];
-		strftime(buffer, 56, "%Y-%m-%dT%H:%M:%S", &tmTime);
+		char buffer[64];
+		strftime(buffer, 64, "%Y-%m-%dT%H:%M:%S", &tmTime);
 		String str = buffer;
 		
 		if(gmtOffset == 0) {

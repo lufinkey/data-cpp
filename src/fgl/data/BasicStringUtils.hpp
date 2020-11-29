@@ -974,7 +974,7 @@ namespace fgl {
 	}
 	
 	template<typename Char, typename OtherChar,
-		typename BasicStringUtils::same_size_convertable_strings<Char, OtherChar>::null_type>
+		typename BasicStringUtils::same_size_convertable_strings<Char,OtherChar>::null_type>
 	BasicString<Char> BasicStringUtils::concat(const BasicString<Char>& left, const BasicString<OtherChar>& right) {
 		size_t size_new = get_safe_resize<Char>(left.size(), right.size());
 		BasicString<Char> newStr;
@@ -985,7 +985,7 @@ namespace fgl {
 	}
 	
 	template<typename Char, typename OtherChar,
-		typename BasicStringUtils::diff_size_convertable_strings<Char, OtherChar>::null_type>
+		typename BasicStringUtils::diff_size_convertable_strings<Char,OtherChar>::null_type>
 	BasicString<Char> BasicStringUtils::concat(const BasicString<Char>& left, const BasicString<OtherChar>& right) {
 		auto right_str = convert<Char,OtherChar>(right.characters, right.size);
 		size_t size_new = get_safe_resize<Char>(left.size(), right_str.size());
@@ -1021,7 +1021,7 @@ namespace fgl {
 	}
 	
 	template<typename Char, typename OtherChar,
-		typename BasicStringUtils::same_size_convertable_strings<Char, OtherChar>::null_type>
+		typename BasicStringUtils::same_size_convertable_strings<Char,OtherChar>::null_type>
 	BasicString<Char> BasicStringUtils::concat(const std::basic_string<Char>& left, const BasicString<OtherChar>& right) {
 		size_t size_new = get_safe_resize<Char>(left.size(), right.size());
 		BasicString<Char> newStr;
@@ -1032,7 +1032,7 @@ namespace fgl {
 	}
 	
 	template<typename Char, typename OtherChar,
-		typename BasicStringUtils::diff_size_convertable_strings<Char, OtherChar>::null_type>
+		typename BasicStringUtils::diff_size_convertable_strings<Char,OtherChar>::null_type>
 	BasicString<Char> BasicStringUtils::concat(const std::basic_string<Char>& left, const BasicString<OtherChar>& right) {
 		auto right_str = convert<Char,OtherChar>(right.data(), right.size());
 		size_t size_new = get_safe_resize<Char>(left.size(), right_str.size());
