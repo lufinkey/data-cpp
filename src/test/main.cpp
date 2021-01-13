@@ -19,6 +19,10 @@ void runTests() {
 	BasicString<char> str = String::join(std::vector<String>{ String("hello"), String(" "), String("world") });
 	
 	Map<size_t,String> testMap;
+	auto testNewMap = testMap.mapValues([](auto key, auto& value) -> int {
+		return 5;
+	});
+	printf("mapped to %s\n", stringify_type<decltype(testNewMap)>().c_str());
 	
 	auto result = LinkedList<int>() + ArrayList<int>();
 	printf("%s\n", ArrayList<int>{ 1, 2, 5 }.toString().c_str());

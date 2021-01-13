@@ -9,6 +9,7 @@
 #pragma once
 
 #include <fgl/data/Common.hpp>
+#include <fgl/data/Optional.hpp>
 #include <map>
 
 namespace fgl {
@@ -64,6 +65,9 @@ namespace fgl {
 		
 		inline T& at(const key_type& key);
 		inline const T& at(const key_type& key) const;
+		inline Optional<T> maybeAt(const key_type& key) const;
+		inline OptionalRef<T> maybeRefAt(const key_type& key);
+		inline OptionalRef<const T> maybeRefAt(const key_type& key) const;
 		
 		inline T& operator[](const key_type& key);
 		inline T& operator[](key_type&& key);
@@ -96,8 +100,6 @@ namespace fgl {
 		inline std::pair<iterator,bool> insert(P&& value);
 		inline std::pair<iterator,bool> insert(value_type&& value);
 		inline iterator insert(const_iterator hint, const value_type& value);
-		template<typename P>
-		inline iterator insert(const_iterator hint, P&& value);
 		inline iterator insert(const_iterator hint, value_type&& value);
 		template<typename InputIt>
 		inline void insert(InputIt first, InputIt last);
@@ -190,6 +192,12 @@ namespace fgl {
 		
 		inline key_compare key_comp() const;
 		inline value_compare value_comp() const;
+		
+		template<typename Mapper>
+		auto mapValues(Mapper mapper) const;
+		
+		template<typename Mapper>
+		auto map(Mapper mapper) const;
 	};
 
 
@@ -270,6 +278,7 @@ namespace fgl {
 	}
 
 
+
 	template<typename K,typename T,typename C,typename A>
 	T& Map<K,T,C,A>::at(const key_type& key) {
 		return storage.at(key);
@@ -278,6 +287,33 @@ namespace fgl {
 	template<typename K,typename T,typename C,typename A>
 	const T& Map<K,T,C,A>::at(const key_type& key) const {
 		return storage.at(key);
+	}
+
+	template<typename K,typename T,typename C,typename A>
+	Optional<T> Map<K,T,C,A>::maybeAt(const key_type& key) const {
+		auto it = storage.find(key);
+		if(it == storage.end()) {
+			return std::nullopt;
+		}
+		return *it;
+	}
+
+	template<typename K,typename T,typename C,typename A>
+	OptionalRef<T> Map<K,T,C,A>::maybeRefAt(const key_type& key) {
+		auto it = storage.find(key);
+		if(it == storage.end()) {
+			return std::nullopt;
+		}
+		return std::ref(*it);
+	}
+
+	template<typename K,typename T,typename C,typename A>
+	OptionalRef<const T> Map<K,T,C,A>::maybeRefAt(const key_type& key) const {
+		auto it = storage.find(key);
+		if(it == storage.end()) {
+			return std::nullopt;
+		}
+		return std::ref(*it);
 	}
 
 
@@ -408,12 +444,6 @@ namespace fgl {
 	template<typename K,typename T,typename C,typename A>
 	typename Map<K,T,C,A>::iterator Map<K,T,C,A>::insert(const_iterator hint, const value_type& value) {
 		return storage.insert(hint,value);
-	}
-
-	template<typename K,typename T,typename C,typename A>
-	template<typename P>
-	typename Map<K,T,C,A>::iterator Map<K,T,C,A>::insert(const_iterator hint, P&& value) {
-		return storage.template insert<P>(hint,value);
 	}
 
 	template<typename K,typename T,typename C,typename A>
@@ -720,5 +750,35 @@ namespace fgl {
 	template<typename K,typename T,typename C,typename A>
 	typename Map<K,T,C,A>::value_compare Map<K,T,C,A>::value_comp() const {
 		return storage.value_comp();
+	}
+
+
+
+	template<typename K,typename T,typename C,typename A>
+	template<typename Mapper>
+	auto Map<K,T,C,A>::mapValues(Mapper mapper) const {
+		using MappedType = decltype(mapper(storage.begin()->first, storage.begin()->second));
+		using NewMap = Map<K,MappedType>;
+		NewMap newMap;
+		auto it = newMap.end();
+		for(auto& pair : storage) {
+			it = newMap.insert(it, std::pair<K,MappedType>(pair.first, mapper(pair.first, pair.second)));
+			it++;
+		}
+		return newMap;
+	}
+
+	template<typename K,typename T,typename C,typename A>
+	template<typename Mapper>
+	auto Map<K,T,C,A>::map(Mapper mapper) const {
+		using PairType = decltype(mapper(std::declval<K>(),std::declval<T>()));
+		using NewMap = Map<typename PairType::first_type, typename PairType::second_type>;
+		NewMap newMap;
+		auto it = newMap.end();
+		for(auto& pair : storage) {
+			it = newMap.insert(it, mapper(pair.first, pair.second));
+			it++;
+		}
+		return newMap;
 	}
 }
