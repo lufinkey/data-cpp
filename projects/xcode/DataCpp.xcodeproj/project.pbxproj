@@ -28,6 +28,7 @@
 		A5AE3F0E247C10D700FB9AFF /* Any.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A5AE3F0D247C10D700FB9AFF /* Any.hpp */; };
 		A5AE3F14247C222800FB9AFF /* Any.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A5AE3F13247C222800FB9AFF /* Any.cpp */; };
 		A5AE3F15247C222800FB9AFF /* Any.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A5AE3F13247C222800FB9AFF /* Any.cpp */; };
+		A5C6D3F925AF6BAF00596878 /* Map.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A5C6D3F825AF6BAF00596878 /* Map.hpp */; };
 		A5D9EEC3255A597C00E4762A /* DateTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A5D9EEC1255A597C00E4762A /* DateTime.cpp */; };
 		A5D9EEC4255A597C00E4762A /* DateTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A5D9EEC1255A597C00E4762A /* DateTime.cpp */; };
 		A5D9EEC5255A597C00E4762A /* DateTime.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A5D9EEC2255A597C00E4762A /* DateTime.hpp */; };
@@ -81,6 +82,7 @@
 		A5AE3F0D247C10D700FB9AFF /* Any.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Any.hpp; sourceTree = "<group>"; };
 		A5AE3F13247C222800FB9AFF /* Any.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Any.cpp; sourceTree = "<group>"; };
 		A5B9734D2381C51000FB3F1C /* Optional.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Optional.hpp; sourceTree = "<group>"; };
+		A5C6D3F825AF6BAF00596878 /* Map.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Map.hpp; sourceTree = "<group>"; };
 		A5D9EEC1255A597C00E4762A /* DateTime.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = DateTime.cpp; sourceTree = "<group>"; };
 		A5D9EEC2255A597C00E4762A /* DateTime.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = DateTime.hpp; sourceTree = "<group>"; };
 		A5E360C424071C4600840E28 /* Stringify.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Stringify.hpp; sourceTree = "<group>"; };
@@ -140,6 +142,7 @@
 				A567C15E2319A6CF00BB5398 /* BasicList.hpp */,
 				A567C1612319D69400BB5398 /* ArrayList.hpp */,
 				A567C1622319D6A100BB5398 /* LinkedList.hpp */,
+				A5C6D3F825AF6BAF00596878 /* Map.hpp */,
 				A567C1602319B0A600BB5398 /* Traits.hpp */,
 				A5B9734D2381C51000FB3F1C /* Optional.hpp */,
 				A5E360C424071C4600840E28 /* Stringify.hpp */,
@@ -239,6 +242,7 @@
 				A5AE3F0E247C10D700FB9AFF /* Any.hpp in Headers */,
 				A5133AD8234A5C4D006DDCB4 /* BasicString.impl.hpp in Headers */,
 				A5133ADB234A5C4D006DDCB4 /* ArrayList.hpp in Headers */,
+				A5C6D3F925AF6BAF00596878 /* Map.hpp in Headers */,
 				A5133AD5234A5C4D006DDCB4 /* Common.hpp in Headers */,
 				A5133ADA234A5C4D006DDCB4 /* BasicList.hpp in Headers */,
 				A5133AD7234A5C4D006DDCB4 /* BasicString.hpp in Headers */,

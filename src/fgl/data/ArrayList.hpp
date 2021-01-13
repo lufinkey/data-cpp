@@ -80,8 +80,8 @@ namespace fgl {
 		inline const T& at(size_type) const;
 		
 		inline Optional<T> maybeAt(size_type index) const;
-		inline Optional<std::reference_wrapper<T>> maybeRefAt(size_type index);
-		inline Optional<std::reference_wrapper<const T>> maybeRefAt(size_type index) const;
+		inline OptionalRef<T> maybeRefAt(size_type index);
+		inline OptionalRef<const T> maybeRefAt(size_type index) const;
 		
 		inline const T* data() const;
 		inline size_type capacity() const;
@@ -247,7 +247,7 @@ namespace fgl {
 	}
 	
 	template<typename T, template<typename...> typename Storage>
-	Optional<std::reference_wrapper<T>> ArrayList<T,Storage>::maybeRefAt(size_type index) {
+	OptionalRef<T> ArrayList<T,Storage>::maybeRefAt(size_type index) {
 		if(index >= storage.size()) {
 			return std::nullopt;
 		}
@@ -255,7 +255,7 @@ namespace fgl {
 	}
 	
 	template<typename T, template<typename...> typename Storage>
-	Optional<std::reference_wrapper<const T>> ArrayList<T,Storage>::maybeRefAt(size_type index) const {
+	OptionalRef<const T> ArrayList<T,Storage>::maybeRefAt(size_type index) const {
 		if(index >= storage.size()) {
 			return std::nullopt;
 		}

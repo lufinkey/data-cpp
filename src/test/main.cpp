@@ -18,6 +18,8 @@ void printInner(T&& t) {
 void runTests() {
 	BasicString<char> str = String::join(std::vector<String>{ String("hello"), String(" "), String("world") });
 	
+	Map<size_t,String> testMap;
+	
 	auto result = LinkedList<int>() + ArrayList<int>();
 	printf("%s\n", ArrayList<int>{ 1, 2, 5 }.toString().c_str());
 	printf("%s\n", LinkedList<int>{ 1, 2, 5 }.toString().c_str());

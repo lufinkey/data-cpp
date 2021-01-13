@@ -23,17 +23,17 @@ namespace fgl {
 	template<typename Storage>
 	class BasicList {
 	public:
-		typedef typename Storage::value_type ValueType;
-		typedef Storage StorageType;
+		using ValueType = typename Storage::value_type;
+		using StorageType = Storage;
 		
-		typedef typename Storage::value_type value_type;
-		typedef typename Storage::allocator_type allocator_type;
-		typedef typename Storage::size_type size_type;
+		using value_type = typename Storage::value_type;
+		using allocator_type = typename Storage::allocator_type;
+		using size_type = typename Storage::size_type;
 		
-		typedef typename Storage::iterator iterator;
-		typedef typename Storage::const_iterator const_iterator;
-		typedef typename Storage::reverse_iterator reverse_iterator;
-		typedef typename Storage::const_reverse_iterator const_reverse_iterator;
+		using iterator = typename Storage::iterator;
+		using const_iterator = typename Storage::const_iterator;
+		using reverse_iterator = typename Storage::reverse_iterator;
+		using const_reverse_iterator = typename Storage::const_reverse_iterator;
 		
 		Storage storage;
 		
