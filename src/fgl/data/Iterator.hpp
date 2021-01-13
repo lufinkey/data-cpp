@@ -122,7 +122,7 @@ namespace fgl {
 		Iterable iterable;
 		inline auto distance() {
 			using IterableType = std::remove_const_t<std::remove_reference_t<Iterable>>;
-			if constexpr(has_memberfunc_size<IterableType,size_t>::value) {
+			if constexpr(has_const_memberfunc_size<IterableType,size_t>::value) {
 				return std::size(iterable);
 			} else {
 				return std::distance(std::begin(iterable),std::end(iterable));

@@ -100,14 +100,29 @@ namespace fgl {
 
 
 
-	#define CREATE_HAS_MEMBER_FUNC(memberName) \
+	#define CREATE_HAS_CONST_MEMBER_FUNC(memberName) \
 	template<typename T, typename ReturnType, typename std::enable_if<std::is_class<T>::value, std::nullptr_t>::type = nullptr> \
-	struct has_memberfunc_##memberName { \
+	struct has_const_memberfunc_##memberName { \
 	private: \
 		typedef char yes[1]; \
 		typedef char no[2]; \
 		template <typename U, U> struct type_check; \
 		template <typename Q> static yes &chk(type_check<ReturnType(T::*)()const,&Q::memberName>*); \
+		template <typename  > static no  &chk(...); \
+	public: \
+		static constexpr bool value = sizeof(chk<T>(0)) == sizeof(yes); \
+	};
+
+
+
+	#define CREATE_HAS_STATIC_FUNC(memberName,...) \
+	template<typename T, typename ReturnType, typename std::enable_if<std::is_class<T>::value, std::nullptr_t>::type = nullptr> \
+	struct has_staticfunc_##memberName { \
+	private: \
+		typedef char yes[1]; \
+		typedef char no[2]; \
+		template <typename U, U> struct type_check; \
+		template <typename Q> static yes &chk(type_check<ReturnType(*)(__VA_ARGS__),&Q::memberName>*); \
 		template <typename  > static no  &chk(...); \
 	public: \
 		static constexpr bool value = sizeof(chk<T>(0)) == sizeof(yes); \
@@ -126,5 +141,5 @@ namespace fgl {
 
 
 
-	CREATE_HAS_MEMBER_FUNC(size)
+	CREATE_HAS_CONST_MEMBER_FUNC(size)
 }
