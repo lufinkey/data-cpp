@@ -141,5 +141,5 @@ struct has_const_memberfunc_##memberName##suffix { \
 
 
 
-	CREATE_HAS_CONST_MEMBER_FUNC(size)
+	CREATE_HAS_CONST_MEMBER_FUNC(size,)
 }

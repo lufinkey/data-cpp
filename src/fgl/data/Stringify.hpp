@@ -16,9 +16,9 @@
 
 namespace fgl {
 	namespace StringifyUtils {
-		CREATE_HAS_CONST_MEMBER_FUNC(toString)
-		CREATE_HAS_CONST_MEMBER_FUNC(to_string)
-		CREATE_HAS_CONST_MEMBER_FUNC(string_value)
+		CREATE_HAS_CONST_MEMBER_FUNC(toString,)
+		CREATE_HAS_CONST_MEMBER_FUNC(to_string,)
+		CREATE_HAS_CONST_MEMBER_FUNC(string_value,)
 	
 		template<typename T>
 		struct has_members {
