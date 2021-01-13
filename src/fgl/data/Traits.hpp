@@ -100,9 +100,9 @@ namespace fgl {
 
 
 
-	#define CREATE_HAS_CONST_MEMBER_FUNC(memberName) \
+	#define CREATE_HAS_CONST_MEMBER_FUNC(memberName,suffix) \
 	template<typename T, typename ReturnType, typename std::enable_if<std::is_class<T>::value, std::nullptr_t>::type = nullptr> \
-	struct has_const_memberfunc_##memberName { \
+struct has_const_memberfunc_##memberName##suffix { \
 	private: \
 		typedef char yes[1]; \
 		typedef char no[2]; \
@@ -115,9 +115,9 @@ namespace fgl {
 
 
 
-	#define CREATE_HAS_STATIC_FUNC(memberName,...) \
+	#define CREATE_HAS_STATIC_FUNC(memberName,suffix,...) \
 	template<typename T, typename ReturnType, typename std::enable_if<std::is_class<T>::value, std::nullptr_t>::type = nullptr> \
-	struct has_staticfunc_##memberName { \
+	struct has_staticfunc_##memberName##suffix { \
 	private: \
 		typedef char yes[1]; \
 		typedef char no[2]; \
