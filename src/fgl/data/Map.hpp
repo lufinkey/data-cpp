@@ -473,13 +473,13 @@ namespace fgl {
 	template<typename K,typename T,typename C,typename A>
 	template<typename M>
 	std::pair<typename Map<K,T,C,A>::iterator,bool> Map<K,T,C,A>::put(const key_type& k, M&& obj) {
-		return storage.template insert_or_assign<M>(k,obj);
+		return storage.template insert_or_assign<M>(k,std::forward<M>(obj));
 	}
 
 	template<typename K,typename T,typename C,typename A>
 	template<typename M>
 	std::pair<typename Map<K,T,C,A>::iterator,bool> Map<K,T,C,A>::put(key_type&& k, M&& obj) {
-		return storage.template insert_or_assign<M>(k,obj);
+		return storage.template insert_or_assign<M>(k,std::forward<M>(obj));
 	}
 
 
@@ -492,7 +492,7 @@ namespace fgl {
 	template<typename K,typename T,typename C,typename A>
 	template<typename P>
 	std::pair<typename Map<K,T,C,A>::iterator,bool> Map<K,T,C,A>::insert(P&& value) {
-		return storage.template insert<P>(value);
+		return storage.template insert<P>(std::forward<P>(value));
 	}
 
 	template<typename K,typename T,typename C,typename A>
@@ -523,12 +523,12 @@ namespace fgl {
 
 	template<typename K,typename T,typename C,typename A>
 	typename Map<K,T,C,A>::insert_return_type Map<K,T,C,A>::insert(node_type&& nh) {
-		return storage.insert(nh);
+		return storage.insert(std::forward<node_type>(nh));
 	}
 
 	template<typename K,typename T,typename C,typename A>
 	typename Map<K,T,C,A>::iterator Map<K,T,C,A>::insert(const_iterator hint, node_type&& nh) {
-		return storage.insert(hint,nh);
+		return storage.insert(hint,std::forward<node_type>(nh));
 	}
 
 
@@ -536,62 +536,62 @@ namespace fgl {
 	template<typename K,typename T,typename C,typename A>
 	template<typename M>
 	std::pair<typename Map<K,T,C,A>::iterator,bool> Map<K,T,C,A>::insert_or_assign(const key_type& k, M&& obj) {
-		return storage.template nsert_or_assign<M>(k,obj);
+		return storage.template nsert_or_assign<M>(k,std::forward<M>(obj));
 	}
 
 	template<typename K,typename T,typename C,typename A>
 	template<typename M>
 	std::pair<typename Map<K,T,C,A>::iterator,bool> Map<K,T,C,A>::insert_or_assign(key_type&& k, M&& obj) {
-		return storage.template insert_or_assign<M>(k,obj);
+		return storage.template insert_or_assign<M>(k,std::forward<M>(obj));
 	}
 
 	template<typename K,typename T,typename C,typename A>
 	template<typename M>
 	typename Map<K,T,C,A>::iterator Map<K,T,C,A>::insert_or_assign(const_iterator hint, const key_type& k, M&& obj) {
-		return storage.template insert_or_assign<M>(hint,k,obj);
+		return storage.template insert_or_assign<M>(hint,k,std::forward<M>(obj));
 	}
 
 	template<typename K,typename T,typename C,typename A>
 	template<typename M>
 	typename Map<K,T,C,A>::iterator Map<K,T,C,A>::insert_or_assign(const_iterator hint, key_type&& k, M&& obj) {
-		return storage.template insert_or_assign<M>(hint,k,obj);
+		return storage.template insert_or_assign<M>(hint,k,std::forward<M>(obj));
 	}
 
 
 	template<typename K,typename T,typename C,typename A>
 	template<typename... Args>
 	std::pair<typename Map<K,T,C,A>::iterator,bool> Map<K,T,C,A>::emplace(Args&&... args) {
-		return storage.template emplace<Args...>(args...);
+		return storage.template emplace<Args...>(std::forward<Args>(args)...);
 	}
 
 	template<typename K,typename T,typename C,typename A>
 	template<typename... Args>
 	typename Map<K,T,C,A>::iterator Map<K,T,C,A>::emplace_hint(const_iterator hint, Args&&... args) {
-		return storage.template emplace_hint<Args...>(hint,args...);
+		return storage.template emplace_hint<Args...>(hint,std::forward<Args>(args)...);
 	}
 
 	template<typename K,typename T,typename C,typename A>
 	template<typename... Args>
 	std::pair<typename Map<K,T,C,A>::iterator,bool> Map<K,T,C,A>::try_emplace(const key_type& k, Args&&... args) {
-		return storage.template try_emplace<Args...>(k,args...);
+		return storage.template try_emplace<Args...>(k,std::forward<Args>(args)...);
 	}
 
 	template<typename K,typename T,typename C,typename A>
 	template<typename... Args>
 	std::pair<typename Map<K,T,C,A>::iterator,bool> Map<K,T,C,A>::try_emplace(key_type&& k, Args&&... args) {
-		return storage.template try_emplace<Args...>(k,args...);
+		return storage.template try_emplace<Args...>(k,std::forward<Args>(args)...);
 	}
 
 	template<typename K,typename T,typename C,typename A>
 	template<typename... Args>
 	typename Map<K,T,C,A>::iterator Map<K,T,C,A>::try_emplace(const_iterator hint, const key_type& k, Args&&... args) {
-		return storage.template try_emplace<Args...>(hint,k,args...);
+		return storage.template try_emplace<Args...>(hint,k,std::forward<Args>(args)...);
 	}
 
 	template<typename K,typename T,typename C,typename A>
 	template<typename... Args>
 	typename Map<K,T,C,A>::iterator Map<K,T,C,A>::try_emplace(const_iterator hint, key_type&& k, Args&&... args) {
-		return storage.template try_emplace<Args...>(hint,k,args...);
+		return storage.template try_emplace<Args...>(hint,k,std::forward<Args>(args)...);
 	}
 
 
