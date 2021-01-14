@@ -830,7 +830,7 @@ namespace fgl {
 	template<typename K,typename T,typename C,typename A>
 	template<typename Mapper>
 	auto Map<K,T,C,A>::map(Mapper mapper) const {
-		using PairType = decltype(mapper(std::declval<K>(),std::declval<T>()));
+		using PairType = decltype(mapper(storage.begin()->first, storage.begin()->second));
 		using NewMap = Map<typename PairType::first_type, typename PairType::second_type>;
 		NewMap newMap;
 		auto it = newMap.end();

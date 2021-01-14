@@ -21,6 +21,9 @@ namespace fgl {
 	template<typename T>
 	using Function = std::function<T>;
 
+	using std::make_pair;
+	using std::make_tuple;
+
 	template<typename T>
 	using $ = std::shared_ptr<T>;
 	template<typename T>

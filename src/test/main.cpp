@@ -24,6 +24,11 @@ void runTests() {
 	});
 	printf("mapped to %s\n", stringify_type<decltype(testNewMap)>().c_str());
 	
+	auto testNewMap2 = testMap.map([](auto key, auto& value) {
+		return make_pair( (int)5, String("what's up yoooo") );
+	});
+	printf("mapped to %s\n", stringify_type<decltype(testNewMap2)>().c_str());
+	
 	auto result = LinkedList<int>() + ArrayList<int>();
 	printf("%s\n", ArrayList<int>{ 1, 2, 5 }.toString().c_str());
 	printf("%s\n", LinkedList<int>{ 1, 2, 5 }.toString().c_str());
