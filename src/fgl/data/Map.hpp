@@ -848,11 +848,13 @@ namespace fgl {
 	template<typename Storage>
 	template<typename Mapper>
 	auto BasicList<Storage>::toMap(Mapper mapper) const {
-		using PairType = decltype(mapper(*storage.begin()));
+		using PairType = decltype(mapper(*storage.begin(),std::declval<size_t>()));
 		using MapType = Map<typename PairType::first_type, typename PairType::second_type>;
 		MapType map;
+		size_t i=0;
 		for(auto& item : storage) {
-			map.insert(mapper(item));
+			map.insert(mapper(item,i));
+			i++;
 		}
 		return map;
 	}
