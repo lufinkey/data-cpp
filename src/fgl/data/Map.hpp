@@ -39,7 +39,7 @@ namespace fgl {
 		
 		StorageType storage;
 		
-		Map();
+		inline Map();
 		inline explicit Map(const Compare& comp, const Allocator& alloc = Allocator());
 		inline explicit Map(const Allocator& alloc);
 		
@@ -56,9 +56,9 @@ namespace fgl {
 		inline Map(std::initializer_list<value_type> ilist, const Compare& comp = Compare(), const Allocator& alloc = Allocator());
 		inline Map(std::initializer_list<value_type> ilist, const Allocator& alloc);
 		
-		operator StorageType&() & noexcept;
-		operator StorageType&&() && noexcept;
-		operator const StorageType&() const& noexcept;
+		inline operator StorageType&() & noexcept;
+		inline operator StorageType&&() && noexcept;
+		inline operator const StorageType&() const& noexcept;
 		
 		inline Map& operator=(const Map& other);
 		inline Map& operator=(Map&& other) noexcept;
@@ -98,6 +98,11 @@ namespace fgl {
 		inline size_type maxSize() const noexcept;
 		
 		inline void clear() noexcept;
+		
+		template<typename M>
+		inline std::pair<iterator,bool> put(const key_type& k, M&& obj);
+		template<typename M>
+		inline std::pair<iterator,bool> put(key_type&& k, M&& obj);
 		
 		inline std::pair<iterator,bool> insert(const value_type& value);
 		template<typename P>
@@ -442,6 +447,20 @@ namespace fgl {
 	template<typename K,typename T,typename C,typename A>
 	void Map<K,T,C,A>::clear() noexcept {
 		storage.clear();
+	}
+
+
+
+	template<typename K,typename T,typename C,typename A>
+	template<typename M>
+	std::pair<typename Map<K,T,C,A>::iterator,bool> Map<K,T,C,A>::put(const key_type& k, M&& obj) {
+		return storage.template insert_or_assign<M>(k,obj);
+	}
+
+	template<typename K,typename T,typename C,typename A>
+	template<typename M>
+	std::pair<typename Map<K,T,C,A>::iterator,bool> Map<K,T,C,A>::put(key_type&& k, M&& obj) {
+		return storage.template insert_or_assign<M>(k,obj);
 	}
 
 
