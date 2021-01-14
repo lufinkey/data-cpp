@@ -20,6 +20,10 @@
 #endif
 
 namespace fgl {
+	template<typename Key,typename T,typename Compare,typename Allocator>
+	class Map;
+
+
 	template<typename Storage>
 	class BasicList {
 	public:
@@ -158,6 +162,10 @@ namespace fgl {
 		template<typename Mapper>
 		jobjectArray toJavaObjectArray(JNIEnv* env, jclass objectClass, Mapper transform) const;
 		#endif
+		
+		
+		template<typename Mapper>
+		auto toMap(Mapper mapper) const;
 	};
 	
 	

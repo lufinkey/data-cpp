@@ -9,6 +9,7 @@
 #pragma once
 
 #include <fgl/data/Common.hpp>
+#include <fgl/data/BasicList.hpp>
 #include <fgl/data/Optional.hpp>
 #include <map>
 
@@ -838,5 +839,21 @@ namespace fgl {
 			it++;
 		}
 		return newMap;
+	}
+
+
+
+	#pragma mark BasicList implementation
+
+	template<typename Storage>
+	template<typename Mapper>
+	auto BasicList<Storage>::toMap(Mapper mapper) const {
+		using PairType = decltype(mapper(*storage.begin()));
+		using MapType = Map<typename PairType::first_type, typename PairType::second_type>;
+		MapType map;
+		for(auto& item : storage) {
+			map.insert(mapper(item));
+		}
+		return map;
 	}
 }

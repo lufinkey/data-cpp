@@ -60,6 +60,8 @@ namespace fgl {
 		using BasicList<Storage<T>>::findEqual;
 		using BasicList<Storage<T>>::findLastEqual;
 		
+		using BasicList<Storage<T>>::toMap;
+		
 		template<typename ListType, typename Transform>
 		ArrayList(const ListType& list, Transform transform);
 		template<typename ListType, typename Transform>
