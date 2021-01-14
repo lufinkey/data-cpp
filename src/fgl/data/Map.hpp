@@ -53,6 +53,11 @@ namespace fgl {
 		inline Map(Map&& other);
 		inline Map(Map&& other, const Allocator& alloc);
 		
+		inline Map(const StorageType& other);
+		inline Map(const StorageType& other, const Allocator& alloc);
+		inline Map(StorageType&& other);
+		inline Map(StorageType&& other, const Allocator& alloc);
+		
 		inline Map(std::initializer_list<value_type> ilist, const Compare& comp = Compare(), const Allocator& alloc = Allocator());
 		inline Map(std::initializer_list<value_type> ilist, const Allocator& alloc);
 		
@@ -244,6 +249,19 @@ namespace fgl {
 
 	template<typename K,typename T,typename C,typename A>
 	Map<K,T,C,A>::Map(Map&& other, const A& alloc): storage(other.storage,alloc) {}
+
+
+	template<typename K,typename T,typename C,typename A>
+	Map<K,T,C,A>::Map(const StorageType& other): storage(other) {}
+
+	template<typename K,typename T,typename C,typename A>
+	Map<K,T,C,A>::Map(const StorageType& other, const A& alloc): storage(other,alloc) {}
+
+	template<typename K,typename T,typename C,typename A>
+	Map<K,T,C,A>::Map(StorageType&& other): storage(other) {}
+
+	template<typename K,typename T,typename C,typename A>
+	Map<K,T,C,A>::Map(StorageType&& other, const A& alloc): storage(other,alloc) {}
 
 
 	template<typename K,typename T,typename C,typename A>
