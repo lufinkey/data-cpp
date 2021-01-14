@@ -56,6 +56,10 @@ namespace fgl {
 		inline Map(std::initializer_list<value_type> ilist, const Compare& comp = Compare(), const Allocator& alloc = Allocator());
 		inline Map(std::initializer_list<value_type> ilist, const Allocator& alloc);
 		
+		operator StorageType&() & noexcept;
+		operator StorageType&&() && noexcept;
+		operator const StorageType&() const& noexcept;
+		
 		inline Map& operator=(const Map& other);
 		inline Map& operator=(Map&& other) noexcept;
 		inline Map& operator=(std::initializer_list<value_type> ilist);
@@ -244,6 +248,23 @@ namespace fgl {
 	template<typename K,typename T,typename C,typename A>
 	Map<K,T,C,A>::Map(std::initializer_list<value_type> ilist, const A& alloc)
 	: storage(ilist,alloc) {}
+
+
+
+	template<typename K,typename T,typename C,typename A>
+	Map<K,T,C,A>::operator StorageType&() & noexcept {
+		return storage;
+	}
+
+	template<typename K,typename T,typename C,typename A>
+	Map<K,T,C,A>::operator StorageType&&() && noexcept {
+		return storage;
+	}
+
+	template<typename K,typename T,typename C,typename A>
+	Map<K,T,C,A>::operator const StorageType&() const& noexcept {
+		return storage;
+	}
 
 
 
