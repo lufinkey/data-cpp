@@ -536,7 +536,7 @@ namespace fgl {
 	template<typename K,typename T,typename C,typename A>
 	template<typename M>
 	std::pair<typename Map<K,T,C,A>::iterator,bool> Map<K,T,C,A>::insert_or_assign(const key_type& k, M&& obj) {
-		return storage.template nsert_or_assign<M>(k,std::forward<M>(obj));
+		return storage.template insert_or_assign<M>(k,std::forward<M>(obj));
 	}
 
 	template<typename K,typename T,typename C,typename A>
