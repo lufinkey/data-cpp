@@ -41,7 +41,8 @@ Pod::Spec.new do |s|
 	s.header_mappings_dir = 'src/fgl'
 	s.pod_target_xcconfig = {
 		'HEADER_SEARCH_PATHS' => "$(PODS_ROOT)/DataCpp/src",
-		'CLANG_CXX_LANGUAGE_STANDARD' => 'gnu++17'
+		'CLANG_CXX_LANGUAGE_STANDARD' => 'gnu++17',
+		'GCC_OPTIMIZATION_LEVEL' => 's'
 	}
 	s.user_target_xcconfig = {
 		'FRAMEWORK_SEARCH_PATHS' => "${PODS_ROOT}/DataCpp/src"
