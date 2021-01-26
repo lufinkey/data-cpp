@@ -42,7 +42,7 @@ Pod::Spec.new do |s|
 	s.pod_target_xcconfig = {
 		'HEADER_SEARCH_PATHS' => "$(PODS_ROOT)/DataCpp/src",
 		'CLANG_CXX_LANGUAGE_STANDARD' => 'gnu++17',
-		'GCC_OPTIMIZATION_LEVEL' => 's'
+		'GCC_OPTIMIZATION_LEVEL[config=Release]' => 's'
 	}
 	s.user_target_xcconfig = {
 		'FRAMEWORK_SEARCH_PATHS' => "${PODS_ROOT}/DataCpp/src"
