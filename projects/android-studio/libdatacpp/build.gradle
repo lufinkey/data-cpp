@@ -16,7 +16,6 @@ android {
 			cmake {
 				targets 'DataCpp'
 				cppFlags "-std=c++17"
-				arguments "-DANDROID_STL=c++_shared"
 			}
 		}
 	}

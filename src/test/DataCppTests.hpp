@@ -6,9 +6,12 @@
 //  Copyright © 2019 Luis Finke. All rights reserved.
 //
 
-#include "DataCppTests.hpp"
+#pragma once
 
-int main(int argc, char* argv[]) {
-	fgl_data_cpp_tests::runTests();
-	return 0;
+#include <fgl/data.hpp>
+
+namespace fgl_data_cpp_tests {
+
+	void runTests();
+
 }
