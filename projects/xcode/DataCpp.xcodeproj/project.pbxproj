@@ -23,6 +23,7 @@
 		A5224A342315E8100006D213 /* Error.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A564E02D230934A10018787F /* Error.cpp */; };
 		A53E4EBA23063C24000BB7D8 /* Error.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A53E4E6A23048DE5000BB7D8 /* Error.hpp */; };
 		A53E4EC923064126000BB7D8 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A53E4EBC230640CD000BB7D8 /* main.cpp */; };
+		A552A2DA2686D26B001F3F6F /* DataCppTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A552A2D92686D26B001F3F6F /* DataCppTests.cpp */; };
 		A564E02E230934A10018787F /* Error.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A564E02D230934A10018787F /* Error.cpp */; };
 		A564E037230935B30018787F /* data.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A564E01923091D590018787F /* data.hpp */; };
 		A5AE3F0E247C10D700FB9AFF /* Any.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A5AE3F0D247C10D700FB9AFF /* Any.hpp */; };
@@ -70,6 +71,8 @@
 		A53E4EBC230640CD000BB7D8 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		A53E4EC22306411F000BB7D8 /* DataCppTest-macOS */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "DataCppTest-macOS"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A53E4ECC230867B5000BB7D8 /* BasicString.impl.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = BasicString.impl.hpp; sourceTree = "<group>"; };
+		A552A2D82686D26B001F3F6F /* DataCppTests.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = DataCppTests.hpp; sourceTree = "<group>"; };
+		A552A2D92686D26B001F3F6F /* DataCppTests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DataCppTests.cpp; sourceTree = "<group>"; };
 		A564E01923091D590018787F /* data.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = data.hpp; sourceTree = "<group>"; };
 		A564E02D230934A10018787F /* Error.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Error.cpp; sourceTree = "<group>"; };
 		A567C15E2319A6CF00BB5398 /* BasicList.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = BasicList.hpp; sourceTree = "<group>"; };
@@ -164,6 +167,8 @@
 		A53E4EBB2306407F000BB7D8 /* test */ = {
 			isa = PBXGroup;
 			children = (
+				A552A2D92686D26B001F3F6F /* DataCppTests.cpp */,
+				A552A2D82686D26B001F3F6F /* DataCppTests.hpp */,
 				A53E4EBC230640CD000BB7D8 /* main.cpp */,
 			);
 			path = test;
@@ -364,6 +369,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A53E4EC923064126000BB7D8 /* main.cpp in Sources */,
+				A552A2DA2686D26B001F3F6F /* DataCppTests.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
