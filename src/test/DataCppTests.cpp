@@ -17,7 +17,7 @@ namespace fgl_data_cpp_tests {
 
 	void println(const String& str) {
 		#ifdef __ANDROID__
-			__android_log_print(ANDROID_LOG_DEBUG, "TAG", "%s\n", str.c_str());
+			__android_log_print(ANDROID_LOG_DEBUG, "DataCppTests", "%s\n", str.c_str());
 		#else
 			printf("%s\n", str.c_str());
 		#endif
