@@ -22,7 +22,6 @@ find_library(
 		log-lib
 		log)
 
-target_link_libraries( # Specifies the target library.
-		TestApp
+target_link_libraries( TestApp
 		DataCpp
 		${log-lib})

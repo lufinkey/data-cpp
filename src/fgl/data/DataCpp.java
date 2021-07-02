@@ -1,4 +1,4 @@
-package com.lufinkey.libdatacpp;
+package com.lufinkey;
 
 public class DataCpp {
 	static {
