@@ -125,6 +125,11 @@ namespace fgl_data_cpp_tests {
 			return 5;
 		});
 		println((String)"mapped value: "+stringify(mappedOptInt));
+		
+		auto optionalizedTypeString = stringify_type<typename optionalize_t<Optional<String>>::type>();
+		println("Optionalized type name: "+optionalizedTypeString);
+		optionalizedTypeString = stringify_type<Optionalized<Optional<String>>>();
+		println("Optionalized type name: "+optionalizedTypeString);
 
 		println("Finished running data-cpp tests");
 	}

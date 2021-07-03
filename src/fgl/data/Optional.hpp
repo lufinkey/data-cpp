@@ -37,7 +37,7 @@ namespace fgl {
 	};
 	template<typename T>
 	struct optionalize_t<Optional<T>> {
-		using type = T;
+		using type = Optional<T>;
 	};
 	template<>
 	struct optionalize_t<void> {
