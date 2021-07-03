@@ -47,6 +47,8 @@ namespace fgl {
 	template<typename T>
 	using Optionalized = typename optionalize_t<T>::type;
 
+
+
 	template<typename T>
 	class Optional: public std::optional<T> {
 	public:
