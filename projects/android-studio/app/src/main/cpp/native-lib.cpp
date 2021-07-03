@@ -4,7 +4,7 @@
 #include <test/DataCppTests.hpp>
 
 extern "C" JNIEXPORT jstring JNICALL
-Java_com_lufinkey_datacpp_MainActivity_stringFromJNI(
+Java_com_lufinkey_datacpptestapp_MainActivity_stringFromJNI(
 		JNIEnv *env,
 		jobject /* this */) {
 	auto stringTest = fgl::String("Hello from C++");

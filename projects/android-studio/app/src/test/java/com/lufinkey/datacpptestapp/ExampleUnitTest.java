@@ -1,4 +1,4 @@
-package com.lufinkey.datacpp;
+package com.lufinkey.datacpptestapp;
 
 import org.junit.Test;
 

@@ -1,7 +1,6 @@
-package com.lufinkey.datacpp;
+package com.lufinkey.datacpptestapp;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.widget.TextView;
 
