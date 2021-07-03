@@ -130,6 +130,8 @@ namespace fgl_data_cpp_tests {
 		println("Optionalized type name: "+optionalizedTypeString);
 		optionalizedTypeString = stringify_type<Optionalized<Optional<String>>>();
 		println("Optionalized type name: "+optionalizedTypeString);
+		optionalizedTypeString = stringify_type<Optionalized<String>>();
+		println("Optionalized type name: "+optionalizedTypeString);
 
 		println("Finished running data-cpp tests");
 	}
