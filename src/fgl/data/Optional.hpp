@@ -84,8 +84,10 @@ namespace fgl {
 		template<typename U>
 		constexpr T valueOr(U&& defaultValue) &&;
 		
-		template<typename Mapper>
-		inline auto map(Mapper mapper) const -> Optionalized<decltype(mapper(std::declval<const T&>()))>;
+		template<typename Transform>
+		inline auto map(Transform transform);
+		template<typename Transform>
+		inline auto map(Transform transform) const;
 		
 		inline Any toAny() const;
 	};
@@ -223,12 +225,19 @@ namespace fgl {
 		return value_or(defaultValue);
 	}
 
+
+	template<typename T>
+	template<typename Transform>
+	inline auto Optional<T>::map(Transform transform) {
+		using ReturnType = decltype(transform(value()));
+		return has_value() ? Optionalized<ReturnType>(transform(value())) : std::nullopt;
+	}
 	
 	template<typename T>
-	template<typename Mapper>
-	inline auto Optional<T>::map(Mapper mapper) const -> Optionalized<decltype(mapper(std::declval<const T&>()))> {
-		using ReturnType = decltype(mapper(std::declval<T>()));
-		return has_value() ? Optionalized<ReturnType>(mapper(value())) : std::nullopt;
+	template<typename Transform>
+	inline auto Optional<T>::map(Transform transform) const {
+		using ReturnType = decltype(transform(value()));
+		return has_value() ? Optionalized<ReturnType>(transform(value())) : std::nullopt;
 	}
 
 

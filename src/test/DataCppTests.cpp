@@ -120,7 +120,7 @@ namespace fgl_data_cpp_tests {
 		println(logText);
 		
 		auto optStr = Optional<String>("hello world");
-		auto mappedOptInt = optStr.map([](const auto& str) -> int {
+		auto mappedOptInt = optStr.map([](auto& str) -> int {
 			println("mapping from "+str);
 			return 5;
 		});

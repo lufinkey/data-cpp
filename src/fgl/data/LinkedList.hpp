@@ -133,10 +133,10 @@ namespace fgl {
 		template<typename Predicate>
 		inline LinkedList<T,Storage> where(Predicate predicate) const;
 		
-		template<typename NewT, template<typename...> typename NewStorage = Storage>
-		inline LinkedList<NewT,NewStorage> map(const Function<NewT(T&)>&);
-		template<typename NewT, template<typename...> typename NewStorage = Storage>
-		inline LinkedList<NewT,NewStorage> map(const Function<NewT(const T&)>&) const;
+		template<typename Transform>
+		inline auto map(Transform transform);
+		template<typename Transform>
+		inline auto map(Transform transform) const;
 		
 		inline void sort();
 		template<typename Predicate>
@@ -556,9 +556,10 @@ namespace fgl {
 	
 	
 	template<typename T, template<typename...> typename Storage>
-	template<typename NewT, template<typename...> typename NewStorage>
-	LinkedList<NewT,NewStorage> LinkedList<T,Storage>::map(const Function<NewT(T&)>& transform) {
-		LinkedList<NewT,NewStorage> newList;
+	template<typename Transform>
+	auto LinkedList<T,Storage>::map(Transform transform) {
+		using ReturnType = decltype(transform(storage.front()));
+		LinkedList<ReturnType,Storage> newList;
 		for(auto& item : storage) {
 			newList.pushBack(transform(item));
 		}
@@ -566,9 +567,10 @@ namespace fgl {
 	}
 	
 	template<typename T, template<typename...> typename Storage>
-	template<typename NewT, template<typename...> typename NewStorage>
-	LinkedList<NewT,NewStorage> LinkedList<T,Storage>::map(const Function<NewT(const T&)>& transform) const {
-		LinkedList<NewT,NewStorage> newList;
+	template<typename Transform>
+	auto LinkedList<T,Storage>::map(Transform transform) const {
+		using ReturnType = decltype(transform(storage.front()));
+		LinkedList<ReturnType,Storage> newList;
 		for(auto& item : storage) {
 			newList.pushBack(transform(item));
 		}
@@ -597,7 +599,7 @@ namespace fgl {
 		}
 		return String::join({
 			"LinkedList<", stringify_type<T>(), ">[\n\t",
-			String::join(map<String>([](const T& item) {
+			String::join(map([](const auto& item) -> String {
 				return stringify(item);
 			}), ",\n\t"), "\n]" });
 	}
