@@ -118,6 +118,13 @@ namespace fgl_data_cpp_tests {
 			logText += (String)"" + (double)i + ", ";
 		}
 		println(logText);
+		
+		auto optStr = Optional<String>("hello world");
+		auto mappedOptInt = optStr.map([](const auto& str) -> int {
+			println("mapping from "+str);
+			return 5;
+		});
+		println((String)"mapped value: "+stringify(mappedOptInt));
 
 		println("Finished running data-cpp tests");
 	}

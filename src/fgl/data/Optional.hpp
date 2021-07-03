@@ -19,6 +19,35 @@ namespace fgl {
 	class Any;
 
 	template<typename T>
+	class Optional;
+
+	template<typename T>
+	using OptionalRef = Optional<std::reference_wrapper<T>>;
+
+	template<typename T>
+	struct is_optional: std::false_type {};
+	template<typename T>
+	struct is_optional<Optional<T>>: std::true_type {};
+	template<typename T>
+	struct is_optional<std::optional<T>>: std::true_type {};
+
+	template<typename T>
+	struct optionalize_t {
+		using type = Optional<T>;
+	};
+	template<typename T>
+	struct optionalize_t<Optional<T>> {
+		using type = T;
+	};
+	template<>
+	struct optionalize_t<void> {
+		using type = Optional<std::nullptr_t>;
+	};
+
+	template<typename T>
+	using Optionalized = typename optionalize_t<T>::type;
+
+	template<typename T>
 	class Optional: public std::optional<T> {
 	public:
 		using std::optional<T>::optional;
@@ -54,6 +83,9 @@ namespace fgl {
 		constexpr T valueOr(U&& defaultValue) const&;
 		template<typename U>
 		constexpr T valueOr(U&& defaultValue) &&;
+		
+		template<typename Mapper>
+		inline auto map(Mapper mapper) const -> Optionalized<decltype(mapper(std::declval<const T&>()))>;
 		
 		inline Any toAny() const;
 	};
@@ -120,32 +152,6 @@ namespace fgl {
 	inline bool operator>=(const Optional<T>& left, const U& right);
 	template<typename T, typename U>
 	inline bool operator>=(const U& left, const Optional<T>& right);
-
-	template<typename T>
-	using OptionalRef = Optional<std::reference_wrapper<T>>;
-
-	template<typename T>
-	struct is_optional: std::false_type {};
-	template<typename T>
-	struct is_optional<Optional<T>>: std::true_type {};
-	template<typename T>
-	struct is_optional<std::optional<T>>: std::true_type {};
-
-	template<typename T>
-	struct optionalize_t {
-		using type = Optional<T>;
-	};
-	template<typename T>
-	struct optionalize_t<Optional<T>> {
-		using type = T;
-	};
-	template<>
-	struct optionalize_t<void> {
-		using type = Optional<std::nullptr_t>;
-	};
-
-	template<typename T>
-	using Optionalized = typename optionalize_t<T>::type;
 
 	template<typename T>
 	inline Optionalized<T> maybe(T value);
@@ -216,6 +222,16 @@ namespace fgl {
 	constexpr T Optional<T>::valueOr(U&& defaultValue) && {
 		return value_or(defaultValue);
 	}
+
+	
+	template<typename T>
+	template<typename Mapper>
+	inline auto Optional<T>::map(Mapper mapper) const -> Optionalized<decltype(mapper(std::declval<const T&>()))> {
+		using ReturnType = decltype(mapper(std::declval<T>()));
+		return has_value() ? Optionalized<ReturnType>(mapper(value())) : std::nullopt;
+	}
+
+
 
 	template<typename T>
 	Optionalized<T> maybe(T value) {
