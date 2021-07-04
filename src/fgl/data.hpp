@@ -21,3 +21,6 @@
 #include <fgl/util/PlatformChecks.hpp>
 #include <fgl/util/ObjectiveCpp.h>
 #include <fgl/util/JNI.h>
+#ifdef JNIEXPORT
+#include <fgl/data/JNIDataCpp.hpp>
+#endif
