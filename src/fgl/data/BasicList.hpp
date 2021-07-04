@@ -150,17 +150,17 @@ namespace fgl {
 		T reduce(T initialValue, Predicate callback) const;
 		
 		#ifdef __OBJC__
-		template<typename Mapper>
-		inline NSMutableArray* toNSArray(Mapper mapper);
-		template<typename Mapper>
-		inline NSMutableArray* toNSArray(Mapper mapper) const;
+		template<typename Transform>
+		inline NSMutableArray* toNSArray(Transform transform);
+		template<typename Transform>
+		inline NSMutableArray* toNSArray(Transform transform) const;
 		#endif
 		
 		#ifdef JNIEXPORT
-		template<typename Mapper>
-		jobjectArray toJavaObjectArray(JNIEnv* env, jclass objectClass, Mapper transform);
-		template<typename Mapper>
-		jobjectArray toJavaObjectArray(JNIEnv* env, jclass objectClass, Mapper transform) const;
+		template<typename Transform>
+		jobjectArray toJavaObjectArray(JNIEnv* env, jclass objectClass, Transform transform);
+		template<typename Transform>
+		jobjectArray toJavaObjectArray(JNIEnv* env, jclass objectClass, Transform transform) const;
 		#endif
 		
 		
@@ -679,21 +679,21 @@ namespace fgl {
 	#ifdef __OBJC__
 
 	template<typename Storage>
-	template<typename Mapper>
-	NSMutableArray* BasicList<Storage>::toNSArray(Mapper mapper) {
+	template<typename Transform>
+	NSMutableArray* BasicList<Storage>::toNSArray(Transform transform) {
 		NSMutableArray* nsArray = [[NSMutableArray alloc] initWithCapacity:(NSUInteger)size()];
 		for(auto& item : storage) {
-			[nsArray addObject:mapper(item)];
+			[nsArray addObject:transform(item)];
 		}
 		return nsArray;
 	}
 
 	template<typename Storage>
-	template<typename Mapper>
-	NSMutableArray* BasicList<Storage>::toNSArray(Mapper mapper) const {
+	template<typename Transform>
+	NSMutableArray* BasicList<Storage>::toNSArray(Transform transform) const {
 		NSMutableArray* nsArray = [[NSMutableArray alloc] initWithCapacity:(NSUInteger)size()];
 		for(auto& item : storage) {
-			[nsArray addObject:mapper(item)];
+			[nsArray addObject:transform(item)];
 		}
 		return nsArray;
 	}
@@ -705,8 +705,20 @@ namespace fgl {
 	#ifdef JNIEXPORT
 
 	template<typename Storage>
-	template<typename Mapper>
-	jobjectArray BasicList<Storage>::toJavaObjectArray(JNIEnv* env, jclass objectClass, Mapper transform) const {
+	template<typename Transform>
+	jobjectArray BasicList<Storage>::toJavaObjectArray(JNIEnv* env, jclass objectClass, Transform transform) {
+		jobjectArray javaArray = env->NewObjectArray((jsize)size(), objectClass, nullptr);
+		jsize i=0;
+		for(auto& item : storage) {
+			env->SetObjectArrayElement(javaArray, i, transform(env, item));
+			i++;
+		}
+		return javaArray;
+	}
+
+	template<typename Storage>
+	template<typename Transform>
+	jobjectArray BasicList<Storage>::toJavaObjectArray(JNIEnv* env, jclass objectClass, Transform transform) const {
 		jobjectArray javaArray = env->NewObjectArray((jsize)size(), objectClass, nullptr);
 		jsize i=0;
 		for(auto& item : storage) {
