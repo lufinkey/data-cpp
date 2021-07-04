@@ -9,9 +9,9 @@
 
 #ifndef JNI_PTR
 	#ifdef JNIEXPORT
-		#define JNI_PTR(type) type;
+		#define JNI_PTR(type) type
 	#else
-		#define JNI_PTR(type) void*;
+		#define JNI_PTR(type) void*
 	#endif
 #endif
 
