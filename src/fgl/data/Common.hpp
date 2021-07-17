@@ -12,6 +12,7 @@
 #include <functional>
 #include <iostream>
 #include <list>
+#include <tuple>
 #include <vector>
 #ifdef __OBJC__
 #import <Foundation/Foundation.h>
@@ -32,6 +33,9 @@ namespace fgl {
 	$<T> new$(Args&&... args) {
 		return std::make_shared<T>(args...);
 	}
+
+	template<typename ...T>
+	using Tuple = std::tuple<T...>;
 	
 	#ifndef FGL_ASSERT
 		#ifdef NDEBUG
