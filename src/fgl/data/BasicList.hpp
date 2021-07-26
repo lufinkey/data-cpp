@@ -493,23 +493,9 @@ namespace fgl {
 	template<typename BaseClass>
 	template<typename Transform>
 	NSMutableArray* BasicList<BaseClass>::toNSArray(Transform transform) {
-		constexpr auto arg_count = get_arity_v<Transform>;
-		static_assert(arg_count >= 1 && arg_count <= 3, "toNSArray callback must contain between 1 and 3 arguments");
 		NSMutableArray* nsArray = [[NSMutableArray alloc] initWithCapacity:(NSUInteger)size()];
-		if constexpr(arg_count == 1) {
-			for(auto& item : *this) {
-				[nsArray addObject:transform(item)];
-			}
-		} else {
-			size_t i=0;
-			for(auto& item : *this) {
-				if constexpr(arg_count == 2) {
-					[nsArray addObject:transform(item, i)];
-				} else {
-					[nsArray addObject:transform(item, i, this)];
-				}
-				i++;
-			}
+		for(auto& item : *this) {
+			[nsArray addObject:transform(item)];
 		}
 		return nsArray;
 	}
@@ -545,18 +531,10 @@ namespace fgl {
 	template<typename BaseClass>
 	template<typename Transform>
 	jobjectArray BasicList<BaseClass>::toJavaObjectArray(JNIEnv* env, jclass objectClass, Transform transform) const {
-		constexpr auto arg_count = get_arity_v<Transform>;
-		static_assert(arg_count >= 2 && arg_count <= 4, "toJavaObjectArray callback must contain between 2 and 4 arguments");
 		jobjectArray javaArray = env->NewObjectArray((jsize)size(), objectClass, nullptr);
 		jsize i=0;
 		for(auto& item : *this) {
-			if constexpr(arg_count == 2) {
-				env->SetObjectArrayElement(javaArray, i, transform(env, item));
-			} else if constexpr(arg_count == 3) {
-				env->SetObjectArrayElement(javaArray, i, transform(env, item, (size_type)i));
-			} else {
-				env->SetObjectArrayElement(javaArray, i, transform(env, item, (size_type)i, this));
-			}
+			env->SetObjectArrayElement(javaArray, i, transform(env, item));
 			i++;
 		}
 		return javaArray;
