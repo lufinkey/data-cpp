@@ -51,7 +51,7 @@ namespace fgl {
 	};
 	
 	template<typename T>
-	struct is_container : std::integral_constant<bool, has_const_iterator<T>::value && has_begin_end<T>::beg_value && has_begin_end<T>::end_value>
+	struct is_collection : std::integral_constant<bool, has_const_iterator<T>::value && has_begin_end<T>::beg_value && has_begin_end<T>::end_value>
 	{ };
 	
 	
@@ -59,15 +59,15 @@ namespace fgl {
 	
 	template<typename InputIterator>
 	using IsInputIterator = typename std::enable_if<
-		(std::is_convertible<typename std::iterator_traits<InputIterator>::iterator_category, std::input_iterator_tag>::value)>::type;
+		(std::is_convertible_v<typename std::iterator_traits<InputIterator>::iterator_category, std::input_iterator_tag>), InputIterator>::type;
 	
-	template<typename Container>
-	using IsContainer = typename std::enable_if<
-		(is_container<Container>::value)>::type;
+	template<typename Collection>
+	using IsCollection = typename std::enable_if<
+		(is_collection<Collection>::value), Collection>::type;
 	
-	template<typename T, typename Container>
-	using IsTypeContainer = typename std::enable_if<
-	(is_container<Container>::value && std::is_same<T,typename Container::value_type>::value)>::type;
+	template<typename T, typename Collection>
+	using IsCollectionOf = typename std::enable_if<
+		(is_collection<Collection>::value && std::is_same_v<T,typename Collection::value_type>), Collection>::type;
 
 
 
@@ -137,8 +137,6 @@ namespace fgl {
 	using make_lref_if_rref_or_nonref = typename std::conditional<std::is_rvalue_reference_v<T>,
 		std::add_lvalue_reference_t<std::remove_const_t<std::remove_reference_t<T>>>,
 		add_lref_if_nonref<T>>::type;
-
-
 
 
 	CREATE_HAS_CONST_MEMBER_FUNC(size)

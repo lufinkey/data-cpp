@@ -37,7 +37,10 @@ namespace fgl_data_cpp_tests {
 		});
 		println((String)"mapped to " + stringify_type<decltype(testNewMap2)>());
 
-		auto result = LinkedList<int>() + ArrayList<int>();
+		auto result = (LinkedList<int>{ 3, 2, 8 } + ArrayList<int>{ 1, 7, 8 }).map([](auto num) {
+			return std::to_string(num);
+		});
+		println("concat result ( "+stringify_type<decltype(result)>()+" ): " + result.toString());
 		println(ArrayList<int>{ 1, 2, 5 }.toString());
 		println(LinkedList<int>{ 1, 2, 5 }.toString());
 
@@ -126,7 +129,7 @@ namespace fgl_data_cpp_tests {
 		});
 		println((String)"mapped value: "+stringify(mappedOptInt));
 		
-		auto optionalizedTypeString = stringify_type<typename optionalize_t<Optional<String>>::type>();
+		auto optionalizedTypeString = stringify_type<Optionalized<Optional<String>>>();
 		println("Optionalized type name: "+optionalizedTypeString);
 		optionalizedTypeString = stringify_type<Optionalized<Optional<String>>>();
 		println("Optionalized type name: "+optionalizedTypeString);

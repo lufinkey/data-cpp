@@ -10,6 +10,7 @@
 
 #include <fgl/data/Common.hpp>
 #include <fgl/data/BasicStringUtils.hpp>
+#include <fgl/data/Traits.hpp>
 #include <initializer_list>
 #include <list>
 #include <locale>
@@ -20,36 +21,45 @@
 #endif
 
 namespace fgl {
-	template<typename T, template<typename...> typename Storage>
+	template<typename T>
 	class LinkedList;
-	
+
 	template<typename Char>
-	class BasicString {
+	class BasicString: public std::basic_string<Char> {
 		template<typename OtherChar>
 		friend class BasicString;
 		friend class BasicStringUtils;
 	public:
-		typedef Char CharType;
-		typedef BasicString<Char> StringType;
-		typedef std::basic_string<Char> StorageType;
+		using CharType = Char;
+		using BaseType = std::basic_string<Char>;
 		
-		typedef Char char_type;
-		typedef typename StorageType::size_type size_type;
+		using typename BaseType::size_type;
+		using typename BaseType::reference;
+		using typename BaseType::const_reference;
 		
-		static const size_type npos = StorageType::npos;
-		static const size_type NOT_FOUND = StorageType::npos;
+		using BaseType::npos;
+		static const size_type NOT_FOUND = BaseType::npos;
 		
-		std::basic_string<Char> storage;
+		using BaseType::BaseType;
+		using BaseType::assign;
+		using BaseType::operator=;
+		using BaseType::append;
+		using BaseType::operator+=;
+		using BaseType::compare;
+		using BaseType::data;
+		using BaseType::c_str;
+		using BaseType::size;
+		using BaseType::length;
+		using BaseType::max_size;
+		using BaseType::empty;
+		using BaseType::clear;
+		using BaseType::resize;
+		using BaseType::reserve;
+		using BaseType::at;
+		using BaseType::replace;
 		
-		inline BasicString() noexcept;
-		inline BasicString(size_type count, Char c);
-		inline BasicString(const Char* str, size_type length);
-		inline BasicString(const Char* str);
-		inline BasicString(const std::basic_string<Char>& str);
-		inline BasicString(std::basic_string<Char>&& str) noexcept;
-		inline BasicString(std::initializer_list<Char>);
-		template<typename InputIt>
-		inline BasicString(InputIt first, InputIt last);
+		BasicString(const BaseType&);
+		BasicString(BaseType&&);
 		
 		#ifdef __OBJC__
 		template<typename _Char=Char,
@@ -177,21 +187,8 @@ namespace fgl {
 		
 		
 		
-		inline BasicString<Char>& assign(const BasicString<Char>& str);
-		inline BasicString<Char>& assign(BasicString<Char>&& str);
-		inline BasicString<Char>& assign(const std::basic_string<Char>& str);
-		inline BasicString<Char>& assign(std::basic_string<Char>&& str) noexcept;
-		inline BasicString<Char>& assign(const Char* str, size_type length);
-		inline BasicString<Char>& assign(const Char* str);
-		inline BasicString<Char>& assign(size_type count, Char c);
-		template<typename InputIt>
-		inline BasicString<Char>& assign(InputIt first, InputIt last);
-		inline BasicString<Char>& assign(std::initializer_list<Char>);
-		
-		inline BasicString<Char>& operator=(const std::basic_string<Char>& str);
-		inline BasicString<Char>& operator=(std::basic_string<Char>&& str) noexcept;
-		inline BasicString<Char>& operator=(const Char* str);
-		inline BasicString<Char>& operator=(std::initializer_list<Char>);
+		BasicString<Char>& operator=(const BaseType&);
+		BasicString<Char>& operator=(BaseType&&);
 		
 		#ifdef __OBJC__
 		template<typename _Char=Char,
@@ -228,21 +225,6 @@ namespace fgl {
 		inline BasicString<Char>& operator=(const std::basic_string<OtherChar>& str);
 		
 		
-		
-		inline BasicString<Char>& append(const BasicString<Char>& str);
-		inline BasicString<Char>& append(const std::basic_string<Char>& str);
-		inline BasicString<Char>& append(const Char* str, size_type length);
-		inline BasicString<Char>& append(const Char* str);
-		inline BasicString<Char>& append(size_type count, Char c);
-		template<typename InputIt>
-		inline BasicString<Char>& append(InputIt first, InputIt last);
-		inline BasicString<Char>& append(std::initializer_list<Char>);
-		
-		inline BasicString<Char>& operator+=(const BasicString<Char>& str);
-		inline BasicString<Char>& operator+=(const std::basic_string<Char>& str);
-		inline BasicString<Char>& operator+=(const Char* str);
-		inline BasicString<Char>& operator+=(Char c);
-		inline BasicString<Char>& operator+=(std::initializer_list<Char>);
 		
 		#ifdef __OBJC__
 		template<typename _Char=Char,
@@ -298,55 +280,35 @@ namespace fgl {
 		
 		
 		
-		inline int compare(const Char* cmp, size_type length) const noexcept;
-		inline int compare(const Char* cmp) const noexcept;
-		inline int compare(const BasicString<Char>& cmp) const noexcept;
-		inline int compare(const std::basic_string<Char>& cmp) const noexcept;
-		
 		inline int compare(const Char* cmp, size_type length, const std::locale& locale) const;
 		inline int compare(const Char* cmp, const std::locale& locale) const;
-		inline int compare(const BasicString<Char>& cmp, const std::locale& locale) const;
 		inline int compare(const std::basic_string<Char>& cmp, const std::locale& locale) const;
 		
 		constexpr bool equals(const Char* str, size_type length) const;
 		inline bool equals(const Char* str) const;
-		inline bool equals(const BasicString<Char>& str) const;
+		inline bool equals(const std::basic_string<Char>& str) const;
 		
 		
 		
-		inline Char* data() noexcept;
-		inline const Char* data() const noexcept;
-		inline const Char* c_str() const noexcept;
-		inline size_type size() const noexcept;
-		inline size_type length() const noexcept;
 		inline size_type maxSize() const noexcept;
-		inline bool empty() const noexcept;
-		inline void clear();
-		inline void resize(size_type size);
-		inline void resize(size_type size, Char c);
-		inline void reserve(size_type capacity);
-		inline Char& charAt(size_type index);
-		inline Char& operator[](size_type index);
-		inline const Char& charAt(size_type index) const;
-		inline const Char& operator[](size_type index) const;
+		inline reference operator[](size_type index);
+		inline const_reference operator[](size_type index) const;
+		inline reference charAt(size_type index);
+		inline const_reference charAt(size_type index) const;
 		
 		inline size_type indexOf(Char find, size_type startIndex=0) const noexcept;
 		inline size_type indexOf(const std::basic_string<Char>& find, size_type startIndex=0) const noexcept;
-		inline size_type indexOf(const BasicString<Char>& find, size_type startIndex=0) const noexcept;
 		inline size_type indexOf(const Char* find, size_type startIndex=0) const;
 		inline size_type lastIndexOf(Char find, size_type startIndex = npos) const noexcept;
 		inline size_type lastIndexOf(const std::basic_string<Char>& find, size_type startIndex = npos) const noexcept;
-		inline size_type lastIndexOf(const BasicString<Char>& find, size_type startIndex = npos) const noexcept;
 		inline size_type lastIndexOf(const Char* find, size_type startIndex = npos) const;
 		
 		bool startsWith(const Char* str, size_type length) const;
 		inline bool startsWith(const Char* str) const;
 		inline bool startsWith(const std::basic_string<Char>& str) const;
-		inline bool startsWith(const BasicString<Char>& str) const;
 		bool endsWith(const Char* str, size_type length) const;
 		inline bool endsWith(const Char* str) const;
 		inline bool endsWith(const std::basic_string<Char>& str) const;
-		inline bool endsWith(const BasicString<Char>& str) const;
 		
 		
 		
@@ -356,13 +318,12 @@ namespace fgl {
 		template<typename InputIt>
 		BasicString<Char> replacing(size_type startIndex, size_type count, InputIt first, InputIt last) const;
 		inline BasicString<Char> replacing(size_type startIndex, size_type count, const std::basic_string<Char>& replace) const;
-		
+
 		inline BasicString<Char> substring(size_type startIndex = 0, size_type count = npos) const;
 		
-		LinkedList<BasicString<Char>,std::list> split(Char delim) const;
-		LinkedList<BasicString<Char>,std::list> split(const Char* delim) const;
-		LinkedList<BasicString<Char>,std::list> split(const std::basic_string<Char>& delim) const;
-		inline LinkedList<BasicString<Char>,std::list> split(const BasicString<Char>& delim) const;
+		LinkedList<BasicString<Char>> split(Char delim) const;
+		LinkedList<BasicString<Char>> split(const Char* delim) const;
+		LinkedList<BasicString<Char>> split(const std::basic_string<Char>& delim) const;
 		
 		template<typename _Char=Char,
 			typename BasicStringUtils::is_same<_Char,Char>::null_type = nullptr,
@@ -384,9 +345,8 @@ namespace fgl {
 		
 		
 		
-		template<typename ListType,
-			typename std::enable_if<std::is_same<BasicString<Char>,typename ListType::value_type>::value, std::nullptr_t>::type = nullptr>
-		static BasicString<Char> join(const ListType& list, const BasicString<Char>& separator = BasicString<Char>());
+		template<typename Collection, typename = IsCollectionOf<BasicString<Char>,std::remove_reference_t<Collection>>>
+		static BasicString<Char> join(Collection&& collection, const BasicString<Char>& separator = BasicString<Char>());
 		static BasicString<Char> join(std::initializer_list<BasicString<Char>> list, const BasicString<Char>& separator = BasicString<Char>());
 		
 		static BasicString<Char> random(size_t length, const std::vector<Char>& charSet);

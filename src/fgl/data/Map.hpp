@@ -845,14 +845,14 @@ namespace fgl {
 
 	#pragma mark BasicList implementation
 
-	template<typename Storage>
+	template<typename BaseClass>
 	template<typename Mapper>
-	auto BasicList<Storage>::toMap(Mapper mapper) const {
-		using PairType = decltype(mapper(*storage.begin(),std::declval<size_t>()));
-		using MapType = Map<typename PairType::first_type, typename PairType::second_type>;
+	auto BasicList<BaseClass>::toMap(Mapper mapper) const {
+		using PairType = decltype(mapper(*begin(),std::declval<size_t>()));
+		using MapType = Map<typename std::tuple_element<0,PairType>::type, typename std::tuple_element<1,PairType>::type>;
 		MapType map;
 		size_t i=0;
-		for(auto& item : storage) {
+		for(auto& item : *this) {
 			map.insert(mapper(item,i));
 			i++;
 		}

@@ -17,108 +17,96 @@
 #include <list>
 
 namespace fgl {
-	template<typename T, template<typename...> typename Storage = std::list>
-	class LinkedList: public BasicList<Storage<T>> {
+	template<typename T>
+	class LinkedList: public BasicList<std::list<T>> {
 	public:
-		using typename BasicList<Storage<T>>::ValueType;
-		using typename BasicList<Storage<T>>::StorageType;
+		using BaseType = std::list<T>;
+		using typename BasicList<BaseType>::ValueType;
 		
-		using typename BasicList<Storage<T>>::value_type;
-		using typename BasicList<Storage<T>>::allocator_type;
-		using typename BasicList<Storage<T>>::size_type;
+		using typename BasicList<BaseType>::value_type;
+		using typename BasicList<BaseType>::allocator_type;
+		using typename BasicList<BaseType>::size_type;
+		using typename BasicList<BaseType>::reference;
+		using typename BasicList<BaseType>::const_reference;
 		
-		using typename BasicList<Storage<T>>::iterator;
-		using typename BasicList<Storage<T>>::const_iterator;
-		using typename BasicList<Storage<T>>::reverse_iterator;
-		using typename BasicList<Storage<T>>::const_reverse_iterator;
+		using typename BasicList<BaseType>::iterator;
+		using typename BasicList<BaseType>::const_iterator;
+		using typename BasicList<BaseType>::reverse_iterator;
+		using typename BasicList<BaseType>::const_reverse_iterator;
 		
-		using BasicList<Storage<T>>::BasicList;
-		using BasicList<Storage<T>>::operator=;
-		using BasicList<Storage<T>>::operator Storage<T>&;
-		using BasicList<Storage<T>>::operator Storage<T>&&;
-		using BasicList<Storage<T>>::operator const Storage<T>&;
+		using BasicList<BaseType>::BasicList;
+		using BasicList<BaseType>::operator=;
+		using BasicList<BaseType>::operator BaseType&;
+		using BasicList<BaseType>::operator BaseType&&;
+		using BasicList<BaseType>::operator const BaseType&;
 		
-		using BasicList<Storage<T>>::size;
-		using BasicList<Storage<T>>::front;
-		using BasicList<Storage<T>>::back;
+		using BasicList<BaseType>::size;
+		using BasicList<BaseType>::front;
+		using BasicList<BaseType>::back;
 		
-		using BasicList<Storage<T>>::begin;
-		using BasicList<Storage<T>>::cbegin;
-		using BasicList<Storage<T>>::rbegin;
-		using BasicList<Storage<T>>::crbegin;
-		using BasicList<Storage<T>>::end;
-		using BasicList<Storage<T>>::cend;
-		using BasicList<Storage<T>>::rend;
-		using BasicList<Storage<T>>::crend;
+		using BasicList<BaseType>::begin;
+		using BasicList<BaseType>::cbegin;
+		using BasicList<BaseType>::rbegin;
+		using BasicList<BaseType>::crbegin;
+		using BasicList<BaseType>::end;
+		using BasicList<BaseType>::cend;
+		using BasicList<BaseType>::rend;
+		using BasicList<BaseType>::crend;
 		
-		using BasicList<Storage<T>>::storage;
+		using BasicList<BaseType>::findEqual;
+		using BasicList<BaseType>::findLastEqual;
 		
-		using BasicList<Storage<T>>::findEqual;
-		using BasicList<Storage<T>>::findLastEqual;
+		using BasicList<BaseType>::toMap;
 		
-		using BasicList<Storage<T>>::toMap;
+		using BaseType::insert;
+		using BaseType::push_front;
+		using BaseType::push_back;
+		using BaseType::pop_front;
+		using BaseType::pop_back;
+		using BaseType::remove;
+		using BaseType::erase;
+		using BaseType::clear;
+		using BaseType::splice;
 		
-		template<typename ListType, typename Transform>
-		LinkedList(const ListType& list, Transform transform);
-		template<typename ListType, typename Transform>
-		LinkedList(ListType&& list, Transform transform);
+		LinkedList(const BaseType&);
+		LinkedList(BaseType&&);
+		template<typename Collection, typename Transform, typename = IsCollection<std::remove_reference_t<Collection>>>
+		LinkedList(Collection&& collection, Transform transform);
 		
 		#ifdef __OBJC__
-		LinkedList(NSArray* objcArray, Function<T(NSObject*)> transform);
+		template<typename Transform>
+		LinkedList(NSArray* objcArray, Transform transform);
 		#endif
 
 		#ifdef JNIEXPORT
-		LinkedList(JNIEnv* env, jobjectArray javaArray, Function<T(JNIEnv*,jobject)> transform);
+		template<typename Transform>
+		LinkedList(JNIEnv* env, jobjectArray javaArray, Transform transform);
 		#endif
 		
-		inline iterator insert(const_iterator pos, const T& value);
-		inline iterator insert(const_iterator pos, T&& value);
-		inline iterator insert(const_iterator pos, size_type count, const T& value);
-		template<typename InputIterator, typename = IsInputIterator<InputIterator>>
-		inline iterator insert(const_iterator pos, InputIterator begin, InputIterator end);
-		inline iterator insert(const_iterator pos, std::initializer_list<T> list);
-		inline iterator insert(const_iterator pos, const LinkedList<T,Storage>& list);
-		inline iterator insert(const_iterator pos, LinkedList<T,Storage>&& list);
-		
-		inline void splice(const_iterator pos, LinkedList<T,Storage>& list);
-		inline void splice(const_iterator pos, LinkedList<T,Storage>&& list);
-		inline void splice(const_iterator pos, LinkedList<T,Storage>& list, const_iterator list_pos);
-		inline void splice(const_iterator pos, LinkedList<T,Storage>&& list, const_iterator list_pos);
-		inline void splice(const_iterator pos, LinkedList<T,Storage>& list, const_iterator begin, const_iterator end);
-		inline void splice(const_iterator pos, LinkedList<T,Storage>&& list, const_iterator begin, const_iterator end);
-		inline void splice(const_iterator pos, Storage<T>& list);
-		inline void splice(const_iterator pos, Storage<T>&& list);
-		inline void splice(const_iterator pos, Storage<T>& list, const_iterator list_pos);
-		inline void splice(const_iterator pos, Storage<T>&& list, const_iterator list_pos);
-		inline void splice(const_iterator pos, Storage<T>& list, const_iterator begin, const_iterator end);
-		inline void splice(const_iterator pos, Storage<T>&& list, const_iterator begin, const_iterator end);
+		LinkedList& operator=(const BaseType&);
+		LinkedList& operator=(BaseType&&);
 		
 		inline void pushFront(const T& value);
 		inline void pushFront(T&& value);
-		inline void push_front(const T& value);
-		inline void push_front(T&& value);
-		inline void pushFrontList(const LinkedList<T,Storage>& list);
-		inline void pushFrontList(LinkedList<T,Storage>&& list);
+		inline void pushFrontList(const std::list<T>& list);
+		inline void pushFrontList(std::list<T>&& list);
+		template<typename Collection, typename = IsCollectionOf<T,std::remove_reference_t<Collection>>>
+		inline void pushFrontList(Collection&& collection);
 		inline void popFront();
-		inline void pop_front();
 		inline T extractFront();
-		inline LinkedList<T,Storage> extractListFront(size_t count = 1);
+		inline LinkedList<T> extractListFront(size_t count = 1);
 		
 		inline void pushBack(const T& value);
 		inline void pushBack(T&& value);
-		inline void push_back(const T& value);
-		inline void push_back(T&& value);
-		inline void pushBackList(const LinkedList<T,Storage>& list);
-		inline void pushBackList(LinkedList<T,Storage>&& list);
+		inline void pushBackList(const std::list<T>& list);
+		inline void pushBackList(std::list<T>&& list);
+		template<typename Collection, typename = IsCollectionOf<T,std::remove_reference_t<Collection>>>
+		inline void pushBackList(Collection&& list);
 		inline void popBack();
 		inline void pop_back();
 		inline T extractBack();
-		inline LinkedList<T,Storage> extractListBack(size_t count = 1);
+		inline LinkedList<T> extractListBack(size_t count = 1);
 		
-		inline iterator remove(const_iterator pos);
-		inline iterator remove(const_iterator begin, const_iterator end);
-		inline iterator erase(const_iterator pos);
-		inline iterator erase(const_iterator begin, const_iterator end);
 		size_type removeEqual(const T& value);
 		inline bool removeFirstEqual(const T& value);
 		inline bool removeLastEqual(const T& value);
@@ -128,10 +116,9 @@ namespace fgl {
 		inline bool removeFirstWhere(Predicate predicate);
 		template<typename Predicate>
 		inline bool removeLastWhere(Predicate predicate);
-		inline void clear();
 
 		template<typename Predicate>
-		inline LinkedList<T,Storage> where(Predicate predicate) const;
+		inline LinkedList<T> where(Predicate predicate) const;
 		
 		template<typename Transform>
 		inline auto map(Transform transform);
@@ -145,39 +132,44 @@ namespace fgl {
 		String toString() const;
 	};
 
-	template<typename T, template<typename...> typename Storage, typename ListType, typename = IsContainer<ListType>>
-	LinkedList<T,Storage> operator+(const LinkedList<T,Storage>& left, const ListType& right);
-	template<typename T, template<typename...> typename Storage>
-	LinkedList<T,Storage> operator+(LinkedList<T,Storage>&& left, LinkedList<T,Storage>&& right);
-	template<typename T, template<typename...> typename Storage>
-	LinkedList<T,Storage> operator+(const LinkedList<T,Storage>& left, LinkedList<T,Storage>&& right);
-	template<typename T, template<typename...> typename Storage>
-	LinkedList<T,Storage> operator+(LinkedList<T,Storage>&& left, const LinkedList<T,Storage>& right);
+	template<typename T, typename Collection, typename = IsCollection<std::remove_reference_t<Collection>>>
+	LinkedList<T> operator+(const LinkedList<T>& left, Collection&& right);
+	template<typename T, typename Collection, typename = IsCollection<std::remove_reference_t<Collection>>>
+	LinkedList<T> operator+(LinkedList<T>&& left, Collection&& right);
+	template<typename T>
+	LinkedList<T> operator+(LinkedList<T>&& left, std::list<T>&& right);
+	template<typename T>
+	LinkedList<T> operator+(const LinkedList<T>& left, std::list<T>&& right);
+	template<typename T>
+	LinkedList<T> operator+(LinkedList<T>&& left, const std::list<T>& right);
 	
 	
 	
 #pragma mark LinkedList implementation
 
-	template<typename T, template<typename...> typename Storage>
-	template<typename ListType, typename Transform>
-	LinkedList<T,Storage>::LinkedList(const ListType& list, Transform transform) {
-		for(auto& item : list) {
-			pushBack(transform(item));
-		}
+	template<typename T>
+	LinkedList<T>::LinkedList(const BaseType& list): BaseType(list) {
+		//
 	}
 
-	template<typename T, template<typename...> typename Storage>
-	template<typename ListType, typename Transform>
-	LinkedList<T,Storage>::LinkedList(ListType&& list, Transform transform) {
-		for(auto& item : list) {
+	template<typename T>
+	LinkedList<T>::LinkedList(BaseType&& list): BaseType(list) {
+		//
+	}
+
+	template<typename T>
+	template<typename Collection, typename Transform, typename _>
+	LinkedList<T>::LinkedList(Collection&& collection, Transform transform) {
+		for(auto& item : collection) {
 			pushBack(transform(item));
 		}
 	}
 
 	#ifdef __OBJC__
 
-	template<typename T, template<typename...> typename Storage>
-	LinkedList<T,Storage>::LinkedList(NSArray* objcArray, Function<T(NSObject*)> transform) {
+	template<typename T>
+	template<typename Transform>
+	LinkedList<T>::LinkedList(NSArray* objcArray, Transform transform) {
 		for(NSObject* obj in objcArray) {
 			pushBack(transform(obj));
 		}
@@ -187,8 +179,9 @@ namespace fgl {
 
 	#ifdef JNIEXPORT
 
-	template<typename T, template<typename...> typename Storage>
-	LinkedList<T,Storage>::LinkedList(JNIEnv* env, jobjectArray javaArray, Function<T(JNIEnv*,jobject)> transform) {
+	template<typename T>
+	template<typename Transform>
+	LinkedList<T>::LinkedList(JNIEnv* env, jobjectArray javaArray, Transform transform) {
 		jsize javaArraySize = env->GetArrayLength(javaArray);
 		for(jsize i=0; i<javaArraySize; i++) {
 			pushBack(transform(env, env->GetObjectArrayElement(javaArray, i)));
@@ -196,164 +189,69 @@ namespace fgl {
 	}
 
 	#endif
-	
-	template<typename T, template<typename...> typename Storage>
-	typename LinkedList<T,Storage>::iterator LinkedList<T,Storage>::insert(const_iterator pos, const T& value) {
-		return storage.insert(pos, value);
-	}
-	
-	template<typename T, template<typename...> typename Storage>
-	typename LinkedList<T,Storage>::iterator LinkedList<T,Storage>::insert(const_iterator pos, T&& value) {
-		return storage.insert(pos, value);
-	}
-	
-	template<typename T, template<typename...> typename Storage>
-	typename LinkedList<T,Storage>::iterator LinkedList<T,Storage>::insert(const_iterator pos, size_type count, const T& value) {
-		return storage.insert(pos, count, value);
-	}
-	
-	template<typename T, template<typename...> typename Storage>
-	template<typename InputIterator, typename _>
-	typename LinkedList<T,Storage>::iterator LinkedList<T,Storage>::insert(const_iterator pos, InputIterator first, InputIterator last) {
-		return storage.insert(pos, first, last);
-	}
-	
-	template<typename T, template<typename...> typename Storage>
-	typename LinkedList<T,Storage>::iterator LinkedList<T,Storage>::insert(const_iterator pos, std::initializer_list<T> list) {
-		return storage.insert(pos, list);
-	}
-	
-	template<typename T, template<typename...> typename Storage>
-	typename LinkedList<T,Storage>::iterator LinkedList<T,Storage>::insert(const_iterator pos, const LinkedList<T,Storage>& list) {
-		return storage.insert(pos, list.begin(), list.end());
-	}
-	
-	template<typename T, template<typename...> typename Storage>
-	typename LinkedList<T,Storage>::iterator LinkedList<T,Storage>::insert(const_iterator pos, LinkedList<T,Storage>&& list) {
-		auto it = list.begin();
-		storage.splice(pos, list.storage);
-		return it;
-	}
-	
-	
-	
-	template<typename T, template<typename...> typename Storage>
-	void LinkedList<T,Storage>::splice(const_iterator pos, LinkedList<T,Storage>& list) {
-		storage.splice(pos, list.storage);
-	}
-	
-	template<typename T, template<typename...> typename Storage>
-	void LinkedList<T,Storage>::splice(const_iterator pos, LinkedList<T,Storage>&& list) {
-		storage.splice(pos, list.storage);
-	}
-	
-	template<typename T, template<typename...> typename Storage>
-	void LinkedList<T,Storage>::splice(const_iterator pos, LinkedList<T,Storage>& list, const_iterator list_pos) {
-		storage.splice(pos, list.storage, list_pos);
-	}
-	
-	template<typename T, template<typename...> typename Storage>
-	void LinkedList<T,Storage>::splice(const_iterator pos, LinkedList<T,Storage>&& list, const_iterator list_pos) {
-		storage.splice(pos, list.storage, list_pos);
-	}
-	
-	template<typename T, template<typename...> typename Storage>
-	void LinkedList<T,Storage>::splice(const_iterator pos, LinkedList<T,Storage>& list, const_iterator first, const_iterator last) {
-		storage.splice(pos, list.storage, first, last);
-	}
-	
-	template<typename T, template<typename...> typename Storage>
-	void LinkedList<T,Storage>::splice(const_iterator pos, LinkedList<T,Storage>&& list, const_iterator first, const_iterator last) {
-		storage.splice(pos, list.storage, first, last);
+
+
+
+	template<typename T>
+	LinkedList<T>& LinkedList<T>::operator=(const BaseType& list) {
+		BaseType::operator=(list);
+		return *this;
 	}
 
-	template<typename T, template<typename...> typename Storage>
-	void LinkedList<T,Storage>::splice(const_iterator pos, Storage<T>& list) {
-		storage.splice(pos, list);
-	}
-	
-	template<typename T, template<typename...> typename Storage>
-	void LinkedList<T,Storage>::splice(const_iterator pos, Storage<T>&& list) {
-		storage.splice(pos, list);
-	}
-	
-	template<typename T, template<typename...> typename Storage>
-	void LinkedList<T,Storage>::splice(const_iterator pos, Storage<T>& list, const_iterator list_pos) {
-		storage.splice(pos, list, list_pos);
-	}
-	
-	template<typename T, template<typename...> typename Storage>
-	void LinkedList<T,Storage>::splice(const_iterator pos, Storage<T>&& list, const_iterator list_pos) {
-		storage.splice(pos, list, list_pos);
-	}
-	
-	template<typename T, template<typename...> typename Storage>
-	void LinkedList<T,Storage>::splice(const_iterator pos, Storage<T>& list, const_iterator first, const_iterator last) {
-		storage.splice(pos, list, first, last);
-	}
-	
-	template<typename T, template<typename...> typename Storage>
-	void LinkedList<T,Storage>::splice(const_iterator pos, Storage<T>&& list, const_iterator first, const_iterator last) {
-		storage.splice(pos, list, first, last);
+	template<typename T>
+	LinkedList<T>& LinkedList<T>::operator=(BaseType&& list) {
+		BaseType::operator=(list);
+		return *this;
 	}
 	
 	
 	
-	template<typename T, template<typename...> typename Storage>
-	void LinkedList<T,Storage>::pushFront(const T& value) {
-		storage.push_front(value);
+	template<typename T>
+	void LinkedList<T>::pushFront(const T& value) {
+		push_front(value);
 	}
 	
-	template<typename T, template<typename...> typename Storage>
-	void LinkedList<T,Storage>::pushFront(T&& value) {
-		storage.push_front(value);
+	template<typename T>
+	void LinkedList<T>::pushFront(T&& value) {
+		push_front(value);
+	}
+	
+	template<typename T>
+	void LinkedList<T>::pushFrontList(const std::list<T>& list) {
+		insert(begin(), list.begin(), list.end());
+	}
+	
+	template<typename T>
+	void LinkedList<T>::pushFrontList(std::list<T>&& list) {
+		splice(begin(), list);
 	}
 
-	template<typename T, template<typename...> typename Storage>
-	void LinkedList<T,Storage>::push_front(const T& value) {
-		storage.push_front(value);
+	template<typename T>
+	template<typename Collection, typename _>
+	void LinkedList<T>::pushFrontList(Collection&& list) {
+		insert(end(), list.begin(), list.end());
 	}
 	
-	template<typename T, template<typename...> typename Storage>
-	void LinkedList<T,Storage>::push_front(T&& value) {
-		storage.push_front(value);
-	}
-	
-	template<typename T, template<typename...> typename Storage>
-	void LinkedList<T,Storage>::pushFrontList(const LinkedList<T,Storage>& list) {
-		storage.insert(begin(), list.begin(), list.end());
-	}
-	
-	template<typename T, template<typename...> typename Storage>
-	void LinkedList<T,Storage>::pushFrontList(LinkedList<T,Storage>&& list) {
-		storage.insert(begin(), std::make_move_iterator(list.begin()), std::make_move_iterator(list.end()));
-	}
-	
-	template<typename T, template<typename...> typename Storage>
-	void LinkedList<T,Storage>::popFront() {
+	template<typename T>
+	void LinkedList<T>::popFront() {
 		FGL_ASSERT(size() > 0, "cannot call popFront on empty array");
-		storage.pop_front();
+		pop_front();
 	}
 
-	template<typename T, template<typename...> typename Storage>
-	void LinkedList<T,Storage>::pop_front() {
-		storage.pop_front();
-	}
-	
-	template<typename T, template<typename...> typename Storage>
-	T LinkedList<T,Storage>::extractFront() {
+	template<typename T>
+	T LinkedList<T>::extractFront() {
 		FGL_ASSERT(size() > 0, "cannot call extractFront on empty array");
 		auto value = std::move(front());
-		popFront();
+		pop_front();
 		return value;
 	}
 
-	template<typename T, template<typename...> typename Storage>
-	LinkedList<T,Storage> LinkedList<T,Storage>::extractListFront(size_t count) {
-		LinkedList<T,Storage> extracted;
-		while(extracted.size() < count && storage.size() > 0) {
+	template<typename T>
+	LinkedList<T> LinkedList<T>::extractListFront(size_t count) {
+		LinkedList<T> extracted;
+		while(extracted.size() < count && size() > 0) {
 			auto value = std::move(front());
-			popFront();
+			pop_front();
 			extracted.pushBack(value);
 		}
 		return extracted;
@@ -361,61 +259,52 @@ namespace fgl {
 	
 	
 	
-	template<typename T, template<typename...> typename Storage>
-	void LinkedList<T,Storage>::pushBack(const T& value) {
-		storage.push_back(value);
+	template<typename T>
+	void LinkedList<T>::pushBack(const T& value) {
+		push_back(value);
 	}
 	
-	template<typename T, template<typename...> typename Storage>
-	void LinkedList<T,Storage>::pushBack(T&& value) {
-		storage.push_back(value);
+	template<typename T>
+	void LinkedList<T>::pushBack(T&& value) {
+		push_back(value);
+	}
+	
+	template<typename T>
+	void LinkedList<T>::pushBackList(const std::list<T>& list) {
+		insert(end(), list.begin(), list.end());
+	}
+	
+	template<typename T>
+	void LinkedList<T>::pushBackList(std::list<T>&& list) {
+		splice(end(), list);
 	}
 
-	template<typename T, template<typename...> typename Storage>
-	void LinkedList<T,Storage>::push_back(const T& value) {
-		storage.push_back(value);
+	template<typename T>
+	template<typename Collection, typename _>
+	void LinkedList<T>::pushBackList(Collection&& list) {
+		insert(end(), list.begin(), list.end());
 	}
 	
-	template<typename T, template<typename...> typename Storage>
-	void LinkedList<T,Storage>::push_back(T&& value) {
-		storage.push_back(value);
-	}
-	
-	template<typename T, template<typename...> typename Storage>
-	void LinkedList<T,Storage>::pushBackList(const LinkedList<T,Storage>& list) {
-		storage.insert(end(), list.begin(), list.end());
-	}
-	
-	template<typename T, template<typename...> typename Storage>
-	void LinkedList<T,Storage>::pushBackList(LinkedList<T,Storage>&& list) {
-		storage.insert(end(), std::make_move_iterator(list.begin()), std::make_move_iterator(list.end()));
-	}
-	
-	template<typename T, template<typename...> typename Storage>
-	void LinkedList<T,Storage>::popBack() {
+	template<typename T>
+	void LinkedList<T>::popBack() {
 		FGL_ASSERT(size() > 0, "cannot call popBack on empty array");
-		storage.pop_back();
-	}
-
-	template<typename T, template<typename...> typename Storage>
-	void LinkedList<T,Storage>::pop_back() {
-		storage.pop_back();
+		pop_back();
 	}
 	
-	template<typename T, template<typename...> typename Storage>
-	T LinkedList<T,Storage>::extractBack() {
+	template<typename T>
+	T LinkedList<T>::extractBack() {
 		FGL_ASSERT(size() > 0, "cannot call extractBack on empty array");
 		auto value = std::move(back());
-		popBack();
+		pop_back();
 		return value;
 	}
 
-	template<typename T, template<typename...> typename Storage>
-	LinkedList<T,Storage> LinkedList<T,Storage>::extractListBack(size_t count) {
-		LinkedList<T,Storage> extracted;
-		while(extracted.size() < count && storage.size() > 0) {
+	template<typename T>
+	LinkedList<T> LinkedList<T>::extractListBack(size_t count) {
+		LinkedList<T> extracted;
+		while(extracted.size() < count && size() > 0) {
 			auto value = std::move(back());
-			popBack();
+			pop_back();
 			extracted.pushFront(value);
 		}
 		return extracted;
@@ -423,28 +312,8 @@ namespace fgl {
 	
 	
 	
-	template<typename T, template<typename...> typename Storage>
-	typename LinkedList<T,Storage>::iterator LinkedList<T,Storage>::remove(const_iterator pos) {
-		return storage.erase(pos);
-	}
-	
-	template<typename T, template<typename...> typename Storage>
-	typename LinkedList<T,Storage>::iterator LinkedList<T,Storage>::remove(const_iterator first, const_iterator last) {
-		return storage.erase(first, last);
-	}
-
-	template<typename T, template<typename...> typename Storage>
-	typename LinkedList<T,Storage>::iterator LinkedList<T,Storage>::erase(const_iterator pos) {
-		return storage.erase(pos);
-	}
-	
-	template<typename T, template<typename...> typename Storage>
-	typename LinkedList<T,Storage>::iterator LinkedList<T,Storage>::erase(const_iterator first, const_iterator last) {
-		return storage.erase(first, last);
-	}
-	
-	template<typename T, template<typename...> typename Storage>
-	typename LinkedList<T,Storage>::size_type LinkedList<T,Storage>::removeEqual(const T& value) {
+	template<typename T>
+	typename LinkedList<T>::size_type LinkedList<T>::removeEqual(const T& value) {
 		size_type count = 0;
 		auto last = end();
 		auto firstDelete = last;
@@ -456,38 +325,38 @@ namespace fgl {
 				}
 			}
 			else if(firstDelete != last) {
-				storage.erase(firstDelete, it);
+				erase(firstDelete, it);
 			}
 		}
 		if(firstDelete != last) {
-			storage.erase(firstDelete, last);
+			erase(firstDelete, last);
 		}
 		return count;
 	}
 	
-	template<typename T, template<typename...> typename Storage>
-	bool LinkedList<T,Storage>::removeFirstEqual(const T& value) {
+	template<typename T>
+	bool LinkedList<T>::removeFirstEqual(const T& value) {
 		auto it = findEqual(value);
 		if(it == end()) {
 			return false;
 		}
-		storage.erase(it);
+		erase(it);
 		return true;
 	}
 	
-	template<typename T, template<typename...> typename Storage>
-	bool LinkedList<T,Storage>::removeLastEqual(const T& value) {
+	template<typename T>
+	bool LinkedList<T>::removeLastEqual(const T& value) {
 		auto it = findLastEqual(value);
 		if(it == end()) {
 			return false;
 		}
-		storage.erase(it);
+		erase(it);
 		return true;
 	}
 	
-	template<typename T, template<typename...> typename Storage>
+	template<typename T>
 	template<typename Predicate>
-	typename LinkedList<T,Storage>::size_type LinkedList<T,Storage>::removeWhere(Predicate predicate) {
+	typename LinkedList<T>::size_type LinkedList<T>::removeWhere(Predicate predicate) {
 		size_type count = 0;
 		auto last = end();
 		auto firstDelete = last;
@@ -499,53 +368,48 @@ namespace fgl {
 				}
 			}
 			else if(firstDelete != last) {
-				storage.erase(firstDelete, it);
+				erase(firstDelete, it);
 			}
 		}
 		if(firstDelete != last) {
-			storage.erase(firstDelete, last);
+			erase(firstDelete, last);
 		}
 		return count;
 	}
 	
-	template<typename T, template<typename...> typename Storage>
+	template<typename T>
 	template<typename Predicate>
-	bool LinkedList<T,Storage>::removeFirstWhere(Predicate predicate) {
+	bool LinkedList<T>::removeFirstWhere(Predicate predicate) {
 		auto last = end();
 		for(auto it=begin(); it!=last; it++) {
 			if(predicate(*it)) {
-				storage.erase(it);
+				erase(it);
 				return true;
 			}
 		}
 		return false;
 	}
 	
-	template<typename T, template<typename...> typename Storage>
+	template<typename T>
 	template<typename Predicate>
-	bool LinkedList<T,Storage>::removeLastWhere(Predicate predicate) {
+	bool LinkedList<T>::removeLastWhere(Predicate predicate) {
 		auto last = rend();
 		for(auto it=rbegin(); it!=last; it++) {
 			if(predicate(*it)) {
-				storage.erase(std::prev(it.base(), 1));
+				erase(std::prev(it.base(), 1));
 				return true;
 			}
 		}
 		return false;
 	}
-	
-	template<typename T, template<typename...> typename Storage>
-	void LinkedList<T,Storage>::clear() {
-		storage.clear();
-	}
 
 
 
-	template<typename T, template<typename...> typename Storage>
+	template<typename T>
 	template<typename Predicate>
-	LinkedList<T,Storage> LinkedList<T,Storage>::where(Predicate predicate) const {
-		LinkedList<T,Storage> newList;
-		for(auto& item : storage) {
+	LinkedList<T> LinkedList<T>::where(Predicate predicate) const {
+		LinkedList<T> newList;
+		for(auto& item : *this) {
 			if(predicate(item)) {
 				newList.pushBack(item);
 			}
@@ -555,23 +419,23 @@ namespace fgl {
 	
 	
 	
-	template<typename T, template<typename...> typename Storage>
+	template<typename T>
 	template<typename Transform>
-	auto LinkedList<T,Storage>::map(Transform transform) {
-		using ReturnType = decltype(transform(storage.front()));
-		LinkedList<ReturnType,Storage> newList;
-		for(auto& item : storage) {
+	auto LinkedList<T>::map(Transform transform) {
+		using ReturnType = decltype(transform(front()));
+		LinkedList<ReturnType> newList;
+		for(auto& item : *this) {
 			newList.pushBack(transform(item));
 		}
 		return newList;
 	}
 	
-	template<typename T, template<typename...> typename Storage>
+	template<typename T>
 	template<typename Transform>
-	auto LinkedList<T,Storage>::map(Transform transform) const {
-		using ReturnType = decltype(transform(storage.front()));
-		LinkedList<ReturnType,Storage> newList;
-		for(auto& item : storage) {
+	auto LinkedList<T>::map(Transform transform) const {
+		using ReturnType = decltype(transform(front()));
+		LinkedList<ReturnType> newList;
+		for(auto& item : *this) {
 			newList.pushBack(transform(item));
 		}
 		return newList;
@@ -579,22 +443,9 @@ namespace fgl {
 
 
 
-	template<typename T, template<typename...> typename Storage>
-	void LinkedList<T,Storage>::sort() {
-		storage.sort();
-	}
-	
-	template<typename T, template<typename...> typename Storage>
-	template<typename Predicate>
-	void LinkedList<T,Storage>::sort(Predicate predicate) {
-		storage.sort(predicate);
-	}
-
-
-
-	template<typename T, template<typename...> typename Storage>
-	String LinkedList<T,Storage>::toString() const {
-		if(storage.size() == 0) {
+	template<typename T>
+	String LinkedList<T>::toString() const {
+		if(size() == 0) {
 			return String::join({"LinkedList<", stringify_type<T>(), ">[]"});
 		}
 		return String::join({
@@ -606,43 +457,40 @@ namespace fgl {
 
 
 
-	template<typename T, template<typename...> typename Storage, typename ListType, typename _>
-	LinkedList<T,Storage> operator+(const LinkedList<T,Storage>& left, const ListType& right) {
-		LinkedList<T,Storage> newList;
-		for(auto& item : left) {
-			newList.pushBack(item);
-		}
-		for(auto& item : right) {
-			newList.pushBack(item);
-		}
+	template<typename T, typename Collection, typename _>
+	LinkedList<T> operator+(const LinkedList<T>& left, Collection&& right) {
+		LinkedList<T> newList;
+		newList.pushBackList(left);
+		newList.pushBackList(std::forward<Collection>(right));
 		return newList;
 	}
 
-	template<typename T, template<typename...> typename Storage>
-	LinkedList<T,Storage> operator+(LinkedList<T,Storage>&& left, LinkedList<T,Storage>&& right) {
-		LinkedList<T,Storage> newList;
-		newList.splice(newList.end(), left);
+	template<typename T, typename Collection, typename _>
+	LinkedList<T> operator+(LinkedList<T>&& left, Collection&& right) {
+		auto newList = std::move(left);
+		newList.pushBackList(std::forward<Collection>(right));
+		return newList;
+	}
+
+	template<typename T>
+	LinkedList<T> operator+(LinkedList<T>&& left, std::list<T>&& right) {
+		auto newList = std::move(left);
 		newList.splice(newList.end(), right);
 		return newList;
 	}
 
-	template<typename T, template<typename...> typename Storage>
-	LinkedList<T,Storage> operator+(const LinkedList<T,Storage>& left, LinkedList<T,Storage>&& right) {
-		LinkedList<T,Storage> newList;
-		for(auto& item : left) {
-			newList.pushBack(item);
-		}
+	template<typename T>
+	LinkedList<T> operator+(const LinkedList<T>& left, std::list<T>&& right) {
+		LinkedList<T> newList;
+		newList.pushBackList(left);
 		newList.splice(newList.end(), right);
 		return newList;
 	}
 
-	template<typename T, template<typename...> typename Storage>
-	LinkedList<T,Storage> operator+(LinkedList<T,Storage>&& left, const LinkedList<T,Storage>& right) {
-		LinkedList<T,Storage> newList;
-		newList.splice(newList.end(), left);
-		for(auto& item : right) {
-			newList.pushBack(item);
-		}
+	template<typename T>
+	LinkedList<T> operator+(LinkedList<T>&& left, const std::list<T>& right) {
+		auto newList = std::move(left);
+		newList.pushBackList(right);
 		return newList;
 	}
 }

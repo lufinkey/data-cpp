@@ -24,74 +24,56 @@ namespace fgl {
 	class Map;
 
 
-	template<typename Storage>
-	class BasicList {
+	template<typename BaseClass>
+	class BasicList: public BaseClass {
 	public:
-		using ValueType = typename Storage::value_type;
-		using StorageType = Storage;
+		using BaseType = BaseClass;
 		
-		using value_type = typename Storage::value_type;
-		using allocator_type = typename Storage::allocator_type;
-		using size_type = typename Storage::size_type;
+		using typename BaseClass::value_type;
+		using typename BaseClass::allocator_type;
+		using typename BaseClass::size_type;
+		using typename BaseClass::difference_type;
+		using typename BaseClass::reference;
+		using typename BaseClass::const_reference;
+		using typename BaseClass::pointer;
+		using typename BaseClass::const_pointer;
+		using typename BaseClass::iterator;
+		using typename BaseClass::const_iterator;
+		using typename BaseClass::reverse_iterator;
+		using typename BaseClass::const_reverse_iterator;
 		
-		using iterator = typename Storage::iterator;
-		using const_iterator = typename Storage::const_iterator;
-		using reverse_iterator = typename Storage::reverse_iterator;
-		using const_reverse_iterator = typename Storage::const_reverse_iterator;
+		using ValueType = typename BaseClass::value_type;
 		
-		Storage storage;
+		using BaseClass::BaseClass;
+		using BaseClass::operator=;
+		using BaseClass::begin;
+		using BaseClass::cbegin;
+		using BaseClass::end;
+		using BaseClass::cend;
+		using BaseClass::rbegin;
+		using BaseClass::crbegin;
+		using BaseClass::rend;
+		using BaseClass::crend;
+		using BaseClass::empty;
+		using BaseClass::size;
+		using BaseClass::max_size;
+		using BaseClass::swap;
 		
-		inline BasicList();
-		inline BasicList(const BasicList<Storage>&);
-		inline BasicList(BasicList<Storage>&&);
-		inline BasicList(const Storage&);
-		inline BasicList(Storage&&);
-		inline BasicList(std::initializer_list<ValueType>);
-		inline BasicList(const ValueType* data, size_t size);
-		template<typename InputIterator, typename = IsInputIterator<InputIterator>>
-		inline BasicList(InputIterator begin, InputIterator end);
+		template<typename Collection, typename = IsCollectionOf<ValueType,std::remove_reference_t<Collection>>>
+		inline BasicList(Collection&&);
+		template<typename Collection, typename = IsCollectionOf<ValueType,std::remove_reference_t<Collection>>>
+		inline BasicList& operator=(Collection&&);
 		
-		template<typename Container, typename = IsTypeContainer<ValueType,Container>>
-		inline BasicList(const Container&);
-		template<typename Container, typename = IsTypeContainer<ValueType,Container>>
-		inline BasicList(Container&&);
+		inline operator BaseClass&() & noexcept;
+		inline operator BaseClass&&() && noexcept;
+		inline operator const BaseClass&() const& noexcept;
 		
-		inline BasicList<Storage>& operator=(const BasicList<Storage>&);
-		inline BasicList<Storage>& operator=(BasicList<Storage>&&);
-		template<typename Container, typename = IsTypeContainer<ValueType,Container>>
-		inline BasicList<Storage>& operator=(const Container&);
-		template<typename Container, typename = IsTypeContainer<ValueType,Container>>
-		inline BasicList<Storage>& operator=(Container&&);
-		inline BasicList<Storage>& operator=(std::initializer_list<ValueType> list);
-		
-		operator Storage&() & noexcept;
-		operator Storage&&() && noexcept;
-		operator const Storage&() const& noexcept;
-		
-		inline iterator begin();
-		inline const_iterator begin() const;
-		inline const_iterator cbegin() const;
-		inline iterator end();
-		inline const_iterator end() const;
-		inline const_iterator cend() const;
-		inline reverse_iterator rbegin();
-		inline const_reverse_iterator rbegin() const;
-		inline const_reverse_iterator crbegin() const;
-		inline reverse_iterator rend();
-		inline const_reverse_iterator rend() const;
-		inline const_reverse_iterator crend() const;
-		
-		inline bool empty() const noexcept;
-		inline size_type size() const noexcept;
 		inline size_type maxSize() const noexcept;
 		
-		inline void swap(BasicList<Storage>&) noexcept;
-		inline void swap(Storage&) noexcept;
-		
-		inline ValueType& front();
-		inline const ValueType& front() const;
-		inline ValueType& back();
-		inline const ValueType& back() const;
+		inline reference front();
+		inline const_reference front() const;
+		inline reference back();
+		inline const_reference back() const;
 		
 		inline Optional<ValueType> first() const;
 		inline OptionalRef<ValueType> firstRef();
@@ -119,13 +101,13 @@ namespace fgl {
 		inline size_type countWhere(Predicate predicate) const;
 		
 		template<typename Predicate>
-		inline ValueType& firstWhere(Predicate predicate, ValueType& defaultValue);
+		inline reference firstWhere(Predicate predicate, ValueType& defaultValue);
 		template<typename Predicate>
-		inline const ValueType& firstWhere(Predicate predicate, const ValueType& defaultValue) const;
+		inline const_reference firstWhere(Predicate predicate, const ValueType& defaultValue) const;
 		template<typename Predicate>
-		inline ValueType& lastWhere(Predicate predicate, ValueType& defaultValue);
+		inline reference lastWhere(Predicate predicate, ValueType& defaultValue);
 		template<typename Predicate>
-		inline const ValueType& lastWhere(Predicate predicate, const ValueType& defaultValue) const;
+		inline const_reference lastWhere(Predicate predicate, const ValueType& defaultValue) const;
 		
 		template<typename Predicate>
 		inline Optional<ValueType> firstWhere(Predicate predicate) const;
@@ -144,10 +126,10 @@ namespace fgl {
 		template<typename Predicate>
 		inline bool containsWhere(Predicate predicate) const;
 		
-		template<typename T, typename Predicate>
-		T reduce(T initialValue, Predicate callback);
-		template<typename T, typename Predicate>
-		T reduce(T initialValue, Predicate callback) const;
+		template<typename T, typename Transform>
+		T reduce(T initialValue, Transform transform);
+		template<typename T, typename Transform>
+		T reduce(T initialValue, Transform transform) const;
 		
 		#ifdef __OBJC__
 		template<typename Transform>
@@ -172,298 +154,132 @@ namespace fgl {
 	
 #pragma mark BasicList implementation
 	
-	template<typename Storage>
-	BasicList<Storage>::BasicList() {
+	template<typename BaseClass>
+	template<typename Collection, typename _>
+	BasicList<BaseClass>::BasicList(Collection&& collection)
+	: BaseClass(collection.begin(), collection.end()) {
 		//
 	}
 	
-	template<typename Storage>
-	BasicList<Storage>::BasicList(const BasicList<Storage>& list)
-	: storage(list.storage) {
-		//
-	}
-	
-	template<typename Storage>
-	BasicList<Storage>::BasicList(BasicList<Storage>&& list)
-	: storage(list.storage) {
-		//
-	}
-	
-	template<typename Storage>
-	BasicList<Storage>::BasicList(const Storage& storage)
-	: storage(storage) {
-		//
-	}
-	
-	template<typename Storage>
-	BasicList<Storage>::BasicList(Storage&& storage)
-	: storage(storage) {
-		//
-	}
-	
-	template<typename Storage>
-	BasicList<Storage>::BasicList(std::initializer_list<ValueType> list)
-	: storage(list) {
-		//
-	}
-	
-	template<typename Storage>
-	BasicList<Storage>::BasicList(const ValueType* data, size_t size)
-	: storage(data, data+size) {
-		//
-	}
-	
-	template<typename Storage>
-	template<typename InputIterator, typename _>
-	BasicList<Storage>::BasicList(InputIterator begin, InputIterator end)
-	: storage(begin, end) {
-		//
-	}
-	
-	template<typename Storage>
-	template<typename Container, typename _>
-	BasicList<Storage>::BasicList(const Container& container)
-	: storage(container.begin(), container.end()) {
-		//
-	}
-	
-	template<typename Storage>
-	template<typename Container, typename _>
-	BasicList<Storage>::BasicList(Container&& container)
-	: storage(std::make_move_iterator(container.begin()), std::make_move_iterator(container.end())) {
-		//
-	}
-	
-	template<typename Storage>
-	BasicList<Storage>& BasicList<Storage>::operator=(const BasicList<Storage>& list) {
-		storage = list.storage;
-		return *this;
-	}
-	
-	template<typename Storage>
-	BasicList<Storage>& BasicList<Storage>::operator=(BasicList<Storage>&& list) {
-		storage = list.storage;
-		return *this;
-	}
-	
-	template<typename Storage>
-	template<typename Container, typename _>
-	BasicList<Storage>& BasicList<Storage>::operator=(const Container& container) {
-		storage.assign(container.begin(), container.end());
-		return *this;
-	}
-	
-	template<typename Storage>
-	template<typename Container, typename _>
-	BasicList<Storage>& BasicList<Storage>::operator=(Container&& container) {
-		storage.assign(std::make_move_iterator(container.begin()), std::make_move_iterator(container.end()));
-		return *this;
-	}
-	
-	template<typename Storage>
-	BasicList<Storage>& BasicList<Storage>::operator=(std::initializer_list<ValueType> list) {
-		storage.assign(list);
+	template<typename BaseClass>
+	template<typename Collection, typename _>
+	BasicList<BaseClass>& BasicList<BaseClass>::operator=(Collection&& collection) {
+		assign(collection.begin(), collection.end());
 		return *this;
 	}
 
 
-
-	template<typename Storage>
-	BasicList<Storage>::operator Storage&() & noexcept {
-		return storage;
+	template<typename BaseClass>
+	BasicList<BaseClass>::operator BaseClass&() & noexcept {
+		return *this;
 	}
 
-	template<typename Storage>
-	BasicList<Storage>::operator Storage&&() && noexcept {
-		return storage;
+	template<typename BaseClass>
+	BasicList<BaseClass>::operator BaseClass&&() && noexcept {
+		return *this;
 	}
 
-	template<typename Storage>
-	BasicList<Storage>::operator const Storage&() const& noexcept {
-		return storage;
+	template<typename BaseClass>
+	BasicList<BaseClass>::operator const BaseClass&() const& noexcept {
+		return *this;
+	}
+	
+	
+	template<typename BaseClass>
+	typename BasicList<BaseClass>::size_type BasicList<BaseClass>::maxSize() const noexcept {
+		return max_size();
 	}
 	
 	
 	
-	template<typename Storage>
-	typename BasicList<Storage>::iterator BasicList<Storage>::begin() {
-		return storage.begin();
-	}
-	
-	template<typename Storage>
-	typename BasicList<Storage>::const_iterator BasicList<Storage>::begin() const {
-		return storage.begin();
-	}
-	
-	template<typename Storage>
-	typename BasicList<Storage>::const_iterator BasicList<Storage>::cbegin() const {
-		return storage.cbegin();
-	}
-	
-	template<typename Storage>
-	typename BasicList<Storage>::iterator BasicList<Storage>::end() {
-		return storage.end();
-	}
-	
-	template<typename Storage>
-	typename BasicList<Storage>::const_iterator BasicList<Storage>::end() const {
-		return storage.end();
-	}
-	
-	template<typename Storage>
-	typename BasicList<Storage>::const_iterator BasicList<Storage>::cend() const {
-		return storage.cend();
-	}
-	
-	template<typename Storage>
-	typename BasicList<Storage>::reverse_iterator BasicList<Storage>::rbegin() {
-		return storage.rbegin();
-	}
-	
-	template<typename Storage>
-	typename BasicList<Storage>::const_reverse_iterator BasicList<Storage>::rbegin() const {
-		return storage.rbegin();
-	}
-	
-	template<typename Storage>
-	typename BasicList<Storage>::const_reverse_iterator BasicList<Storage>::crbegin() const {
-		return storage.crbegin();
-	}
-	
-	template<typename Storage>
-	typename BasicList<Storage>::reverse_iterator BasicList<Storage>::rend() {
-		return storage.rend();
-	}
-	
-	template<typename Storage>
-	typename BasicList<Storage>::const_reverse_iterator BasicList<Storage>::rend() const {
-		return storage.rend();
-	}
-	
-	template<typename Storage>
-	typename BasicList<Storage>::const_reverse_iterator BasicList<Storage>::crend() const {
-		return storage.crend();
-	}
-	
-	
-	
-	template<typename Storage>
-	bool BasicList<Storage>::empty() const noexcept {
-		return storage.empty();
-	}
-	
-	template<typename Storage>
-	typename BasicList<Storage>::size_type BasicList<Storage>::size() const noexcept {
-		return storage.size();
-	}
-	
-	template<typename Storage>
-	typename BasicList<Storage>::size_type BasicList<Storage>::maxSize() const noexcept {
-		return storage.max_size();
-	}
-	
-	
-	
-	template<typename Storage>
-	void BasicList<Storage>::swap(BasicList<Storage>& list) noexcept {
-		storage.swap(list.storage);
-	}
-	
-	template<typename Storage>
-	void BasicList<Storage>::swap(Storage& otherStorage) noexcept {
-		storage.swap(otherStorage);
-	}
-	
-	
-	
-	template<typename Storage>
-	typename BasicList<Storage>::ValueType& BasicList<Storage>::front() {
+	template<typename BaseClass>
+	typename BasicList<BaseClass>::reference BasicList<BaseClass>::front() {
 		FGL_ASSERT(size() > 0, "Cannot get front of empty list");
-		return storage.front();
+		return BaseClass::front();
 	}
 	
-	template<typename Storage>
-	const typename BasicList<Storage>::ValueType& BasicList<Storage>::front() const {
+	template<typename BaseClass>
+	typename BasicList<BaseClass>::const_reference BasicList<BaseClass>::front() const {
 		FGL_ASSERT(size() > 0, "Cannot get front of empty list");
-		return storage.front();
+		return BaseClass::front();
 	}
 	
-	template<typename Storage>
-	typename BasicList<Storage>::ValueType& BasicList<Storage>::back() {
-		FGL_ASSERT(size() > 0, "Cannot get front of empty list");
-		return storage.back();
+	template<typename BaseClass>
+	typename BasicList<BaseClass>::reference BasicList<BaseClass>::back() {
+		FGL_ASSERT(size() > 0, "Cannot get back of empty list");
+		return BaseClass::back();
 	}
 	
-	template<typename Storage>
-	const typename BasicList<Storage>::ValueType& BasicList<Storage>::back() const {
-		FGL_ASSERT(size() > 0, "Cannot get front of empty list");
-		return storage.back();
+	template<typename BaseClass>
+	typename BasicList<BaseClass>::const_reference BasicList<BaseClass>::back() const {
+		FGL_ASSERT(size() > 0, "Cannot get back of empty list");
+		return BaseClass::back();
 	}
 
 
 
-	template<typename Storage>
-	Optional<typename BasicList<Storage>::ValueType> BasicList<Storage>::first() const {
-		if(this->storage.size() == 0) {
+	template<typename BaseClass>
+	Optional<typename BasicList<BaseClass>::ValueType> BasicList<BaseClass>::first() const {
+		if(size() == 0) {
 			return std::nullopt;
 		}
-		return this->storage.front();
+		return BaseClass::front();
 	}
 	
-	template<typename Storage>
-	OptionalRef<typename BasicList<Storage>::ValueType> BasicList<Storage>::firstRef() {
-		if(this->storage.size() == 0) {
+	template<typename BaseClass>
+	OptionalRef<typename BasicList<BaseClass>::ValueType> BasicList<BaseClass>::firstRef() {
+		if(size() == 0) {
 			return std::nullopt;
 		}
-		return std::ref<ValueType>(this->storage.front());
+		return std::ref<ValueType>(BaseClass::front());
 	}
 	
-	template<typename Storage>
-	OptionalRef<const typename BasicList<Storage>::ValueType> BasicList<Storage>::firstRef() const {
-		if(this->storage.size() == 0) {
+	template<typename BaseClass>
+	OptionalRef<const typename BasicList<BaseClass>::ValueType> BasicList<BaseClass>::firstRef() const {
+		if(size() == 0) {
 			return std::nullopt;
 		}
-		return std::ref<const ValueType>(this->storage.front());
+		return std::ref<const ValueType>(BaseClass::front());
 	}
 	
-	template<typename Storage>
-	Optional<typename BasicList<Storage>::ValueType> BasicList<Storage>::last() const {
-		if(this->storage.size() == 0) {
+	template<typename BaseClass>
+	Optional<typename BasicList<BaseClass>::ValueType> BasicList<BaseClass>::last() const {
+		if(size() == 0) {
 			return std::nullopt;
 		}
-		return this->storage.back();
+		return BaseClass::back();
 	}
 	
-	template<typename Storage>
-	OptionalRef<typename BasicList<Storage>::ValueType> BasicList<Storage>::lastRef() {
-		if(this->storage.size() == 0) {
+	template<typename BaseClass>
+	OptionalRef<typename BasicList<BaseClass>::ValueType> BasicList<BaseClass>::lastRef() {
+		if(size() == 0) {
 			return std::nullopt;
 		}
-		return std::ref<ValueType>(this->storage.back());
+		return BaseClass::back();
 	}
 	
-	template<typename Storage>
-	OptionalRef<const typename BasicList<Storage>::ValueType> BasicList<Storage>::lastRef() const {
-		if(this->storage.size() == 0) {
+	template<typename BaseClass>
+	OptionalRef<const typename BasicList<BaseClass>::ValueType> BasicList<BaseClass>::lastRef() const {
+		if(size() == 0) {
 			return std::nullopt;
 		}
-		return std::ref<const ValueType>(this->storage.back());
+		return std::ref<const ValueType>(BaseClass::back());
 	}
 	
 	
 	
-	template<typename Storage>
-	typename BasicList<Storage>::iterator BasicList<Storage>::findEqual(const ValueType& value) {
+	template<typename BaseClass>
+	typename BasicList<BaseClass>::iterator BasicList<BaseClass>::findEqual(const ValueType& value) {
 		return std::find(begin(), end(), value);
 	}
 	
-	template<typename Storage>
-	typename BasicList<Storage>::const_iterator BasicList<Storage>::findEqual(const ValueType& value) const {
+	template<typename BaseClass>
+	typename BasicList<BaseClass>::const_iterator BasicList<BaseClass>::findEqual(const ValueType& value) const {
 		return std::find(begin(), end(), value);
 	}
 	
-	template<typename Storage>
-	typename BasicList<Storage>::iterator BasicList<Storage>::findLastEqual(const ValueType& value) {
+	template<typename BaseClass>
+	typename BasicList<BaseClass>::iterator BasicList<BaseClass>::findLastEqual(const ValueType& value) {
 		auto it = std::find(rbegin(), rend(), value);
 		if(it == rend()) {
 			return end();
@@ -473,8 +289,8 @@ namespace fgl {
 		return retIt;
 	}
 	
-	template<typename Storage>
-	typename BasicList<Storage>::const_iterator BasicList<Storage>::findLastEqual(const ValueType& value) const {
+	template<typename BaseClass>
+	typename BasicList<BaseClass>::const_iterator BasicList<BaseClass>::findLastEqual(const ValueType& value) const {
 		auto it = std::find(rbegin(), rend(), value);
 		if(it == rend()) {
 			return end();
@@ -484,21 +300,21 @@ namespace fgl {
 		return retIt;
 	}
 	
-	template<typename Storage>
+	template<typename BaseClass>
 	template<typename Predicate>
-	typename BasicList<Storage>::iterator BasicList<Storage>::findWhere(Predicate predicate) {
+	typename BasicList<BaseClass>::iterator BasicList<BaseClass>::findWhere(Predicate predicate) {
 		return std::find_if(begin(), end(), predicate);
 	}
 	
-	template<typename Storage>
+	template<typename BaseClass>
 	template<typename Predicate>
-	typename BasicList<Storage>::const_iterator BasicList<Storage>::findWhere(Predicate predicate) const {
+	typename BasicList<BaseClass>::const_iterator BasicList<BaseClass>::findWhere(Predicate predicate) const {
 		return std::find_if(begin(), end(), predicate);
 	}
 	
-	template<typename Storage>
+	template<typename BaseClass>
 	template<typename Predicate>
-	typename BasicList<Storage>::iterator BasicList<Storage>::findLastWhere(Predicate predicate) {
+	typename BasicList<BaseClass>::iterator BasicList<BaseClass>::findLastWhere(Predicate predicate) {
 		auto it = std::find_if(rbegin(), rend(), predicate);
 		if(it == rend()) {
 			return end();
@@ -508,9 +324,9 @@ namespace fgl {
 		return retIt;
 	}
 	
-	template<typename Storage>
+	template<typename BaseClass>
 	template<typename Predicate>
-	typename BasicList<Storage>::const_iterator BasicList<Storage>::findLastWhere(Predicate predicate) const {
+	typename BasicList<BaseClass>::const_iterator BasicList<BaseClass>::findLastWhere(Predicate predicate) const {
 		auto it = std::find_if(rbegin(), rend(), predicate);
 		if(it == rend()) {
 			return end();
@@ -522,22 +338,22 @@ namespace fgl {
 	
 	
 	
-	template<typename Storage>
-	typename BasicList<Storage>::size_type BasicList<Storage>::count(const ValueType& value) const {
+	template<typename BaseClass>
+	typename BasicList<BaseClass>::size_type BasicList<BaseClass>::count(const ValueType& value) const {
 		return std::count(begin(), end(), value);
 	}
 	
-	template<typename Storage>
+	template<typename BaseClass>
 	template<typename Predicate>
-	typename BasicList<Storage>::size_type BasicList<Storage>::countWhere(Predicate predicate) const {
+	typename BasicList<BaseClass>::size_type BasicList<BaseClass>::countWhere(Predicate predicate) const {
 		return std::count_if(begin(), end(), predicate);
 	}
 	
 	
 	
-	template<typename Storage>
+	template<typename BaseClass>
 	template<typename Predicate>
-	typename BasicList<Storage>::ValueType& BasicList<Storage>::firstWhere(Predicate predicate, ValueType& defaultValue) {
+	typename BasicList<BaseClass>::reference BasicList<BaseClass>::firstWhere(Predicate predicate, ValueType& defaultValue) {
 		auto it = findWhere(predicate);
 		if(it == end()) {
 			return defaultValue;
@@ -545,9 +361,9 @@ namespace fgl {
 		return *it;
 	}
 	
-	template<typename Storage>
+	template<typename BaseClass>
 	template<typename Predicate>
-	const typename BasicList<Storage>::ValueType& BasicList<Storage>::firstWhere(Predicate predicate, const ValueType& defaultValue) const {
+	typename BasicList<BaseClass>::const_reference BasicList<BaseClass>::firstWhere(Predicate predicate, const ValueType& defaultValue) const {
 		auto it = findWhere(predicate);
 		if(it == end()) {
 			return defaultValue;
@@ -555,9 +371,9 @@ namespace fgl {
 		return *it;
 	}
 	
-	template<typename Storage>
+	template<typename BaseClass>
 	template<typename Predicate>
-	typename BasicList<Storage>::ValueType& BasicList<Storage>::lastWhere(Predicate predicate, ValueType& defaultValue) {
+	typename BasicList<BaseClass>::reference BasicList<BaseClass>::lastWhere(Predicate predicate, ValueType& defaultValue) {
 		auto it = findLastWhere(predicate);
 		if(it == end()) {
 			return defaultValue;
@@ -565,9 +381,9 @@ namespace fgl {
 		return *it;
 	}
 	
-	template<typename Storage>
+	template<typename BaseClass>
 	template<typename Predicate>
-	const typename BasicList<Storage>::ValueType& BasicList<Storage>::lastWhere(Predicate predicate, const ValueType& defaultValue) const {
+	typename BasicList<BaseClass>::const_reference BasicList<BaseClass>::lastWhere(Predicate predicate, const ValueType& defaultValue) const {
 		auto it = findLastWhere(predicate);
 		if(it == end()) {
 			return defaultValue;
@@ -577,9 +393,9 @@ namespace fgl {
 
 
 
-	template<typename Storage>
+	template<typename BaseClass>
 	template<typename Predicate>
-	Optional<typename BasicList<Storage>::ValueType> BasicList<Storage>::firstWhere(Predicate predicate) const {
+	Optional<typename BasicList<BaseClass>::ValueType> BasicList<BaseClass>::firstWhere(Predicate predicate) const {
 		auto it = findWhere(predicate);
 		if(it == end()) {
 			return std::nullopt;
@@ -587,9 +403,9 @@ namespace fgl {
 		return *it;
 	}
 
-	template<typename Storage>
+	template<typename BaseClass>
 	template<typename Predicate>
-	OptionalRef<typename BasicList<Storage>::ValueType> BasicList<Storage>::firstRefWhere(Predicate predicate) {
+	OptionalRef<typename BasicList<BaseClass>::ValueType> BasicList<BaseClass>::firstRefWhere(Predicate predicate) {
 		auto it = findWhere(predicate);
 		if(it == end()) {
 			return std::nullopt;
@@ -597,9 +413,9 @@ namespace fgl {
 		return std::ref(*it);
 	}
 
-	template<typename Storage>
+	template<typename BaseClass>
 	template<typename Predicate>
-	OptionalRef<const typename BasicList<Storage>::ValueType> BasicList<Storage>::firstRefWhere(Predicate predicate) const {
+	OptionalRef<const typename BasicList<BaseClass>::ValueType> BasicList<BaseClass>::firstRefWhere(Predicate predicate) const {
 		auto it = findWhere(predicate);
 		if(it == end()) {
 			return std::nullopt;
@@ -607,9 +423,9 @@ namespace fgl {
 		return std::ref(*it);
 	}
 
-	template<typename Storage>
+	template<typename BaseClass>
 	template<typename Predicate>
-	Optional<typename BasicList<Storage>::ValueType> BasicList<Storage>::lastWhere(Predicate predicate) const {
+	Optional<typename BasicList<BaseClass>::ValueType> BasicList<BaseClass>::lastWhere(Predicate predicate) const {
 		auto it = findLastWhere(predicate);
 		if(it == end()) {
 			return std::nullopt;
@@ -617,9 +433,9 @@ namespace fgl {
 		return *it;
 	}
 
-	template<typename Storage>
+	template<typename BaseClass>
 	template<typename Predicate>
-	OptionalRef<typename BasicList<Storage>::ValueType> BasicList<Storage>::lastRefWhere(Predicate predicate) {
+	OptionalRef<typename BasicList<BaseClass>::ValueType> BasicList<BaseClass>::lastRefWhere(Predicate predicate) {
 		auto it = findLastWhere(predicate);
 		if(it == end()) {
 			return std::nullopt;
@@ -627,9 +443,9 @@ namespace fgl {
 		return std::ref(*it);
 	}
 
-	template<typename Storage>
+	template<typename BaseClass>
 	template<typename Predicate>
-	OptionalRef<const typename BasicList<Storage>::ValueType> BasicList<Storage>::lastRefWhere(Predicate predicate) const {
+	OptionalRef<const typename BasicList<BaseClass>::ValueType> BasicList<BaseClass>::lastRefWhere(Predicate predicate) const {
 		auto it = findLastWhere(predicate);
 		if(it == end()) {
 			return std::nullopt;
@@ -639,37 +455,33 @@ namespace fgl {
 	
 	
 	
-	template<typename Storage>
-	bool BasicList<Storage>::contains(const ValueType& value) const {
+	template<typename BaseClass>
+	bool BasicList<BaseClass>::contains(const ValueType& value) const {
 		return findEqual(value) != end();
 	}
 	
-	template<typename Storage>
+	template<typename BaseClass>
 	template<typename Predicate>
-	bool BasicList<Storage>::containsWhere(Predicate predicate) const {
+	bool BasicList<BaseClass>::containsWhere(Predicate predicate) const {
 		return findWhere(predicate) != end();
 	}
 
 
 
-	template<typename Storage>
-	template<typename T, typename Predicate>
-	T BasicList<Storage>::reduce(T value, Predicate callback) {
-		size_t i=0;
-		for(auto& item : storage) {
-			value = std::move(callback(std::move(value), item, i, this));
-			i++;
+	template<typename BaseClass>
+	template<typename T, typename Transform>
+	T BasicList<BaseClass>::reduce(T value, Transform transform) {
+		for(auto& item : *this) {
+			value = transform(value, item);
 		}
 		return value;
 	}
 
-	template<typename Storage>
-	template<typename T, typename Predicate>
-	T BasicList<Storage>::reduce(T value, Predicate callback) const {
-		size_t i=0;
-		for(auto& item : storage) {
-			value = std::move(callback(std::move(value), item, i, this));
-			i++;
+	template<typename BaseClass>
+	template<typename T, typename Transform>
+	T BasicList<BaseClass>::reduce(T value, Transform transform) const {
+		for(auto& item : *this) {
+			value = transform(value, item);
 		}
 		return value;
 	}
@@ -678,21 +490,35 @@ namespace fgl {
 
 	#ifdef __OBJC__
 
-	template<typename Storage>
+	template<typename BaseClass>
 	template<typename Transform>
-	NSMutableArray* BasicList<Storage>::toNSArray(Transform transform) {
+	NSMutableArray* BasicList<BaseClass>::toNSArray(Transform transform) {
+		constexpr auto arg_count = get_arity_v<Transform>;
+		static_assert(arg_count >= 1 && arg_count <= 3, "toNSArray callback must contain between 1 and 3 arguments");
 		NSMutableArray* nsArray = [[NSMutableArray alloc] initWithCapacity:(NSUInteger)size()];
-		for(auto& item : storage) {
-			[nsArray addObject:transform(item)];
+		if constexpr(arg_count == 1) {
+			for(auto& item : *this) {
+				[nsArray addObject:transform(item)];
+			}
+		} else {
+			size_t i=0;
+			for(auto& item : *this) {
+				if constexpr(arg_count == 2) {
+					[nsArray addObject:transform(item, i)];
+				} else {
+					[nsArray addObject:transform(item, i, this)];
+				}
+				i++;
+			}
 		}
 		return nsArray;
 	}
 
-	template<typename Storage>
+	template<typename BaseClass>
 	template<typename Transform>
-	NSMutableArray* BasicList<Storage>::toNSArray(Transform transform) const {
+	NSMutableArray* BasicList<BaseClass>::toNSArray(Transform transform) const {
 		NSMutableArray* nsArray = [[NSMutableArray alloc] initWithCapacity:(NSUInteger)size()];
-		for(auto& item : storage) {
+		for(auto& item : *this) {
 			[nsArray addObject:transform(item)];
 		}
 		return nsArray;
@@ -704,25 +530,33 @@ namespace fgl {
 
 	#ifdef JNIEXPORT
 
-	template<typename Storage>
+	template<typename BaseClass>
 	template<typename Transform>
-	jobjectArray BasicList<Storage>::toJavaObjectArray(JNIEnv* env, jclass objectClass, Transform transform) {
+	jobjectArray BasicList<BaseClass>::toJavaObjectArray(JNIEnv* env, jclass objectClass, Transform transform) {
 		jobjectArray javaArray = env->NewObjectArray((jsize)size(), objectClass, nullptr);
 		jsize i=0;
-		for(auto& item : storage) {
+		for(auto& item : *this) {
 			env->SetObjectArrayElement(javaArray, i, transform(env, item));
 			i++;
 		}
 		return javaArray;
 	}
 
-	template<typename Storage>
+	template<typename BaseClass>
 	template<typename Transform>
-	jobjectArray BasicList<Storage>::toJavaObjectArray(JNIEnv* env, jclass objectClass, Transform transform) const {
+	jobjectArray BasicList<BaseClass>::toJavaObjectArray(JNIEnv* env, jclass objectClass, Transform transform) const {
+		constexpr auto arg_count = get_arity_v<Transform>;
+		static_assert(arg_count >= 2 && arg_count <= 4, "toJavaObjectArray callback must contain between 2 and 4 arguments");
 		jobjectArray javaArray = env->NewObjectArray((jsize)size(), objectClass, nullptr);
 		jsize i=0;
-		for(auto& item : storage) {
-			env->SetObjectArrayElement(javaArray, i, transform(env, item));
+		for(auto& item : *this) {
+			if constexpr(arg_count == 2) {
+				env->SetObjectArrayElement(javaArray, i, transform(env, item));
+			} else if constexpr(arg_count == 3) {
+				env->SetObjectArrayElement(javaArray, i, transform(env, item, (size_type)i));
+			} else {
+				env->SetObjectArrayElement(javaArray, i, transform(env, item, (size_type)i, this));
+			}
 			i++;
 		}
 		return javaArray;

@@ -131,7 +131,7 @@ namespace fgl {
 		else if constexpr(std::is_base_of<std::exception,Type>::value) {
 			return obj.what();
 		}
-		else if constexpr(is_container<Type>::value) {
+		else if constexpr(is_collection<Type>::value) {
 			auto begin = obj.begin();
 			auto end = obj.end();
 			if(begin == end) {
