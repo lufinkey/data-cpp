@@ -22,6 +22,8 @@ namespace fgl {
 	template<typename T>
 	using Function = std::function<T>;
 
+	struct empty{};
+
 	using std::make_pair;
 	using std::make_tuple;
 
@@ -39,7 +41,7 @@ namespace fgl {
 	
 	#ifndef FGL_ASSERT
 		#ifdef NDEBUG
-			#define FGL_ASSERT(condition, message)
+			#define FGL_ASSERT(condition, message) assert(condition)
 		#else
 			#define FGL_ASSERT(condition, message) { \
 				if(!(condition)) { \

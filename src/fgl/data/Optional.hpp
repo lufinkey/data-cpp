@@ -32,6 +32,10 @@ namespace fgl {
 	struct is_optional<std::optional<T>>: std::true_type {};
 
 	template<typename T>
+	inline constexpr bool is_optional_v = is_optional<T>::value;
+
+
+	template<typename T>
 	struct _optionalize {
 		using type = Optional<T>;
 	};
@@ -43,9 +47,20 @@ namespace fgl {
 	struct _optionalize<void> {
 		using type = Optional<std::nullptr_t>;
 	};
-
 	template<typename T>
 	using Optionalized = typename _optionalize<T>::type;
+
+
+	template<typename T>
+	struct optional_or_void {
+		using type = Optionalized<T>;
+	};
+	template<>
+	struct optional_or_void<void> {
+		using type = void;
+	};
+	template<typename T>
+	using OptionalOrVoid = typename optional_or_void<T>::type;
 
 
 

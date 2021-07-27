@@ -100,6 +100,14 @@ namespace fgl {
 
 
 
+	template<bool Condition, typename T>
+	using member_if = typename std::conditional<Condition,T,empty[0]>::type;
+
+	template<typename T>
+	using NullifyVoid = typename std::conditional<std::is_void_v<T>,std::nullptr_t,T>::type;
+
+
+
 	#define CREATE_HAS_CONST_MEMBER_FUNC(memberName) \
 	template<typename T, typename ReturnType, class... Args> \
 	struct has_const_memberfunc_##memberName { \
