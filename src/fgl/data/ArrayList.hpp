@@ -63,7 +63,6 @@ namespace fgl {
 		using BasicList<BaseType>::toMap;
 		
 		using BaseType::at;
-		using BaseType::data;
 		using BaseType::capacity;
 		using BaseType::reserve;
 		using BaseType::resize;
