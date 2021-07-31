@@ -1,10 +1,6 @@
-# For more information about using CMake with Android Studio, read the
-# documentation: https://d.android.com/studio/projects/add-native-code.html
 
-# Sets the minimum version of CMake required to build the native library.
-
+cmake_minimum_required(VERSION 3.18.1)
 project(TestApp)
-cmake_minimum_required(VERSION 3.6.0)
 set( CMAKE_CXX_STANDARD 20 )
 
 set( DATACPP_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../.." )

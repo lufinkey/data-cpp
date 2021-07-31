@@ -1,2 +1,3 @@
-include ':app', ':libdatacpp'
 rootProject.name='DataCpp'
+include ':app'
+include ':libdatacpp'

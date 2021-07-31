@@ -1,6 +1,6 @@
 
+cmake_minimum_required(VERSION 3.18.1)
 project(DataCpp)
-cmake_minimum_required(VERSION 3.6.0)
 set( CMAKE_CXX_STANDARD 20 )
 
 set( DATACPP_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../.." )
