@@ -19,7 +19,7 @@ Pod::Spec.new do |s|
 
 	s.description      = <<-DESC
 	A small data library for C++.
-							DESC
+	DESC
 
 	s.homepage         = 'https://github.com/lufinkey/data-cpp'
 	# s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
@@ -41,7 +41,7 @@ Pod::Spec.new do |s|
 	s.header_mappings_dir = 'src/fgl'
 	s.pod_target_xcconfig = {
 		'HEADER_SEARCH_PATHS' => "$(PODS_ROOT)/DataCpp/src",
-		'CLANG_CXX_LANGUAGE_STANDARD' => 'gnu++17',
+		'CLANG_CXX_LANGUAGE_STANDARD' => 'gnu++20',
 		'GCC_OPTIMIZATION_LEVEL[config=Release]' => 's'
 	}
 	s.user_target_xcconfig = {
