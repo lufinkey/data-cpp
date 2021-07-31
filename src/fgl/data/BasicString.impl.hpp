@@ -211,22 +211,17 @@ namespace fgl {
 	
 	template<typename Char>
 	BasicString<Char>::operator std::basic_string<Char>&() & noexcept {
-		return *this;
+		return (std::basic_string<Char>&)*this;
 	}
 
 	template<typename Char>
 	BasicString<Char>::operator std::basic_string<Char>&&() && noexcept {
-		return *this;
+		return (std::basic_string<Char>&&)*this;
 	}
 	
 	template<typename Char>
 	BasicString<Char>::operator const std::basic_string<Char>&() const& noexcept {
-		return *this;
-	}
-	
-	template<typename Char>
-	BasicString<Char>::operator const std::basic_string_view<Char>() const noexcept {
-		return *this;
+		return (const std::basic_string<Char>&)*this;
 	}
 	
 	

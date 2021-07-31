@@ -57,6 +57,7 @@ namespace fgl {
 		using BaseType::reserve;
 		using BaseType::at;
 		using BaseType::replace;
+		using BaseType::operator std::basic_string_view<Char>;
 		
 		BasicString(const BaseType&);
 		BasicString(BaseType&&);
@@ -130,7 +131,6 @@ namespace fgl {
 		inline operator std::basic_string<Char>&() & noexcept;
 		inline operator std::basic_string<Char>&&() && noexcept;
 		inline operator const std::basic_string<Char>&() const& noexcept;
-		inline operator const std::basic_string_view<Char>() const noexcept;
 		
 		
 		#ifdef __OBJC__
