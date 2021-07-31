@@ -56,6 +56,7 @@ namespace fgl {
 		using BaseType::resize;
 		using BaseType::reserve;
 		using BaseType::at;
+		using BaseType::substr;
 		using BaseType::replace;
 		using BaseType::operator std::basic_string_view<Char>;
 		
