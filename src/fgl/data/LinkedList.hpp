@@ -87,6 +87,9 @@ namespace fgl {
 		LinkedList& operator=(const BaseType&);
 		LinkedList& operator=(BaseType&&);
 		
+		inline iterator insert(const_iterator pos, const std::list<T>& list);
+		inline iterator insert(const_iterator pos, std::list<T>&& list);
+		
 		inline void pushFront(const T& value);
 		inline void pushFront(T&& value);
 		inline void pushFrontList(const std::list<T>& list);
@@ -199,6 +202,20 @@ namespace fgl {
 	LinkedList<T>& LinkedList<T>::operator=(BaseType&& list) {
 		BaseType::operator=(list);
 		return *this;
+	}
+
+
+
+	template<typename T>
+	typename LinkedList<T>::iterator LinkedList<T>::insert(const_iterator pos, const std::list<T>& list) {
+		return insert(pos, list.begin(), list.end());
+	}
+	
+	template<typename T>
+	typename LinkedList<T>::iterator LinkedList<T>::insert(const_iterator pos, std::list<T>&& list) {
+		auto it = list.begin();
+		splice(pos, list);
+		return it;
 	}
 	
 	
