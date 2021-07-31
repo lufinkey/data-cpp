@@ -67,6 +67,7 @@ namespace fgl {
 		using BaseType::erase;
 		using BaseType::clear;
 		using BaseType::splice;
+		using BaseType::sort;
 		
 		LinkedList(const BaseType&);
 		LinkedList(BaseType&&);
@@ -124,10 +125,6 @@ namespace fgl {
 		inline auto map(Transform transform);
 		template<typename Transform>
 		inline auto map(Transform transform) const;
-		
-		inline void sort();
-		template<typename Predicate>
-		inline void sort(Predicate predicate);
 		
 		String toString() const;
 	};
