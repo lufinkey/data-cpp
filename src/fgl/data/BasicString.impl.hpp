@@ -1134,8 +1134,44 @@ namespace fgl {
 	template<typename Char, typename OtherChar,
 		typename BasicStringUtils::can_convert_string_types<Char,OtherChar>::null_type>
 	BasicString<Char> operator+(const BasicString<Char>& left, const BasicString<OtherChar>& right) {
-		return BasicStringUtils::concat(left, right);
+		if constexpr(std::is_same_v<Char,OtherChar>) {
+			return operator+((const std::basic_string<Char>&)left, (const std::basic_string<Char>&)right);
+		} else {
+			return BasicStringUtils::concat(left, right);
+		}
 	}
+
+	template<typename Char, typename OtherChar,
+		typename BasicStringUtils::can_convert_string_types<Char,OtherChar>::null_type>
+	BasicString<Char> operator+(BasicString<Char>&& left, const BasicString<OtherChar>& right) {
+		if constexpr(std::is_same_v<Char,OtherChar>) {
+			return operator+((std::basic_string<Char>&&)left, (const std::basic_string<Char>&)right);
+		} else {
+			return BasicStringUtils::concat(left, right);
+		}
+	}
+
+	template<typename Char, typename OtherChar,
+		typename BasicStringUtils::can_convert_string_types<Char,OtherChar>::null_type>
+	BasicString<Char> operator+(const BasicString<Char>& left, BasicString<OtherChar>&& right) {
+		if constexpr(std::is_same_v<Char,OtherChar>) {
+			return operator+((const std::basic_string<Char>&)left, (std::basic_string<Char>&&)right);
+		} else {
+			return BasicStringUtils::concat(left, right);
+		}
+	}
+
+	template<typename Char, typename OtherChar,
+		typename BasicStringUtils::can_convert_string_types<Char,OtherChar>::null_type>
+	BasicString<Char> operator+(BasicString<Char>&& left, BasicString<OtherChar>&& right) {
+		if constexpr(std::is_same_v<Char,OtherChar>) {
+			return operator+((std::basic_string<Char>&&)left, (std::basic_string<Char>&&)right);
+		} else {
+			return BasicStringUtils::concat(left, right);
+		}
+	}
+
+
 	
 	template<typename Char, typename OtherChar,
 		typename BasicStringUtils::can_convert_string_types<Char,OtherChar>::null_type>
@@ -1148,18 +1184,92 @@ namespace fgl {
 	BasicString<Char> operator+(const Char* left, const BasicString<OtherChar>& right) {
 		return BasicStringUtils::concat(left, right);
 	}
+
+
 	
 	template<typename Char, typename OtherChar,
 		typename BasicStringUtils::can_convert_string_types<Char,OtherChar>::null_type>
 	BasicString<Char> operator+(const BasicString<Char>& left, const std::basic_string<OtherChar>& right) {
-		return BasicStringUtils::concat(left, right);
+		if constexpr(std::is_same_v<Char,OtherChar>) {
+			return operator+((const std::basic_string<Char>&)left, right);
+		} else {
+			return BasicStringUtils::concat(left, right);
+		}
 	}
+
+	template<typename Char, typename OtherChar,
+		typename BasicStringUtils::can_convert_string_types<Char,OtherChar>::null_type>
+	BasicString<Char> operator+(BasicString<Char>&& left, const std::basic_string<OtherChar>& right) {
+		if constexpr(std::is_same_v<Char,OtherChar>) {
+			return operator+((std::basic_string<Char>&&)left, right);
+		} else {
+			return BasicStringUtils::concat(left, right);
+		}
+	}
+
+	template<typename Char, typename OtherChar,
+		typename BasicStringUtils::can_convert_string_types<Char,OtherChar>::null_type>
+	BasicString<Char> operator+(const BasicString<Char>& left, std::basic_string<OtherChar>&& right) {
+		if constexpr(std::is_same_v<Char,OtherChar>) {
+			return operator+((const std::basic_string<Char>&)left, right);
+		} else {
+			return BasicStringUtils::concat(left, right);
+		}
+	}
+
+	template<typename Char, typename OtherChar,
+		typename BasicStringUtils::can_convert_string_types<Char,OtherChar>::null_type>
+	BasicString<Char> operator+(BasicString<Char>&& left, std::basic_string<OtherChar>&& right) {
+		if constexpr(std::is_same_v<Char,OtherChar>) {
+			return operator+((std::basic_string<Char>&&)left, right);
+		} else {
+			return BasicStringUtils::concat(left, right);
+		}
+	}
+
+
 	
 	template<typename Char, typename OtherChar,
 		typename BasicStringUtils::can_convert_string_types<Char,OtherChar>::null_type>
 	BasicString<Char> operator+(const std::basic_string<Char>& left, const BasicString<OtherChar>& right) {
-		return BasicStringUtils::concat(left, right);
+		if constexpr(std::is_same_v<Char,OtherChar>) {
+			return operator+(left, (const std::basic_string<Char>&)right);
+		} else {
+			return BasicStringUtils::concat(left, right);
+		}
 	}
+
+	template<typename Char, typename OtherChar,
+		typename BasicStringUtils::can_convert_string_types<Char,OtherChar>::null_type>
+	BasicString<Char> operator+(std::basic_string<Char>&& left, const BasicString<OtherChar>& right) {
+		if constexpr(std::is_same_v<Char,OtherChar>) {
+			return operator+(left, (const std::basic_string<Char>&)right);
+		} else {
+			return BasicStringUtils::concat(left, right);
+		}
+	}
+
+	template<typename Char, typename OtherChar,
+		typename BasicStringUtils::can_convert_string_types<Char,OtherChar>::null_type>
+	BasicString<Char> operator+(const std::basic_string<Char>& left, BasicString<OtherChar>&& right) {
+		if constexpr(std::is_same_v<Char,OtherChar>) {
+			return operator+(left, (std::basic_string<Char>&&)right);
+		} else {
+			return BasicStringUtils::concat(left, right);
+		}
+	}
+
+	template<typename Char, typename OtherChar,
+		typename BasicStringUtils::can_convert_string_types<Char,OtherChar>::null_type>
+	BasicString<Char> operator+(std::basic_string<Char>&& left, BasicString<OtherChar>&& right) {
+		if constexpr(std::is_same_v<Char,OtherChar>) {
+			return operator+(left, (std::basic_string<Char>&&)right);
+		} else {
+			return BasicStringUtils::concat(left, right);
+		}
+	}
+
+
 	
 	#ifdef __OBJC__
 	

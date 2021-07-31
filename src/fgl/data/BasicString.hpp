@@ -371,105 +371,133 @@ namespace fgl {
 	
 	template<typename Char, typename OtherChar,
 		typename BasicStringUtils::can_convert_string_types<Char,OtherChar>::null_type = nullptr>
-	BasicString<Char> operator+(const BasicString<Char>& left, const BasicString<OtherChar>& right);
+	inline BasicString<Char> operator+(const BasicString<Char>& left, const BasicString<OtherChar>& right);
+	template<typename Char, typename OtherChar,
+		typename BasicStringUtils::can_convert_string_types<Char,OtherChar>::null_type = nullptr>
+	inline BasicString<Char> operator+(BasicString<Char>&& left, const BasicString<OtherChar>& right);
+	template<typename Char, typename OtherChar,
+		typename BasicStringUtils::can_convert_string_types<Char,OtherChar>::null_type = nullptr>
+	inline BasicString<Char> operator+(const BasicString<Char>& left, BasicString<OtherChar>&& right);
+	template<typename Char, typename OtherChar,
+		typename BasicStringUtils::can_convert_string_types<Char,OtherChar>::null_type = nullptr>
+	inline BasicString<Char> operator+(BasicString<Char>&& left, BasicString<OtherChar>&& right);
 	
 	template<typename Char, typename OtherChar,
 		typename BasicStringUtils::can_convert_string_types<Char,OtherChar>::null_type = nullptr>
-	BasicString<Char> operator+(const BasicString<Char>& left, const OtherChar* right);
+	inline BasicString<Char> operator+(const BasicString<Char>& left, const OtherChar* right);
 	template<typename Char, typename OtherChar,
 		typename BasicStringUtils::can_convert_string_types<Char,OtherChar>::null_type = nullptr>
-	BasicString<Char> operator+(const Char* left, const BasicString<OtherChar>& right);
+	inline BasicString<Char> operator+(const Char* left, const BasicString<OtherChar>& right);
 	
 	template<typename Char, typename OtherChar,
 		typename BasicStringUtils::can_convert_string_types<Char,OtherChar>::null_type = nullptr>
-	BasicString<Char> operator+(const BasicString<Char>& left, const std::basic_string<OtherChar>& right);
+	inline BasicString<Char> operator+(const BasicString<Char>& left, const std::basic_string<OtherChar>& right);
 	template<typename Char, typename OtherChar,
 		typename BasicStringUtils::can_convert_string_types<Char,OtherChar>::null_type = nullptr>
-	BasicString<Char> operator+(const std::basic_string<Char>& left, const BasicString<OtherChar>& right);
+	inline BasicString<Char> operator+(BasicString<Char>&& left, const std::basic_string<OtherChar>& right);
+	template<typename Char, typename OtherChar,
+		typename BasicStringUtils::can_convert_string_types<Char,OtherChar>::null_type = nullptr>
+	inline BasicString<Char> operator+(const BasicString<Char>& left, std::basic_string<OtherChar>&& right);
+	template<typename Char, typename OtherChar,
+		typename BasicStringUtils::can_convert_string_types<Char,OtherChar>::null_type = nullptr>
+	inline BasicString<Char> operator+(BasicString<Char>&& left, std::basic_string<OtherChar>&& right);
+
+	template<typename Char, typename OtherChar,
+		typename BasicStringUtils::can_convert_string_types<Char,OtherChar>::null_type = nullptr>
+	inline BasicString<Char> operator+(const std::basic_string<Char>& left, const BasicString<OtherChar>& right);
+	template<typename Char, typename OtherChar,
+		typename BasicStringUtils::can_convert_string_types<Char,OtherChar>::null_type = nullptr>
+	inline BasicString<Char> operator+(std::basic_string<Char>&& left, const BasicString<OtherChar>& right);
+	template<typename Char, typename OtherChar,
+		typename BasicStringUtils::can_convert_string_types<Char,OtherChar>::null_type = nullptr>
+	inline BasicString<Char> operator+(const std::basic_string<Char>& left, BasicString<OtherChar>&& right);
+	template<typename Char, typename OtherChar,
+		typename BasicStringUtils::can_convert_string_types<Char,OtherChar>::null_type = nullptr>
+	inline BasicString<Char> operator+(std::basic_string<Char>&& left, BasicString<OtherChar>&& right);
 	
 	#ifdef __OBJC__
 	template<typename Char,
 		typename BasicStringUtils::can_convert_string_types<Char,unichar>::null_type = nullptr>
-	BasicString<Char> operator+(const BasicString<Char>& left, NSString* right);
+	inline BasicString<Char> operator+(const BasicString<Char>& left, NSString* right);
 	template<typename Char,
 		typename BasicStringUtils::can_convert_string_types<Char,unichar>::null_type = nullptr>
-	BasicString<Char> operator+(NSString* left, const BasicString<Char>& right);
+	inline BasicString<Char> operator+(NSString* left, const BasicString<Char>& right);
 	#endif
 	
 	template<typename Char, typename OtherChar,
 		typename BasicStringUtils::string_type_convertable_with_char_type<Char,OtherChar>::null_type = nullptr>
-	BasicString<Char> operator+(const BasicString<Char>& left, OtherChar right);
+	inline BasicString<Char> operator+(const BasicString<Char>& left, OtherChar right);
 	template<typename Char, typename OtherChar,
 		typename BasicStringUtils::string_type_convertable_with_char_type<Char,OtherChar>::null_type = nullptr>
-	BasicString<Char> operator+(Char left, const BasicString<OtherChar>& right);
+	inline BasicString<Char> operator+(Char left, const BasicString<OtherChar>& right);
 	
 	template<typename Char, typename Bool,
 		typename BasicStringUtils::string_type_convertable_with_bool<Char,Bool>::null_type = nullptr>
-	BasicString<Char> operator+(const BasicString<Char>& left, Bool right);
+	inline BasicString<Char> operator+(const BasicString<Char>& left, Bool right);
 	template<typename Char, typename Bool,
 		typename BasicStringUtils::string_type_convertable_with_bool<Char,Bool>::null_type = nullptr>
-	BasicString<Char> operator+(Bool left, const BasicString<Char>& right);
+	inline BasicString<Char> operator+(Bool left, const BasicString<Char>& right);
 	
 	template<typename Char, typename Num,
 		typename BasicStringUtils::string_type_convertable_with_number_or_enum<Char,Num>::null_type = nullptr>
-	BasicString<Char> operator+(const BasicString<Char>& left, Num right);
+	inline BasicString<Char> operator+(const BasicString<Char>& left, Num right);
 	template<typename Char, typename Num,
 		typename BasicStringUtils::string_type_convertable_with_number_or_enum<Char,Num>::null_type = nullptr>
-	BasicString<Char> operator+(Num left, const BasicString<Char>& right);
+	inline BasicString<Char> operator+(Num left, const BasicString<Char>& right);
 	
 	template<typename Char>
-	bool operator==(const BasicString<Char>& left, const BasicString<Char>& right);
+	inline bool operator==(const BasicString<Char>& left, const BasicString<Char>& right);
 	template<typename Char>
-	bool operator==(const BasicString<Char>& left, const std::basic_string<Char>& right);
+	inline bool operator==(const BasicString<Char>& left, const std::basic_string<Char>& right);
 	template<typename Char>
-	bool operator==(const std::basic_string<Char>& left, const BasicString<Char>& right);
+	inline bool operator==(const std::basic_string<Char>& left, const BasicString<Char>& right);
 	template<typename Char>
-	bool operator==(const BasicString<Char>& left, const Char* right);
+	inline bool operator==(const BasicString<Char>& left, const Char* right);
 	template<typename Char>
-	bool operator==(const Char* left, const BasicString<Char>& right);
+	inline bool operator==(const Char* left, const BasicString<Char>& right);
 	template<typename Char>
-	bool operator==(const BasicString<Char>& left, Char right);
+	inline bool operator==(const BasicString<Char>& left, Char right);
 	template<typename Char>
-	bool operator==(Char left, const BasicString<Char>& right);
+	inline bool operator==(Char left, const BasicString<Char>& right);
 	
 	template<typename Char>
-	bool operator!=(const BasicString<Char>& left, const BasicString<Char>& right);
+	inline bool operator!=(const BasicString<Char>& left, const BasicString<Char>& right);
 	template<typename Char>
-	bool operator!=(const BasicString<Char>& left, const Char* right);
+	inline bool operator!=(const BasicString<Char>& left, const Char* right);
 	template<typename Char>
-	bool operator!=(const Char* left, const BasicString<Char>& right);
+	inline bool operator!=(const Char* left, const BasicString<Char>& right);
 	template<typename Char>
-	bool operator!=(const BasicString<Char>& left, Char right);
+	inline bool operator!=(const BasicString<Char>& left, Char right);
 	template<typename Char>
-	bool operator!=(Char left, const BasicString<Char>& right);
+	inline bool operator!=(Char left, const BasicString<Char>& right);
 	
 	template<typename Char>
-	bool operator<(const BasicString<Char>& left, const BasicString<Char>& right);
+	inline bool operator<(const BasicString<Char>& left, const BasicString<Char>& right);
 	template<typename Char>
-	bool operator<(const BasicString<Char>& left, const Char* right);
+	inline bool operator<(const BasicString<Char>& left, const Char* right);
 	template<typename Char>
-	bool operator<(const Char* left, const BasicString<Char>& right);
+	inline bool operator<(const Char* left, const BasicString<Char>& right);
 	
 	template<typename Char>
-	bool operator<=(const BasicString<Char>& left, const BasicString<Char>& right);
+	inline bool operator<=(const BasicString<Char>& left, const BasicString<Char>& right);
 	template<typename Char>
-	bool operator<=(const BasicString<Char>& left, const Char* right);
+	inline bool operator<=(const BasicString<Char>& left, const Char* right);
 	template<typename Char>
-	bool operator<=(const Char* left, const BasicString<Char>& right);
+	inline bool operator<=(const Char* left, const BasicString<Char>& right);
 	
 	template<typename Char>
-	bool operator>(const BasicString<Char>& left, const BasicString<Char>& right);
+	inline bool operator>(const BasicString<Char>& left, const BasicString<Char>& right);
 	template<typename Char>
-	bool operator>(const BasicString<Char>& left, const Char* right);
+	inline bool operator>(const BasicString<Char>& left, const Char* right);
 	template<typename Char>
-	bool operator>(const Char* left, const BasicString<Char>& right);
+	inline bool operator>(const Char* left, const BasicString<Char>& right);
 	
 	template<typename Char>
-	bool operator>=(const BasicString<Char>& left, const BasicString<Char>& right);
+	inline bool operator>=(const BasicString<Char>& left, const BasicString<Char>& right);
 	template<typename Char>
-	bool operator>=(const BasicString<Char>& left, const Char* right);
+	inline bool operator>=(const BasicString<Char>& left, const Char* right);
 	template<typename Char>
-	bool operator>=(const Char* left, const BasicString<Char>& right);
+	inline bool operator>=(const Char* left, const BasicString<Char>& right);
 	
 	
 	
