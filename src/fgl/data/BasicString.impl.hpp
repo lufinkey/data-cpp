@@ -688,35 +688,35 @@ namespace fgl {
 	}
 	
 	template<typename Char>
-	typename BasicString<Char>::size_type BasicString<Char>::indexOf(Char find, size_type startIndex) const noexcept {
-		return find(find, startIndex);
+	typename BasicString<Char>::size_type BasicString<Char>::indexOf(Char c, size_type startIndex) const noexcept {
+		return find(c, startIndex);
 	}
 	
 	template<typename Char>
-	typename BasicString<Char>::size_type BasicString<Char>::indexOf(const std::basic_string<Char>& find, size_type startIndex) const noexcept {
-		return find(find, startIndex);
+	typename BasicString<Char>::size_type BasicString<Char>::indexOf(const std::basic_string<Char>& str, size_type startIndex) const noexcept {
+		return find(str, startIndex);
 	}
 	
 	template<typename Char>
-	typename BasicString<Char>::size_type BasicString<Char>::indexOf(const Char* find, size_type startIndex) const {
-		FGL_ASSERT(find != nullptr, "find cannot be null");
-		return find(find, startIndex);
+	typename BasicString<Char>::size_type BasicString<Char>::indexOf(const Char* str, size_type startIndex) const {
+		FGL_ASSERT(str != nullptr, "find cannot be null");
+		return find(str, startIndex);
 	}
 	
 	template<typename Char>
-	typename BasicString<Char>::size_type BasicString<Char>::lastIndexOf(Char find, size_type startIndex) const noexcept {
-		return rfind(find, startIndex);
+	typename BasicString<Char>::size_type BasicString<Char>::lastIndexOf(Char c, size_type startIndex) const noexcept {
+		return rfind(c, startIndex);
 	}
 	
 	template<typename Char>
-	typename BasicString<Char>::size_type BasicString<Char>::lastIndexOf(const std::basic_string<Char>& find, size_type startIndex) const noexcept {
-		return rfind(find, startIndex);
+	typename BasicString<Char>::size_type BasicString<Char>::lastIndexOf(const std::basic_string<Char>& str, size_type startIndex) const noexcept {
+		return rfind(str, startIndex);
 	}
 	
 	template<typename Char>
-	typename BasicString<Char>::size_type BasicString<Char>::lastIndexOf(const Char* find, size_type startIndex) const {
-		FGL_ASSERT(find != nullptr, "find cannot be null");
-		return rfind(find, startIndex);
+	typename BasicString<Char>::size_type BasicString<Char>::lastIndexOf(const Char* str, size_type startIndex) const {
+		FGL_ASSERT(str != nullptr, "find cannot be null");
+		return rfind(str, startIndex);
 	}
 	
 	template<typename Char>
