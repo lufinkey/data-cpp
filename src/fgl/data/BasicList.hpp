@@ -58,6 +58,7 @@ namespace fgl {
 		using BaseClass::size;
 		using BaseClass::max_size;
 		using BaseClass::swap;
+		using BaseClass::assign;
 		
 		template<typename Collection, typename = IsCollectionOf<ValueType,std::remove_reference_t<Collection>>>
 		inline BasicList(Collection&&);

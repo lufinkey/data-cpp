@@ -148,12 +148,12 @@ namespace fgl {
 #pragma mark LinkedList implementation
 
 	template<typename T>
-	LinkedList<T>::LinkedList(const BaseType& list): BaseType(list) {
+	LinkedList<T>::LinkedList(const BaseType& list): BasicList<BaseType>(list) {
 		//
 	}
 
 	template<typename T>
-	LinkedList<T>::LinkedList(BaseType&& list): BaseType(list) {
+	LinkedList<T>::LinkedList(BaseType&& list): BasicList<BaseType>(list) {
 		//
 	}
 

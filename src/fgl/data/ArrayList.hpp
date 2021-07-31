@@ -163,12 +163,12 @@ namespace fgl {
 #pragma mark ArrayList implementation
 
 	template<typename T>
-	ArrayList<T>::ArrayList(const BaseType& list): BaseType(list) {
+	ArrayList<T>::ArrayList(const BaseType& list): BasicList<BaseType>(list) {
 		//
 	}
 
 	template<typename T>
-	ArrayList<T>::ArrayList(BaseType&& list): BaseType(list) {
+	ArrayList<T>::ArrayList(BaseType&& list): BasicList<BaseType>(list) {
 		//
 	}
 
