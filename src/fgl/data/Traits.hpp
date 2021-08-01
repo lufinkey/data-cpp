@@ -53,6 +53,12 @@ namespace fgl {
 	template<typename T>
 	struct is_collection : std::integral_constant<bool, has_const_iterator<T>::value && has_begin_end<T>::beg_value && has_begin_end<T>::end_value>
 	{ };
+
+	template<typename T>
+	constexpr auto is_collection_v = is_collection<T>::value;
+
+	template<typename T, typename Collection>
+	constexpr auto is_collection_of_v = is_collection_v<Collection> && std::is_same_v<T,typename Collection::value_type>;
 	
 	
 	
@@ -62,12 +68,10 @@ namespace fgl {
 		(std::is_convertible_v<typename std::iterator_traits<InputIterator>::iterator_category, std::input_iterator_tag>), InputIterator>::type;
 	
 	template<typename Collection>
-	using IsCollection = typename std::enable_if<
-		(is_collection<Collection>::value), Collection>::type;
+	using IsCollection = std::enable_if_t<(is_collection_v<Collection>), Collection>;
 	
 	template<typename T, typename Collection>
-	using IsCollectionOf = typename std::enable_if<
-		(is_collection<Collection>::value && std::is_same_v<T,typename Collection::value_type>), Collection>::type;
+	using IsCollectionOf = std::enable_if_t<(is_collection_of_v<T,Collection>), Collection>;
 
 
 
