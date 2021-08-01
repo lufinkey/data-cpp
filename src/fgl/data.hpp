@@ -16,7 +16,6 @@
 #include <fgl/data/Stringify.hpp>
 #include <fgl/data/Optional.hpp>
 #include <fgl/data/Iterator.hpp>
-#include <fgl/data/Variant.hpp>
 #include <fgl/error/Error.hpp>
 #include <fgl/time/DateTime.hpp>
 #include <fgl/util/PlatformChecks.hpp>
