@@ -175,8 +175,14 @@ namespace fgl {
 	template<typename Collection, typename Transform, typename _>
 	ArrayList<T>::ArrayList(Collection&& collection, Transform transform) {
 		reserve(collection.size());
-		for(auto& item : collection) {
-			pushBack(transform(item));
+		if constexpr(std::is_reference_v<decltype(*collection.begin())>) {
+			for(auto& item : collection) {
+				pushBack(transform(item));
+			}
+		} else {
+			for(auto item : collection) {
+				pushBack(transform(item));
+			}
 		}
 	}
 
@@ -437,7 +443,7 @@ namespace fgl {
 	template<typename Predicate>
 	ArrayList<T> ArrayList<T>::where(Predicate predicate) const {
 		std::list<T> newList;
-		for(auto& item : *this) {
+		for(const_reference item : *this) {
 			if(predicate(item)) {
 				newList.push_back(item);
 			}
@@ -453,7 +459,7 @@ namespace fgl {
 		using ReturnType = decltype(transform(front()));
 		ArrayList<ReturnType> newArray;
 		newArray.reserve(size());
-		for(auto& item : *this) {
+		for(reference item : *this) {
 			newArray.pushBack(transform(item));
 		}
 		return newArray;
@@ -465,7 +471,7 @@ namespace fgl {
 		using ReturnType = decltype(transform(front()));
 		ArrayList<ReturnType> newArray;
 		newArray.reserve(size());
-		for(auto& item : *this) {
+		for(const_reference item : *this) {
 			newArray.pushBack(transform(item));
 		}
 		return newArray;
@@ -504,7 +510,7 @@ namespace fgl {
 		}
 		return String::join({
 			"ArrayList<", stringify_type<T>(), ">[\n\t",
-			String::join(map([](const auto& item) -> String {
+			String::join(map([](const_reference item) -> String {
 				return stringify(item);
 			}), ",\n\t"), "\n]" });
 	}

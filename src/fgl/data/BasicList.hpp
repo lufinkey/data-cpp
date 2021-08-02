@@ -472,7 +472,7 @@ namespace fgl {
 	template<typename BaseClass>
 	template<typename T, typename Transform>
 	T BasicList<BaseClass>::reduce(T value, Transform transform) {
-		for(auto& item : *this) {
+		for(reference item : *this) {
 			value = transform(value, item);
 		}
 		return value;
@@ -481,7 +481,7 @@ namespace fgl {
 	template<typename BaseClass>
 	template<typename T, typename Transform>
 	T BasicList<BaseClass>::reduce(T value, Transform transform) const {
-		for(auto& item : *this) {
+		for(const_reference item : *this) {
 			value = transform(value, item);
 		}
 		return value;
@@ -495,7 +495,7 @@ namespace fgl {
 	template<typename Transform>
 	NSMutableArray* BasicList<BaseClass>::toNSArray(Transform transform) {
 		NSMutableArray* nsArray = [[NSMutableArray alloc] initWithCapacity:(NSUInteger)size()];
-		for(auto& item : *this) {
+		for(reference item : *this) {
 			[nsArray addObject:transform(item)];
 		}
 		return nsArray;
@@ -505,7 +505,7 @@ namespace fgl {
 	template<typename Transform>
 	NSMutableArray* BasicList<BaseClass>::toNSArray(Transform transform) const {
 		NSMutableArray* nsArray = [[NSMutableArray alloc] initWithCapacity:(NSUInteger)size()];
-		for(auto& item : *this) {
+		for(const_reference item : *this) {
 			[nsArray addObject:transform(item)];
 		}
 		return nsArray;
@@ -522,7 +522,7 @@ namespace fgl {
 	jobjectArray BasicList<BaseClass>::toJavaObjectArray(JNIEnv* env, jclass objectClass, Transform transform) {
 		jobjectArray javaArray = env->NewObjectArray((jsize)size(), objectClass, nullptr);
 		jsize i=0;
-		for(auto& item : *this) {
+		for(reference item : *this) {
 			env->SetObjectArrayElement(javaArray, i, transform(env, item));
 			i++;
 		}
@@ -534,7 +534,7 @@ namespace fgl {
 	jobjectArray BasicList<BaseClass>::toJavaObjectArray(JNIEnv* env, jclass objectClass, Transform transform) const {
 		jobjectArray javaArray = env->NewObjectArray((jsize)size(), objectClass, nullptr);
 		jsize i=0;
-		for(auto& item : *this) {
+		for(const_reference item : *this) {
 			env->SetObjectArrayElement(javaArray, i, transform(env, item));
 			i++;
 		}

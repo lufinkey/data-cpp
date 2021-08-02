@@ -160,8 +160,14 @@ namespace fgl {
 	template<typename T>
 	template<typename Collection, typename Transform, typename _>
 	LinkedList<T>::LinkedList(Collection&& collection, Transform transform) {
-		for(auto& item : collection) {
-			pushBack(transform(item));
+		if constexpr(std::is_reference_v<decltype(*collection.begin())>) {
+			for(auto& item : collection) {
+				pushBack(transform(item));
+			}
+		} else {
+			for(auto item : collection) {
+				pushBack(transform(item));
+			}
 		}
 	}
 
@@ -423,7 +429,7 @@ namespace fgl {
 	template<typename Predicate>
 	LinkedList<T> LinkedList<T>::where(Predicate predicate) const {
 		LinkedList<T> newList;
-		for(auto& item : *this) {
+		for(const_reference item : *this) {
 			if(predicate(item)) {
 				newList.pushBack(item);
 			}
@@ -438,7 +444,7 @@ namespace fgl {
 	auto LinkedList<T>::map(Transform transform) {
 		using ReturnType = decltype(transform(front()));
 		LinkedList<ReturnType> newList;
-		for(auto& item : *this) {
+		for(reference item : *this) {
 			newList.pushBack(transform(item));
 		}
 		return newList;
@@ -449,7 +455,7 @@ namespace fgl {
 	auto LinkedList<T>::map(Transform transform) const {
 		using ReturnType = decltype(transform(front()));
 		LinkedList<ReturnType> newList;
-		for(auto& item : *this) {
+		for(const_reference item : *this) {
 			newList.pushBack(transform(item));
 		}
 		return newList;
@@ -464,7 +470,7 @@ namespace fgl {
 		}
 		return String::join({
 			"LinkedList<", stringify_type<T>(), ">[\n\t",
-			String::join(map([](const auto& item) -> String {
+			String::join(map([](const_reference item) -> String {
 				return stringify(item);
 			}), ",\n\t"), "\n]" });
 	}
