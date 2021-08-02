@@ -56,11 +56,6 @@ namespace fgl {
 
 	template<typename T>
 	constexpr auto is_collection_v = is_collection<T>::value;
-
-	template<typename T, typename Collection>
-	constexpr auto is_collection_of_v = is_collection_v<Collection> && std::is_same_v<T,typename Collection::value_type>;
-	
-	
 	
 	
 	template<typename InputIterator>
@@ -68,10 +63,11 @@ namespace fgl {
 		(std::is_convertible_v<typename std::iterator_traits<InputIterator>::iterator_category, std::input_iterator_tag>), InputIterator>::type;
 	
 	template<typename Collection>
-	using IsCollection = std::enable_if_t<(is_collection_v<Collection>), Collection>;
+	using IsCollection = typename std::enable_if<(is_collection_v<Collection>), Collection>::type;
 	
 	template<typename T, typename Collection>
-	using IsCollectionOf = std::enable_if_t<(is_collection_of_v<T,Collection>), Collection>;
+	using IsCollectionOf = typename std::enable_if<
+		(is_collection_v<Collection> && std::is_same_v<T,typename Collection::value_type>), Collection>::type;
 
 
 
