@@ -511,7 +511,7 @@ namespace fgl {
 		return String::join({
 			"ArrayList<", stringify_type<T>(), ">[\n\t",
 			String::join(map([](const_reference item) -> String {
-				return stringify(item);
+				return stringify<T>(item);
 			}), ",\n\t"), "\n]" });
 	}
 	
