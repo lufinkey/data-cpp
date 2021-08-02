@@ -91,8 +91,8 @@ namespace fgl {
 		ArrayList& operator=(const BaseType&);
 		ArrayList& operator=(BaseType&&);
 		
-		inline reference operator[](size_type index);
-		inline const_reference operator[](size_type index) const;
+		constexpr reference operator[](size_type index) noexcept;
+		constexpr const_reference operator[](size_type index) const noexcept;
 		
 		inline Optional<T> maybeAt(size_type index) const;
 		inline OptionalRef<T> maybeRefAt(size_type index);
@@ -224,13 +224,13 @@ namespace fgl {
 
 	
 	template<typename T>
-	typename ArrayList<T>::reference ArrayList<T>::operator[](size_type index) {
+	constexpr typename ArrayList<T>::reference ArrayList<T>::operator[](size_type index) noexcept {
 		FGL_ASSERT(index >= 0 && index < size(), "index out of bounds");
 		return BaseType::operator[](index);
 	}
 	
 	template<typename T>
-	typename ArrayList<T>::const_reference ArrayList<T>::operator[](size_type index) const {
+	constexpr typename ArrayList<T>::const_reference ArrayList<T>::operator[](size_type index) const noexcept {
 		FGL_ASSERT(index >= 0 && index < size(), "index out of bounds");
 		return BaseType::operator[](index);
 	}
