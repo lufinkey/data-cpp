@@ -1322,7 +1322,13 @@ namespace fgl {
 	BasicString<Char> operator+(Num left, const BasicString<Char>& right) {
 		return BasicStringUtils::concat(left, right);
 	}
-	
+
+
+
+	template<typename Char>
+	auto operator<=>(const BasicString<Char>& left, const BasicString<Char>& right) {
+		return operator<=>((const std::basic_string<Char>&)left, (const std::basic_string<Char>&)right);
+	}
 	
 	
 	

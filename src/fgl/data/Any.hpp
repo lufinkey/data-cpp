@@ -53,7 +53,7 @@ namespace fgl {
 		Any(std::nullptr_t);
 		Any(Any&&);
 		Any(const Any&);
-		template<typename U, typename std::enable_if_t<(!std::is_same_v<std::decay_t<U>,Any>)>>
+		template<typename U, typename = std::enable_if_t<(!std::is_same_v<std::decay_t<U>,Any>)>>
 		Any(U&&);
 		~Any();
 		
@@ -146,7 +146,7 @@ namespace fgl {
 		return fgl::stringify_type<T>();
 	}
 	
-	template<typename U, typename std::enable_if_t<(!std::is_same_v<std::decay_t<U>,Any>)>>
+	template<typename U, typename _>
 	Any::Any(U&& value): _ptr(new Derived<typename std::decay<U>::type>(value)) {
 		//
 	}

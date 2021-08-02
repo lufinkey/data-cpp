@@ -444,6 +444,9 @@ namespace fgl {
 	template<typename Char, typename Num,
 		typename BasicStringUtils::string_type_convertable_with_number_or_enum<Char,Num>::null_type = nullptr>
 	inline BasicString<Char> operator+(Num left, const BasicString<Char>& right);
+
+	template<typename Char>
+	inline auto operator<=>(const BasicString<Char>& left, const BasicString<Char>& right);
 	
 	template<typename Char>
 	inline bool operator==(const BasicString<Char>& left, const BasicString<Char>& right);
