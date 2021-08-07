@@ -365,7 +365,7 @@ namespace fgl {
 		} else {
 			// parse based on string time zone
 			date = Date::fromGmTm(timeTm.value());
-			date.timePoint += tzInfo.offsetSeconds();
+			date.timePoint -= tzInfo.offsetSeconds();
 		}
 		// attach fractional seconds
 		if(!fracSecs.empty()) {
