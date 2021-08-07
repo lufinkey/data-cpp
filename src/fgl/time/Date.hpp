@@ -16,11 +16,20 @@
 #include <ctime>
 
 namespace fgl {
+	using TimePoint = std::chrono::system_clock::time_point;
+	using TimeInterval = std::chrono::system_clock::duration;
+
 	class Date {
 		friend class DateFormatter;
+		friend bool operator==(const Date&, const Date&);
+		friend bool operator!=(const Date&, const Date&);
+		friend bool operator<(const Date&, const Date&);
+		friend bool operator<=(const Date&, const Date&);
+		friend bool operator>(const Date&, const Date&);
+		friend bool operator>=(const Date&, const Date&);
+		friend Date operator+(const Date&, const TimeInterval&);
+		friend Date operator-(const Date&, const TimeInterval&);
 	public:
-		using TimePoint = std::chrono::system_clock::time_point;
-		
 		Date();
 		Date(time_t);
 		Date(TimePoint timePoint);
@@ -38,9 +47,48 @@ namespace fgl {
 		String toString() const;
 		String toGmtString(String format = "%Y-%m-%dT%H:%M:%S%.f%z") const;
 		String toLocalString(String format = "%Y-%m-%dT%H:%M:%S%.f%z") const;
-		String toISO8601String(TimeZone timeZone = TimeZone(0)) const;
+		String toISOString(TimeZone timeZone = TimeZone(0)) const;
+		
+		Date& operator+=(TimeInterval);
+		Date& operator-=(TimeInterval);
 		
 	private:
 		TimePoint timePoint;
 	};
+
+
+
+	#pragma mark Date implementation
+
+	inline bool operator==(const Date& left, const Date& right) {
+		return operator==(left.timePoint, right.timePoint);
+	}
+
+	inline bool operator!=(const Date& left, const Date& right) {
+		return operator!=(left.timePoint, right.timePoint);
+	}
+
+	inline bool operator<(const Date& left, const Date& right) {
+		return operator<(left.timePoint, right.timePoint);
+	}
+
+	inline bool operator<=(const Date& left, const Date& right) {
+		return operator<=(left.timePoint, right.timePoint);
+	}
+
+	inline bool operator>(const Date& left, const Date& right) {
+		return operator>(left.timePoint, right.timePoint);
+	}
+
+	inline bool operator>=(const Date& left, const Date& right) {
+		return operator>=(left.timePoint, right.timePoint);
+	}
+
+	inline Date operator+(const Date& left, const TimeInterval& right) {
+		return Date(left.timePoint + right);
+	}
+
+	inline Date operator-(const Date& left, const TimeInterval& right) {
+		return Date(left.timePoint - right);
+	}
 }

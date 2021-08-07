@@ -96,7 +96,7 @@ namespace fgl {
 		return std::chrono::system_clock::to_time_t(timePoint);
 	}
 
-	const Date::TimePoint& Date::getTimePoint() const {
+	const TimePoint& Date::getTimePoint() const {
 		return timePoint;
 	}
 
@@ -121,7 +121,7 @@ namespace fgl {
 		return df.stringFromDate(*this);
 	}
 
-	String Date::toISO8601String(TimeZone timeZone) const {
+	String Date::toISOString(TimeZone timeZone) const {
 		auto df = DateFormatter{
 			.format = "%Y-%m-%dT%H:%M:%S%.f%z",
 			.timeZone = timeZone
