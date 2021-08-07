@@ -667,13 +667,13 @@ namespace fgl {
 	
 	template<typename Char>
 	typename BasicString<Char>::reference BasicString<Char>::operator[](size_type index) {
-		FGL_ASSERT(index >= 0 && index < length(), "index out of bounds");
+		FGL_ASSERT(index >= 0 && index < (length() + 1), "index out of bounds");
 		return BaseType::operator[](index);
 	}
 
 	template<typename Char>
 	typename BasicString<Char>::const_reference BasicString<Char>::operator[](size_type index) const {
-		FGL_ASSERT(index >= 0 && index < length(), "index out of bounds");
+		FGL_ASSERT(index >= 0 && index < (length() + 1), "index out of bounds");
 		return BaseType::operator[](index);
 	}
 
