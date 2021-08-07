@@ -17,7 +17,7 @@
 #include <fgl/data/Optional.hpp>
 #include <fgl/data/Iterator.hpp>
 #include <fgl/error/Error.hpp>
-#include <fgl/time/DateTime.hpp>
+#include <fgl/time/Date.hpp>
 #include <fgl/util/PlatformChecks.hpp>
 #include <fgl/util/ObjectiveCpp.h>
 #include <fgl/util/JNI.h>
