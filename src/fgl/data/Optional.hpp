@@ -100,6 +100,10 @@ namespace fgl {
 		constexpr T valueOr(U&& defaultValue) const&;
 		template<typename U>
 		constexpr T valueOr(U&& defaultValue) &&;
+		template<typename U>
+		constexpr Optional<T> valueOrMaybe(U&& defaultValue) const&;
+		template<typename U>
+		constexpr Optional<T> valueOrMaybe(U&& defaultValue) &&;
 		
 		template<typename Transform>
 		inline auto map(Transform transform);
@@ -240,6 +244,24 @@ namespace fgl {
 	template<typename U>
 	constexpr T Optional<T>::valueOr(U&& defaultValue) && {
 		return value_or(defaultValue);
+	}
+
+	template<typename T>
+	template<typename U>
+	constexpr Optional<T> Optional<T>::valueOrMaybe(U&& defaultValue) const& {
+		if(has_value()) {
+			return value();
+		}
+		return defaultValue;
+	}
+
+	template<typename T>
+	template<typename U>
+	constexpr Optional<T> Optional<T>::valueOrMaybe(U&& defaultValue) && {
+		if(has_value()) {
+			return value();
+		}
+		return defaultValue;
 	}
 
 

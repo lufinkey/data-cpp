@@ -16,6 +16,7 @@
 #include <locale>
 #include <regex>
 #include <string>
+#include <string_view>
 #ifdef __OBJC__
 	#import <Foundation/Foundation.h>
 #endif
@@ -23,6 +24,9 @@
 namespace fgl {
 	template<typename T>
 	class LinkedList;
+
+	template<typename Char>
+	using BasicStringView = std::basic_string_view<Char>;
 
 	template<typename Char>
 	class BasicString: public std::basic_string<Char> {
@@ -322,6 +326,7 @@ namespace fgl {
 		inline BasicString<Char> replacing(size_type startIndex, size_type count, const std::basic_string<Char>& replace) const;
 
 		inline BasicString<Char> substring(size_type startIndex = 0, size_type count = npos) const;
+		inline BasicStringView<Char> viewSubstring(size_type startIndex, size_type count = npos) const;
 		
 		LinkedList<BasicString<Char>> split(Char delim) const;
 		LinkedList<BasicString<Char>> split(const Char* delim) const;
@@ -505,5 +510,7 @@ namespace fgl {
 	
 	
 	typedef BasicString<std::string::value_type> String;
+	typedef BasicStringView<std::string_view::value_type> StringView;
 	typedef BasicString<std::wstring::value_type> WideString;
+	typedef BasicStringView<std::wstring_view::value_type> WideStringView;
 }

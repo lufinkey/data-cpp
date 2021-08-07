@@ -888,6 +888,14 @@ namespace fgl {
 	BasicString<Char> BasicString<Char>::substring(size_type startIndex, size_type count) const {
 		return substr(startIndex, count);
 	}
+
+	template<typename Char>
+	BasicStringView<Char> BasicString<Char>::viewSubstring(size_type startIndex, size_type count) const {
+		FGL_ASSERT(startIndex <= size(), "startIndex must be within the range of the string");
+		auto start = std::next(this->begin(), startIndex);
+		auto end = ((startIndex + count) >= size()) ? this->end() : std::next(start, count);
+		return BasicStringView<Char>(start, end);
+	}
 	
 	template<typename Char>
 	LinkedList<BasicString<Char>> BasicString<Char>::split(Char delim) const {
