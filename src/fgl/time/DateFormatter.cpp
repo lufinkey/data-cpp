@@ -7,6 +7,7 @@
 //
 
 #include <fgl/time/DateFormatter.hpp>
+#include <cmath>
 
 namespace fgl {
 	struct DateStringToken {
@@ -113,6 +114,8 @@ namespace fgl {
 
 	Optional<struct tm> DateFormatter_tmFromFormat(String dateString, String formatString, String* fracSecs, DateStringTZ* tzInfo) {
 		struct tm timeTm;
+		std::memset(&timeTm, 0, sizeof(timeTm));
+		timeTm.tm_isdst = -1;
 		// parse fractional seconds if able
 		if(auto tokenOpt = DateFormatter_findTokenInFormat(formatString, 'f')) {
 			// parse fractional seconds %f token
@@ -289,29 +292,7 @@ namespace fgl {
 		// replace %z token with time zone
 		if(auto tokenOpt = DateFormatter_findTokenInFormat(formatString, 'z')) {
 			auto& token = tokenOpt.value();
-			String tzString;
-			tzString.reserve(5);
-			if(gmtOffsetSecs == 0) {
-				tzString = "Z";
-			} else {
-				if(gmtOffsetSecs < 0) {
-					tzString += '-';
-				} else {
-					tzString += '+';
-				}
-				long hours = gmtOffsetSecs / 3600;
-				long mins = (gmtOffsetSecs / 60) - (hours * 60);
-				auto hoursStr = std::to_string(hours);
-				while(hoursStr.length() < 2) {
-					hoursStr = "0" + hoursStr;
-				}
-				auto minsStr = std::to_string(mins);
-				while(minsStr.length() < 2) {
-					minsStr = "0" + minsStr;
-				}
-				tzString += hoursStr;
-				tzString += minsStr;
-			}
+			auto tzString = TimeZone::gmtOffsetString(gmtOffsetSecs);
 			formatString = formatString.substring(0, (token.string.begin() - formatString.data())) + tzString + token.string.end();
 		}
 		// replace %Z token with time zone name
@@ -329,21 +310,23 @@ namespace fgl {
 
 	String DateFormatter::stringFromDate(const Date& date) const {
 		long secondsFromGMT = timeZone.getSecondsFromGMT(date);
-		auto tzName = timeZone.name();
+		auto tzName = timeZone.identifier();
 		// get fractional seconds
 		auto secDiff = std::chrono::system_clock::from_time_t(date.toTimeVal()) - date.timePoint;
 		// get tm time
-		struct tm tmTime;
+		struct tm timeTm;
+		std::memset(&timeTm, 0, sizeof(timeTm));
+		timeTm.tm_isdst = -1;
 		if(timeZone.isCurrentAlways()) {
-			tmTime = date.toLocalTm();
+			timeTm = date.toLocalTm();
 		} else if(secondsFromGMT == 0) {
-			tmTime = date.toGmTm();
+			timeTm = date.toGmTm();
 		} else {
 			auto adjustedDate = date;
 			adjustedDate.timePoint += std::chrono::seconds(secondsFromGMT);
-			tmTime = adjustedDate.toGmTm();
+			timeTm = adjustedDate.toGmTm();
 		}
-		return DateFormatter_tmToString(tmTime, format, secDiff, secondsFromGMT, tzName);
+		return DateFormatter_tmToString(timeTm, format, secDiff, secondsFromGMT, tzName);
 	}
 
 	Optional<Date> DateFormatter::dateFromString(String dateString) const {

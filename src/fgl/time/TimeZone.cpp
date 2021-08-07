@@ -8,6 +8,7 @@
 
 #include <fgl/time/TimeZone.hpp>
 #include <fgl/time/Date.hpp>
+#include <cmath>
 
 namespace fgl {
 	bool TimeZone::use_current_tz::operator==(const use_current_tz& cmp) const {
@@ -37,14 +38,45 @@ namespace fgl {
 	}
 
 	long TimeZone::currentSecondsFromGMT(const Date& date) {
-		time_t now = std::chrono::system_clock::to_time_t(date.getTimePoint());
 		struct tm lcl;
-		lcl = *localtime_r(&now, &lcl);
+		memset(&lcl, 0, sizeof(lcl));
+		lcl.tm_isdst = -1;
+		
 		struct tm gmt;
+		memset(&gmt, 0, sizeof(gmt));
+		gmt.tm_isdst = -1;
+		
+		time_t now = std::chrono::system_clock::to_time_t(date.getTimePoint());
+		lcl = *localtime_r(&now, &lcl);
 		gmt = *gmtime_r(&now, &gmt);
 		time_t lcl_total = mktime(&lcl);
 		time_t gmt_total = mktime(&gmt);
 		return ((long)lcl_total - (long)gmt_total);
+	}
+
+	String TimeZone::gmtOffsetString(long gmtOffsetSeconds) {
+		long hours = gmtOffsetSeconds / 3600;
+		long mins = (long)std::round(((double)gmtOffsetSeconds / 60.0) - ((double)hours * 60));
+		if(hours == 0 && mins == 0) {
+			return "Z";
+		}
+		String str;
+		if(gmtOffsetSeconds < 0) {
+			str += '-';
+		} else {
+			str += '+';
+		}
+		auto hoursStr = std::to_string(hours);
+		while(hoursStr.length() < 2) {
+			hoursStr = "0" + hoursStr;
+		}
+		auto minsStr = std::to_string(mins);
+		while(minsStr.length() < 2) {
+			minsStr = "0" + minsStr;
+		}
+		str += hoursStr;
+		str += minsStr;
+		return str;
 	}
 
 
@@ -57,15 +89,35 @@ namespace fgl {
 		//
 	}
 
+	String TimeZone::identifier() const {
+		if(auto* gmtOffsetPtr = std::get_if<long>(&timeZone)) {
+			long gmtOffset = *gmtOffsetPtr;
+			auto offsetString = gmtOffsetString(gmtOffset);
+			if(offsetString == "Z") {
+				return "GMT";
+			}
+			return "GMT"+offsetString;
+		}
+		else if(auto* currentTz = std::get_if<use_current_tz>(&timeZone)) {
+			auto localTm = Date().toLocalTm();
+			std::stringstream ss;
+			ss << std::put_time(&localTm, "%Z");
+			return ss.str();
+		}
+		else {
+			assert(false);
+		}
+	}
+
 	bool TimeZone::isCurrentAlways() const {
 		return std::get_if<use_current_tz>(&timeZone) != nullptr;
 	}
 
 	long TimeZone::getSecondsFromGMT() const {
-		if(auto gmtOffset = std::get_if<long>(&timeZone)) {
-			return *gmtOffset;
+		if(auto* gmtOffsetPtr = std::get_if<long>(&timeZone)) {
+			return *gmtOffsetPtr;
 		}
-		else if(auto currentTz = std::get_if<use_current_tz>(&timeZone)) {
+		else if(auto* currentTz = std::get_if<use_current_tz>(&timeZone)) {
 			return currentSecondsFromGMT();
 		}
 		else {

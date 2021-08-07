@@ -29,11 +29,12 @@ namespace fgl {
 		
 		static long currentSecondsFromGMT();
 		static long currentSecondsFromGMT(const Date&);
+		static String gmtOffsetString(long gmtOffsetSeconds);
 		
 		//TimeZone(const std::chrono::time_zone*);
 		TimeZone(long gmtOffsetSeconds);
 		
-		String name() const;
+		String identifier() const;
 		bool isCurrentAlways() const;
 		
 		long getSecondsFromGMT() const;

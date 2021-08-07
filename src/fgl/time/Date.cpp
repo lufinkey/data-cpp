@@ -10,6 +10,7 @@
 #include <fgl/time/DateFormatter.hpp>
 #include <fgl/util/PlatformChecks.hpp>
 #include <cmath>
+#include <cstring>
 
 #ifndef _WIN32
 	#include <sys/time.h>
@@ -70,6 +71,8 @@ namespace fgl {
 	struct tm Date::toGmTm() const {
 		time_t timeVal = std::chrono::system_clock::to_time_t(timePoint);
 		struct tm timeTm;
+		std::memset(&timeTm, 0, sizeof(timeTm));
+		timeTm.tm_isdst = -1;
 		auto tmPtr = gmtime_r(&timeVal, &timeTm);
 		if(tmPtr == nullptr) {
 			throw std::runtime_error("Failed to convert date to GMT tm value");
@@ -80,6 +83,8 @@ namespace fgl {
 	struct tm Date::toLocalTm() const {
 		time_t timeVal = std::chrono::system_clock::to_time_t(timePoint);
 		struct tm timeTm;
+		std::memset(&timeTm, 0, sizeof(timeTm));
+		timeTm.tm_isdst = -1;
 		auto tmPtr = localtime_r(&timeVal, &timeTm);
 		if(tmPtr == nullptr) {
 			throw std::runtime_error("Failed to convert date to local tm value");
