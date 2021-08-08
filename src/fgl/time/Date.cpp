@@ -102,7 +102,7 @@ namespace fgl {
 
 
 	String Date::toString() const {
-		return toGmtString();
+		return toISOString();
 	}
 
 	String Date::toGmtString(String format) const {
