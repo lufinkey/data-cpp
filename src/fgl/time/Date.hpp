@@ -49,8 +49,14 @@ namespace fgl {
 		String toLocalString(String format = "%Y-%m-%dT%H:%M:%S%.f%z") const;
 		String toISOString(TimeZone timeZone = TimeZone(0)) const;
 		
-		Date& operator+=(TimeInterval);
-		Date& operator-=(TimeInterval);
+		inline Date& operator+=(TimeInterval interval) {
+			timePoint += interval;
+			return *this;
+		}
+		inline Date& operator-=(TimeInterval interval) {
+			timePoint -= interval;
+			return *this;
+		}
 		
 	private:
 		TimePoint timePoint;
