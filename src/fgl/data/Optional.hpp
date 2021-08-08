@@ -104,6 +104,8 @@ namespace fgl {
 		constexpr Optional<T> valueOrMaybe(U&& defaultValue) const&;
 		template<typename U>
 		constexpr Optional<T> valueOrMaybe(U&& defaultValue) &&;
+		template<typename Else>
+		Optional<T> valueElse(Else&& fallback) const;
 		
 		template<typename Transform>
 		inline auto map(Transform transform);
@@ -262,6 +264,15 @@ namespace fgl {
 			return value();
 		}
 		return defaultValue;
+	}
+
+	template<typename T>
+	template<typename Else>
+	Optional<T> Optional<T>::valueElse(Else&& fallback) const {
+		if(has_value()) {
+			return value();
+		}
+		return fallback();
 	}
 
 
