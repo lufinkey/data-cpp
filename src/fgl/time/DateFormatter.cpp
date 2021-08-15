@@ -375,6 +375,7 @@ namespace fgl {
 
 
 	TimeInterval parseISO8601Duration(const String& durationString) {
+		// code from https://stackoverflow.com/a/34532410/1846536
 		std::smatch match;
 		std::regex regex;
 		if(std::regex_match(durationString, std::regex("^((?!T).)*$"))) {
