@@ -23,4 +23,7 @@ namespace fgl {
 		String stringFromDate(const Date& date) const;
 		Optional<Date> dateFromString(String dateString) const;
 	};
+
+
+	TimeInterval parseISO8601Duration(const String& durationString);
 }

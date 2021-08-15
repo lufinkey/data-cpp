@@ -7,6 +7,7 @@
 //
 
 #include <fgl/time/DateFormatter.hpp>
+#include <regex>
 #include <cmath>
 
 namespace fgl {
@@ -369,5 +370,36 @@ namespace fgl {
 			}
 		}
 		return date;
+	}
+
+
+
+	TimeInterval parseISO8601Duration(const String& durationString) {
+		std::smatch match;
+		std::regex regex;
+		if(std::regex_match(durationString, std::regex("^((?!T).)*$"))) {
+			regex = std::regex("^P([[:d:]]+Y)?([[:d:]]+M)?([[:d:]]+D)?$");
+		} else {
+			regex = std::regex("^P([[:d:]]+Y)?([[:d:]]+M)?([[:d:]]+D)?T([[:d:]]+H)?([[:d:]]+M)?([[:d:]]+S|[[:d:]]+\\.[[:d:]]+S)?$");
+		}
+		std::regex_search(durationString, match, regex);
+		if (match.empty()) {
+			throw std::invalid_argument("\""+durationString+"\" is not a valid ISO8601 duration");
+		}
+		std::vector<double> vec = {0,0,0,0,0,0}; // years, months, days, hours, minutes, seconds
+		for (size_t i = 1; i < match.size(); ++i) {
+			if (match[i].matched) {
+				std::string str = match[i];
+				str.pop_back(); // remove last character.
+				vec[i-1] = std::stod(str);
+			}
+		}
+		double duration = (31556926.0 * vec[0]) +  // years
+		                  (2629743.83 * vec[1]) +  // months
+		                  (86400.0 * vec[2]) +  // days
+		                  (3600.0 * vec[3]) +  // hours
+		                  (60.0 * vec[4]) +  // minutes
+		                  (1.0 * vec[5]); // seconds
+		return std::chrono::seconds((long long)duration);
 	}
 }
