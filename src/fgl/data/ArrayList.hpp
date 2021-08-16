@@ -73,6 +73,8 @@ namespace fgl {
 		using BaseType::erase;
 		using BaseType::clear;
 		
+		static constexpr size_type npos = (size_type)-1;
+		
 		ArrayList(const BaseType&);
 		ArrayList(BaseType&&);
 		template<typename Collection, typename Transform, typename = IsCollection<std::remove_reference_t<Collection>>>
@@ -97,6 +99,8 @@ namespace fgl {
 		inline Optional<T> maybeAt(size_type index) const;
 		inline OptionalRef<T> maybeRefAt(size_type index);
 		inline OptionalRef<const T> maybeRefAt(size_type index) const;
+		
+		ArrayList<T> slice(size_type offset = 0, size_type count = npos) const;
 		
 		inline void shrinkToFit();
 		
@@ -265,6 +269,18 @@ namespace fgl {
 			return std::nullopt;
 		}
 		return std::ref<const T>(BaseType::operator[](index));
+	}
+
+
+
+	template<typename T>
+	ArrayList<T> ArrayList<T>::slice(size_type offset, size_type count) const {
+		ArrayList<T> sublist;
+		sublist.reserve(std::min(size(), count));
+		for(size_t i=offset; i<size() && sublist.size() < count; i++) {
+			sublist.pushBack(BaseType::operator[](offset));
+		}
+		return sublist;
 	}
 	
 	
