@@ -17,15 +17,6 @@
 #endif
 
 namespace fgl {
-	Date::Date(std::chrono::system_clock::time_point timePoint)
-	: timePoint(timePoint) {
-		//
-	}
-
-	Date Date::fromTimeVal(time_t timeVal) {
-		return Date(std::chrono::system_clock::from_time_t(timeVal));
-	}
-
 	Date Date::fromGmTm(struct tm timeVal) {
 		#ifdef _WIN32
 			return Date::fromTimeVal(_mkgmtime(&timeVal));
@@ -42,28 +33,37 @@ namespace fgl {
 		#endif
 	}
 
-	Optional<Date> Date::fromGmtString(String dateString, String format) {
+	Date Date::fromGmtString(String dateString, String format) {
 		auto df = DateFormatter{
 			.format = format,
 			.timeZone = TimeZone(0)
 		};
-		return df.dateFromString(dateString);
+		return df.dateFromString(dateString)
+			.valueOrThrow(
+				std::invalid_argument(
+					String::join({"failed to parse GMT date string \"",dateString,"\" with format \"",format,"\""})));
 	}
 
-	Optional<Date> Date::fromLocalString(String dateString, String format) {
+	Date Date::fromLocalString(String dateString, String format) {
 		auto df = DateFormatter{
 			.format = format,
 			.timeZone = TimeZone::currentAlways()
 		};
-		return df.dateFromString(dateString);
+		return df.dateFromString(dateString)
+			.valueOrThrow(
+				std::invalid_argument(
+					String::join({"failed to parse local date string \"",dateString,"\" with format \"",format,"\""})));
 	}
 
-	Optional<Date> Date::fromISOString(String dateString, TimeZone timeZone) {
+	Date Date::fromISOString(String dateString, TimeZone timeZone) {
 		auto df = DateFormatter{
 			.format = "%Y-%m-%dT%H:%M:%S%z",
 			.timeZone = timeZone
 		};
-		return df.dateFromString(dateString);
+		return df.dateFromString(dateString)
+			.valueOrThrow(
+				  std::invalid_argument(
+					  String::join({"failed to parse ISO date string \"",dateString,"\""})));
 	}
 
 
@@ -92,14 +92,6 @@ namespace fgl {
 		return *tmPtr;
 	}
 
-	time_t Date::toTimeVal() const {
-		return std::chrono::system_clock::to_time_t(timePoint);
-	}
-
-	const TimePoint& Date::getTimePoint() const {
-		return timePoint;
-	}
-
 
 	String Date::toString() const {
 		return toISOString();
@@ -121,10 +113,10 @@ namespace fgl {
 		return df.stringFromDate(*this);
 	}
 
-	String Date::toISOString(TimeZone timeZone) const {
+	String Date::toISOString() const {
 		auto df = DateFormatter{
 			.format = "%Y-%m-%dT%H:%M:%S%.f%z",
-			.timeZone = timeZone
+			.timeZone = TimeZone(0)
 		};
 		return df.stringFromDate(*this);
 	}

@@ -117,7 +117,7 @@ namespace fgl {
 		struct tm timeTm;
 		std::memset(&timeTm, 0, sizeof(timeTm));
 		timeTm.tm_isdst = -1;
-		// parse fractional seconds if able
+		// parse fractional seconds if specified
 		if(auto tokenOpt = DateFormatter_findTokenInFormat(formatString, 'f')) {
 			// parse fractional seconds %f token
 			auto& token = tokenOpt.value();
@@ -156,6 +156,7 @@ namespace fgl {
 				dateString = dateString.substring(0, (endParse - dateString.data())) + parseIt;
 			}
 		}
+		// otherwise, parse fractional seconds after seconds or T (for compatability)
 		else if(auto tokenOpt = DateFormatter_findTokenInFormat(formatString, 'S')
 				.valueOrMaybe(DateFormatter_findTokenInFormat(formatString, 'T'))) {
 			// look for fractional seconds after token
@@ -191,7 +192,7 @@ namespace fgl {
 				}
 			}
 		}
-		// parse time zone if able
+		// parse time zone if specified
 		if(auto tokenOpt = DateFormatter_findTokenInFormat(formatString, 'z')) {
 			// parse time zone %z token
 			auto& token = tokenOpt.value();

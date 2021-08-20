@@ -320,16 +320,7 @@ namespace fgl {
 	template<typename Error>
 	constexpr T& Optional<T>::valueOrThrow(Error&& error) & {
 		if(has_value()) {
-			return value();
-		}
-		throw error;
-	}
-
-	template<typename T>
-	template<typename Error>
-	constexpr const T& Optional<T>::valueOrThrow(Error&& error) const& {
-		if(has_value()) {
-			return value();
+			return std::forward<T>(value());
 		}
 		throw error;
 	}
@@ -338,7 +329,16 @@ namespace fgl {
 	template<typename Error>
 	constexpr T&& Optional<T>::valueOrThrow(Error&& error) && {
 		if(has_value()) {
-			return value();
+			return std::forward<T>(value());
+		}
+		throw error;
+	}
+
+	template<typename T>
+	template<typename Error>
+	constexpr const T& Optional<T>::valueOrThrow(Error&& error) const& {
+		if(has_value()) {
+			return std::forward<T>(value());
 		}
 		throw error;
 	}
@@ -347,7 +347,7 @@ namespace fgl {
 	template<typename Error>
 	constexpr const T&& Optional<T>::valueOrThrow(Error&& error) const&& {
 		if(has_value()) {
-			return value();
+			return std::forward<T>(value());
 		}
 		throw error;
 	}
