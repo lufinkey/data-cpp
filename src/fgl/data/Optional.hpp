@@ -112,6 +112,14 @@ namespace fgl {
 		constexpr Optional<T> valueElseMaybe(Else&& fallback) const&;
 		template<typename Else>
 		constexpr Optional<T> valueElseMaybe(Else&& fallback) &&;
+		template<typename Error>
+		constexpr T& valueOrThrow(Error&& error) &;
+		template<typename Error>
+		constexpr const T& valueOrThrow(Error&& error) const&;
+		template<typename Error>
+		constexpr T&& valueOrThrow(Error&& error) &&;
+		template<typename Error>
+		constexpr const T&& valueOrThrow(Error&& error) const&&;
 		
 		template<typename Transform>
 		inline auto map(Transform transform);
@@ -306,6 +314,42 @@ namespace fgl {
 			return value();
 		}
 		return fallback();
+	}
+
+	template<typename T>
+	template<typename Error>
+	constexpr T& Optional<T>::valueOrThrow(Error&& error) & {
+		if(has_value()) {
+			return value();
+		}
+		throw error;
+	}
+
+	template<typename T>
+	template<typename Error>
+	constexpr const T& Optional<T>::valueOrThrow(Error&& error) const& {
+		if(has_value()) {
+			return value();
+		}
+		throw error;
+	}
+
+	template<typename T>
+	template<typename Error>
+	constexpr T&& Optional<T>::valueOrThrow(Error&& error) && {
+		if(has_value()) {
+			return value();
+		}
+		throw error;
+	}
+
+	template<typename T>
+	template<typename Error>
+	constexpr const T&& Optional<T>::valueOrThrow(Error&& error) const&& {
+		if(has_value()) {
+			return value();
+		}
+		throw error;
 	}
 
 
