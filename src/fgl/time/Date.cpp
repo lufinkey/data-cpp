@@ -16,8 +16,6 @@
 	#include <sys/time.h>
 #endif
 
-#define DATE_TM_BASEYEAR 1900
-
 namespace fgl {
 	Date::Date()
 	: Date(std::chrono::system_clock::now()) {
@@ -29,24 +27,23 @@ namespace fgl {
 		//
 	}
 
-	Date::Date(time_t timeVal)
-	: Date(std::chrono::system_clock::from_time_t(timeVal)) {
-		//
+	Date Date::fromTimeVal(time_t timeVal) {
+		return Date(std::chrono::system_clock::from_time_t(timeVal));
 	}
 
 	Date Date::fromGmTm(struct tm timeVal) {
 		#ifdef _WIN32
-			return Date(_mkgmtime(&timeVal));
+			return Date::fromTimeVal(_mkgmtime(&timeVal));
 		#else
-			return Date(timegm(&timeVal));
+			return Date::fromTimeVal(timegm(&timeVal));
 		#endif
 	}
 
 	Date Date::fromLocalTm(struct tm timeVal) {
 		#ifdef _WIN32
-			return Date(mktime(&timeVal));
+			return Date::fromTimeVal(mktime(&timeVal));
 		#else
-			return Date(timelocal(&timeVal));
+			return Date::fromTimeVal(timelocal(&timeVal));
 		#endif
 	}
 

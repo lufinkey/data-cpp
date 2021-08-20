@@ -31,9 +31,9 @@ namespace fgl {
 		friend Date operator-(const Date&, const TimeInterval&);
 	public:
 		Date();
-		Date(time_t);
 		Date(TimePoint timePoint);
 		
+		static Date fromTimeVal(time_t);
 		static Date fromGmTm(struct tm);
 		static Date fromLocalTm(struct tm);
 		static Optional<Date> fromGmtString(String dateString, String format);
