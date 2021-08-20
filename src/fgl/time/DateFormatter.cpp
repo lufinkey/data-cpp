@@ -337,20 +337,22 @@ namespace fgl {
 		if(!timeTm) {
 			return std::nullopt;
 		}
-		Date date;
-		// parse based on time zone
-		if(tzInfo.empty()) {
-			// parse based on timeZone property
-			if(timeZone.isCurrentAlways()) {
-				date = Date::fromLocalTm(timeTm.value());
+		Date date = ([&]() {
+			// parse based on time zone
+			if(tzInfo.empty()) {
+				// parse based on timeZone property
+				if(timeZone.isCurrentAlways()) {
+					return Date::fromLocalTm(timeTm.value());
+				} else {
+					return Date::fromGmTm(timeTm.value());
+				}
 			} else {
-				date = Date::fromGmTm(timeTm.value());
+				// parse based on string time zone
+				auto date = Date::fromGmTm(timeTm.value());
+				date.timePoint -= tzInfo.offsetSeconds();
+				return date;
 			}
-		} else {
-			// parse based on string time zone
-			date = Date::fromGmTm(timeTm.value());
-			date.timePoint -= tzInfo.offsetSeconds();
-		}
+		})();
 		// attach fractional seconds
 		if(!fracSecs.empty()) {
 			while(fracSecs.length() < 9 && (fracSecs.length() % 3) != 0) {

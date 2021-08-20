@@ -17,18 +17,9 @@
 #endif
 
 namespace fgl {
-	Date::Date()
-	: Date(std::chrono::system_clock::now()) {
-		//
-	}
-
 	Date::Date(std::chrono::system_clock::time_point timePoint)
 	: timePoint(timePoint) {
 		//
-	}
-
-	Date Date::now() {
-		return Date(std::chrono::system_clock::now());
 	}
 
 	Date Date::fromTimeVal(time_t timeVal) {
@@ -73,16 +64,6 @@ namespace fgl {
 			.timeZone = timeZone
 		};
 		return df.dateFromString(dateString);
-	}
-
-
-
-	bool Date::isEpoch() const {
-		return (Date::fromTimeVal(0) == *this);
-	}
-
-	TimeInterval Date::timeSinceEpoch() const {
-		return timePoint.time_since_epoch();
 	}
 
 

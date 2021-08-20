@@ -141,7 +141,7 @@ namespace fgl_data_cpp_tests {
 			{ "test", "what" }
 		};
 		
-		println("current date ISO string: "+Date().toISOString());
+		println("current date ISO string: "+Date::now().toISOString());
 
 		println("Finished running data-cpp tests");
 	}

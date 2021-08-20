@@ -30,10 +30,10 @@ namespace fgl {
 		friend Date operator+(const Date&, const TimeInterval&);
 		friend Date operator-(const Date&, const TimeInterval&);
 	public:
-		Date();
 		Date(TimePoint timePoint);
 		
-		static Date now();
+		inline static Date now();
+		inline static Date epoch();
 		static Date fromTimeVal(time_t);
 		static Date fromGmTm(struct tm);
 		static Date fromLocalTm(struct tm);
@@ -41,8 +41,8 @@ namespace fgl {
 		static Optional<Date> fromLocalString(String dateString, String format);
 		static Optional<Date> fromISOString(String dateString, TimeZone timeZone = TimeZone(0));
 		
-		bool isEpoch() const;
-		TimeInterval timeSinceEpoch() const;
+		inline bool isEpoch() const;
+		inline TimeInterval timeSinceEpoch() const;
 		
 		struct tm toGmTm() const;
 		struct tm toLocalTm() const;
@@ -70,6 +70,22 @@ namespace fgl {
 
 
 	#pragma mark Date implementation
+
+	Date Date::now() {
+		return Date(std::chrono::system_clock::now());
+	}
+
+	Date Date::epoch() {
+		return Date(std::chrono::system_clock::time_point());
+	}
+
+	bool Date::isEpoch() const {
+		return (epoch() == *this);
+	}
+
+	TimeInterval Date::timeSinceEpoch() const {
+		return timePoint.time_since_epoch();
+	}
 
 	inline bool operator==(const Date& left, const Date& right) {
 		return operator==(left.timePoint, right.timePoint);

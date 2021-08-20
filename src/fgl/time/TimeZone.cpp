@@ -34,7 +34,7 @@ namespace fgl {
 
 
 	long TimeZone::currentSecondsFromGMT() {
-		return currentSecondsFromGMT(Date());
+		return currentSecondsFromGMT(Date::now());
 	}
 
 	long TimeZone::currentSecondsFromGMT(const Date& date) {
@@ -99,7 +99,7 @@ namespace fgl {
 			return "GMT"+offsetString;
 		}
 		else if(auto* currentTz = std::get_if<use_current_tz>(&timeZone)) {
-			auto localTm = Date().toLocalTm();
+			auto localTm = Date::now().toLocalTm();
 			std::stringstream ss;
 			ss << std::put_time(&localTm, "%Z");
 			return ss.str();
