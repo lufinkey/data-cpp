@@ -40,6 +40,7 @@ namespace fgl {
 		static Date fromGmtString(String dateString, String format);
 		static Date fromLocalString(String dateString, String format);
 		static Date fromISOString(String dateString, TimeZone timeZone = TimeZone(0));
+		static Optional<Date> maybeFromISOString(String dateString, TimeZone timeZone = TimeZone(0));
 		
 		inline bool isEpoch() const;
 		inline TimeInterval timeSinceEpoch() const;
@@ -52,7 +53,7 @@ namespace fgl {
 		String toString() const;
 		String toGmtString(String format = "%Y-%m-%dT%H:%M:%S%.f%z") const;
 		String toLocalString(String format = "%Y-%m-%dT%H:%M:%S%.f%z") const;
-		String toISOString() const;
+		String toISOString(TimeZone timeZone = TimeZone(0)) const;
 		
 		inline Date& operator+=(TimeInterval interval);
 		inline Date& operator-=(TimeInterval interval);

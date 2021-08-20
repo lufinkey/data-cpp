@@ -56,14 +56,18 @@ namespace fgl {
 	}
 
 	Date Date::fromISOString(String dateString, TimeZone timeZone) {
+		return maybeFromISOString(dateString, timeZone)
+			.valueOrThrow(
+				  std::invalid_argument(
+					  String::join({"failed to parse ISO date string \"",dateString,"\""})));
+	}
+
+	Optional<Date> Date::maybeFromISOString(String dateString, TimeZone timeZone) {
 		auto df = DateFormatter{
 			.format = "%Y-%m-%dT%H:%M:%S%z",
 			.timeZone = timeZone
 		};
-		return df.dateFromString(dateString)
-			.valueOrThrow(
-				  std::invalid_argument(
-					  String::join({"failed to parse ISO date string \"",dateString,"\""})));
+		return df.dateFromString(dateString);
 	}
 
 
@@ -113,10 +117,10 @@ namespace fgl {
 		return df.stringFromDate(*this);
 	}
 
-	String Date::toISOString() const {
+	String Date::toISOString(TimeZone timeZone) const {
 		auto df = DateFormatter{
 			.format = "%Y-%m-%dT%H:%M:%S%.f%z",
-			.timeZone = TimeZone(0)
+			.timeZone = timeZone
 		};
 		return df.stringFromDate(*this);
 	}
