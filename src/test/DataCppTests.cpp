@@ -32,7 +32,7 @@ namespace fgl_data_cpp_tests {
 		});
 		println((String)"mapped to " + stringify_type<decltype(testNewMap)>());
 
-		auto testNewMap2 = testMap.map([](auto key, auto& value) {
+		auto testNewMap2 = testMap.map([](auto& pair) {
 			return make_pair( (int)5, String("what's up yoooo") );
 		});
 		println((String)"mapped to " + stringify_type<decltype(testNewMap2)>());
