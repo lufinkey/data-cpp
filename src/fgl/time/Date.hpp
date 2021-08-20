@@ -41,6 +41,9 @@ namespace fgl {
 		static Optional<Date> fromLocalString(String dateString, String format);
 		static Optional<Date> fromISOString(String dateString, TimeZone timeZone = TimeZone(0));
 		
+		bool isEpoch() const;
+		TimeInterval timeSinceEpoch() const;
+		
 		struct tm toGmTm() const;
 		struct tm toLocalTm() const;
 		time_t toTimeVal() const;

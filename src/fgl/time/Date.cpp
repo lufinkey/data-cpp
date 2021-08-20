@@ -77,6 +77,16 @@ namespace fgl {
 
 
 
+	bool Date::isEpoch() const {
+		return (Date::fromTimeVal(0) == *this);
+	}
+
+	TimeInterval Date::timeSinceEpoch() const {
+		return timePoint.time_since_epoch();
+	}
+
+
+
 	struct tm Date::toGmTm() const {
 		time_t timeVal = std::chrono::system_clock::to_time_t(timePoint);
 		struct tm timeTm;
