@@ -69,7 +69,7 @@ namespace fgl {
 
 	Optional<Date> Date::fromISOString(String dateString, TimeZone timeZone) {
 		auto df = DateFormatter{
-			.format = "%Y-%m-%dT%H:%M:%S%.f%z",
+			.format = "%Y-%m-%dT%H:%M:%S%z",
 			.timeZone = timeZone
 		};
 		return df.dateFromString(dateString);
