@@ -39,6 +39,7 @@ namespace fgl {
 		static Date fromLocalTm(struct tm);
 		static Optional<Date> fromGmtString(String dateString, String format);
 		static Optional<Date> fromLocalString(String dateString, String format);
+		static Optional<Date> fromISOString(String dateString, TimeZone timeZone = TimeZone(0));
 		
 		struct tm toGmTm() const;
 		struct tm toLocalTm() const;

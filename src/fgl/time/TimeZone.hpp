@@ -32,7 +32,7 @@ namespace fgl {
 		static String gmtOffsetString(long gmtOffsetSeconds);
 		
 		//TimeZone(const std::chrono::time_zone*);
-		TimeZone(long gmtOffsetSeconds);
+		explicit TimeZone(long gmtOffsetSeconds);
 		
 		String identifier() const;
 		bool isCurrentAlways() const;

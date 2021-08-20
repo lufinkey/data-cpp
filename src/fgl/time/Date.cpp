@@ -67,6 +67,14 @@ namespace fgl {
 		return df.dateFromString(dateString);
 	}
 
+	Optional<Date> Date::fromISOString(String dateString, TimeZone timeZone) {
+		auto df = DateFormatter{
+			.format = "%Y-%m-%dT%H:%M:%S%.f%z",
+			.timeZone = timeZone
+		};
+		return df.dateFromString(dateString);
+	}
+
 
 
 	struct tm Date::toGmTm() const {
