@@ -314,7 +314,7 @@ namespace fgl {
 		long secondsFromGMT = timeZone.getSecondsFromGMT(date);
 		auto tzName = timeZone.identifier();
 		// get fractional seconds
-		auto secDiff = date.timePoint - std::chrono::system_clock::from_time_t(date.toTimeVal());
+		auto secDiff = date.timePoint - std::chrono::system_clock::from_time_t(date.toCTime());
 		// get tm time
 		struct tm timeTm;
 		std::memset(&timeTm, 0, sizeof(timeTm));

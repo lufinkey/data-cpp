@@ -34,7 +34,7 @@ namespace fgl {
 		
 		inline static Date now();
 		inline static Date epoch();
-		inline static Date fromTimeVal(time_t);
+		inline static Date fromCTime(time_t);
 		static Date fromGmTm(struct tm);
 		static Date fromLocalTm(struct tm);
 		static Date fromGmtString(String dateString, String format);
@@ -47,7 +47,7 @@ namespace fgl {
 		
 		struct tm toGmTm() const;
 		struct tm toLocalTm() const;
-		inline time_t toTimeVal() const;
+		inline time_t toCTime() const;
 		inline const TimePoint& getTimePoint() const;
 		
 		String toString() const;
@@ -74,7 +74,7 @@ namespace fgl {
 		return Date(std::chrono::system_clock::time_point());
 	}
 
-	Date Date::fromTimeVal(time_t timeVal) {
+	Date Date::fromCTime(time_t timeVal) {
 		return Date(std::chrono::system_clock::from_time_t(timeVal));
 	}
 
@@ -92,7 +92,7 @@ namespace fgl {
 		return timePoint.time_since_epoch();
 	}
 
-	time_t Date::toTimeVal() const {
+	time_t Date::toCTime() const {
 		return std::chrono::system_clock::to_time_t(timePoint);
 	}
 

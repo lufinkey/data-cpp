@@ -19,17 +19,17 @@
 namespace fgl {
 	Date Date::fromGmTm(struct tm timeVal) {
 		#ifdef _WIN32
-			return Date::fromTimeVal(_mkgmtime(&timeVal));
+			return Date::fromCTime(_mkgmtime(&timeVal));
 		#else
-			return Date::fromTimeVal(timegm(&timeVal));
+			return Date::fromCTime(timegm(&timeVal));
 		#endif
 	}
 
 	Date Date::fromLocalTm(struct tm timeVal) {
 		#ifdef _WIN32
-			return Date::fromTimeVal(mktime(&timeVal));
+			return Date::fromCTime(mktime(&timeVal));
 		#else
-			return Date::fromTimeVal(timelocal(&timeVal));
+			return Date::fromCTime(timelocal(&timeVal));
 		#endif
 	}
 
