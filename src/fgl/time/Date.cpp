@@ -27,6 +27,10 @@ namespace fgl {
 		//
 	}
 
+	Date Date::now() {
+		return Date(std::chrono::system_clock::now());
+	}
+
 	Date Date::fromTimeVal(time_t timeVal) {
 		return Date(std::chrono::system_clock::from_time_t(timeVal));
 	}

@@ -33,6 +33,7 @@ namespace fgl {
 		Date();
 		Date(TimePoint timePoint);
 		
+		static Date now();
 		static Date fromTimeVal(time_t);
 		static Date fromGmTm(struct tm);
 		static Date fromLocalTm(struct tm);
