@@ -257,14 +257,14 @@ namespace fgl {
 			size_t fullDigitsCount = std::to_string(std::chrono::system_clock::duration::period::den - 1).length();
 			auto fracSecsStr = std::to_string(fracSecs.count());
 			if(fracSecsStr.length() < fullDigitsCount) {
-				fracSecsStr = std::string('0', fullDigitsCount - fracSecsStr.length()) + fracSecsStr;
+				fracSecsStr = std::string(fullDigitsCount - fracSecsStr.length(), '0') + fracSecsStr;
 			}
 			auto digitsCount = token.fixedDigits();
 			auto decimalCount = token.fixedDecimals();
 			bool hasDecimal = false;
 			if(digitsCount) {
 				if(fracSecsStr.length() < digitsCount.value()) {
-					fracSecsStr += std::string('0', digitsCount.value() - fracSecsStr.length());
+					fracSecsStr += std::string(digitsCount.value() - fracSecsStr.length(), '0');
 				}
 				else if(fracSecsStr.length() > digitsCount.value()) {
 					fracSecsStr = fracSecsStr.substr(0, digitsCount.value());
@@ -273,7 +273,7 @@ namespace fgl {
 			else if(decimalCount) {
 				hasDecimal = true;
 				if(fracSecsStr.length() < decimalCount.value()) {
-					fracSecsStr += std::string('0', decimalCount.value() - fracSecsStr.length());
+					fracSecsStr += std::string(decimalCount.value() - fracSecsStr.length(), '0');
 				}
 				else if(fracSecsStr.length() > decimalCount.value()) {
 					fracSecsStr = fracSecsStr.substr(0, decimalCount.value());
@@ -283,7 +283,7 @@ namespace fgl {
 				hasDecimal = token.hasDecimal();
 				size_t maxDecs = 3;
 				if(fracSecsStr.length() < maxDecs) {
-					fracSecsStr += std::string('0', maxDecs - fracSecsStr.length());
+					fracSecsStr += std::string(maxDecs - fracSecsStr.length(), '0');
 				}
 				else if(fracSecsStr.length() > maxDecs) {
 					fracSecsStr = fracSecsStr.substr(0, maxDecs);
