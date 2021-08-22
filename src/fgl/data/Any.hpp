@@ -154,31 +154,100 @@ namespace fgl {
 	template<typename U>
 	U& Any::as() & {
 		using T = typename std::decay<U>::type;
-		if(_ptr == nullptr || typeid(T) != _ptr->type()) {
+		if(_ptr == nullptr) {
 			throw std::bad_any_cast();
 		}
-		auto derived = static_cast<Derived<T>*>(_ptr);
-		return derived->value;
+		if(_ptr->type() == typeid(T)) {
+			auto derived = static_cast<Derived<T>*>(_ptr);
+			return derived->value;
+		}
+		if(_ptr->type() == typeid(std::any)) {
+			auto derived = static_cast<Derived<std::any>*>(_ptr);
+			return std::any_cast<U>(derived->value);
+		}
+		if constexpr(is_optional_v<T>) {
+			using ValueType = typename Optionalized<T>::value_type;
+			if(_ptr->type() == typeid(ValueType)) {
+				auto derived = static_cast<Derived<ValueType>*>(_ptr);
+				return derived->value;
+			}
+		}
+		if(_ptr->type() == typeid(Optional<T>)) {
+			if(_ptr->type() == typeid(Optional<T>)) {
+				auto derived = static_cast<Derived<Optional<T>>*>(_ptr);
+				if(!derived->value.has_value()) {
+					throw std::bad_any_cast();
+				}
+				return derived->value.value();
+			}
+		}
+		throw std::bad_any_cast();
 	}
 
 	template<typename U>
 	U&& Any::as() && {
 		using T = typename std::decay<U>::type;
-		if(_ptr == nullptr || typeid(T) != _ptr->type()) {
+		if(_ptr == nullptr) {
 			throw std::bad_any_cast();
 		}
-		auto derived = static_cast<Derived<T>*>(_ptr);
-		return std::move(derived->value);
+		if(_ptr->type() == typeid(T)) {
+			auto derived = static_cast<Derived<T>*>(_ptr);
+			return std::move(derived->value);
+		}
+		if(_ptr->type() == typeid(std::any)) {
+			auto derived = static_cast<Derived<std::any>*>(_ptr);
+			return std::move(std::any_cast<U>(derived->value));
+		}
+		if constexpr(is_optional_v<T>) {
+			using ValueType = typename Optionalized<T>::value_type;
+			if(_ptr->type() == typeid(ValueType)) {
+				auto derived = static_cast<Derived<ValueType>*>(_ptr);
+				return std::move(derived->value);
+			}
+		}
+		if(_ptr->type() == typeid(Optional<T>)) {
+			if(_ptr->type() == typeid(Optional<T>)) {
+				auto derived = static_cast<Derived<Optional<T>>*>(_ptr);
+				if(!derived->value.has_value()) {
+					throw std::bad_any_cast();
+				}
+				return std::move(derived->value.value());
+			}
+		}
+		throw std::bad_any_cast();
 	}
 	
 	template<typename U>
 	const U& Any::as() const& {
 		using T = typename std::decay<U>::type;
-		if(_ptr == nullptr || typeid(T) != _ptr->type()) {
+		if(_ptr == nullptr) {
 			throw std::bad_any_cast();
 		}
-		auto derived = static_cast<Derived<T>*>(_ptr);
-		return derived->value;
+		if(_ptr->type() == typeid(T)) {
+			auto derived = static_cast<Derived<T>*>(_ptr);
+			return derived->value;
+		}
+		if(_ptr->type() == typeid(std::any)) {
+			auto derived = static_cast<Derived<std::any>*>(_ptr);
+			return std::any_cast<U>(derived->value);
+		}
+		if constexpr(is_optional_v<T>) {
+			using ValueType = typename Optionalized<T>::value_type;
+			if(_ptr->type() == typeid(ValueType)) {
+				auto derived = static_cast<Derived<ValueType>*>(_ptr);
+				return derived->value;
+			}
+		}
+		if(_ptr->type() == typeid(Optional<T>)) {
+			if(_ptr->type() == typeid(Optional<T>)) {
+				auto derived = static_cast<Derived<Optional<T>>*>(_ptr);
+				if(!derived->value.has_value()) {
+					throw std::bad_any_cast();
+				}
+				return derived->value.value();
+			}
+		}
+		throw std::bad_any_cast();
 	}
 
 	template<typename U>
@@ -187,14 +256,32 @@ namespace fgl {
 		if(_ptr == nullptr) {
 			return std::nullopt;
 		}
-		if(typeid(T) == _ptr->type()) {
+		if(_ptr->type() == typeid(T)) {
 			auto derived = static_cast<Derived<T>*>(_ptr);
 			return derived->value;
 		}
-		if constexpr(!std::is_same<Optionalized<T>,T>::value) {
-			if(typeid(Optionalized<T>) == _ptr->type()) {
-				auto derived = static_cast<Derived<Optionalized<T>>*>(_ptr);
+		if(_ptr->type() == typeid(std::any)) {
+			auto derived = static_cast<Derived<std::any>*>(_ptr);
+			try {
+				return std::any_cast<U>(derived->value);
+			} catch(const std::bad_cast&) {
+				return std::nullopt;
+			}
+		}
+		if constexpr(is_optional_v<T>) {
+			using ValueType = typename Optionalized<T>::value_type;
+			if(_ptr->type() == typeid(ValueType)) {
+				auto derived = static_cast<Derived<ValueType>*>(_ptr);
 				return derived->value;
+			}
+		}
+		if(_ptr->type() == typeid(Optional<T>)) {
+			if(_ptr->type() == typeid(Optional<T>)) {
+				auto derived = static_cast<Derived<Optional<T>>*>(_ptr);
+				if(!derived->value.has_value()) {
+					return std::nullopt;
+				}
+				return derived->value.value();
 			}
 		}
 		return std::nullopt;
@@ -203,26 +290,79 @@ namespace fgl {
 	template<typename U>
 	OptionalRef<U> Any::maybeRefAs() {
 		using T = typename std::decay<U>::type;
-		if(_ptr == nullptr || typeid(T) != _ptr->type()) {
+		if(_ptr == nullptr) {
 			return std::nullopt;
 		}
-		auto derived = static_cast<Derived<T>*>(_ptr);
-		return std::ref(derived->value);
+		if(_ptr->type() == typeid(T)) {
+			auto derived = static_cast<Derived<T>*>(_ptr);
+			return std::ref(derived->value);
+		}
+		if(_ptr->type() == typeid(std::any)) {
+			auto derived = static_cast<Derived<std::any>*>(_ptr);
+			try {
+				return std::ref(std::any_cast<U>(derived->value));
+			} catch(const std::bad_cast&) {
+				return std::nullopt;
+			}
+		}
+		if constexpr(is_optional_v<T>) {
+			using ValueType = typename Optionalized<T>::value_type;
+			if(_ptr->type() == typeid(ValueType)) {
+				auto derived = static_cast<Derived<ValueType>*>(_ptr);
+				return std::ref(derived->value);
+			}
+		}
+		if(_ptr->type() == typeid(Optional<T>)) {
+			if(_ptr->type() == typeid(Optional<T>)) {
+				auto derived = static_cast<Derived<Optional<T>>*>(_ptr);
+				if(!derived->value.has_value()) {
+					return std::nullopt;
+				}
+				return std::ref(derived->value.value());
+			}
+		}
+		return std::nullopt;
 	}
 
 	template<typename U>
 	OptionalRef<const U> Any::maybeRefAs() const {
 		using T = typename std::decay<U>::type;
-		if(_ptr == nullptr || typeid(T) != _ptr->type()) {
+		if(_ptr == nullptr) {
 			return std::nullopt;
 		}
-		auto derived = static_cast<Derived<T>*>(_ptr);
-		return std::ref(derived->value);
+		if(_ptr->type() == typeid(T)) {
+			auto derived = static_cast<Derived<T>*>(_ptr);
+			return std::ref(derived->value);
+		}
+		if(_ptr->type() == typeid(std::any)) {
+			auto derived = static_cast<Derived<std::any>*>(_ptr);
+			try {
+				return std::ref(std::any_cast<U>(derived->value));
+			} catch(const std::bad_cast&) {
+				return std::nullopt;
+			}
+		}
+		if constexpr(is_optional_v<T>) {
+			using ValueType = typename Optionalized<T>::value_type;
+			if(_ptr->type() == typeid(ValueType)) {
+				auto derived = static_cast<Derived<ValueType>*>(_ptr);
+				return std::ref(derived->value);
+			}
+		}
+		if(_ptr->type() == typeid(Optional<T>)) {
+			if(_ptr->type() == typeid(Optional<T>)) {
+				auto derived = static_cast<Derived<Optional<T>>*>(_ptr);
+				if(!derived->value.has_value()) {
+					return std::nullopt;
+				}
+				return std::ref(derived->value.value());
+			}
+		}
+		return std::nullopt;
 	}
 	
-	template<typename U>
+	template<typename T>
 	bool Any::is() const {
-		using T = typename std::decay<U>::type;
 		return (_ptr != nullptr && typeid(T) == _ptr->type());
 	}
 
