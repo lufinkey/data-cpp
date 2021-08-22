@@ -43,6 +43,10 @@ namespace fgl {
 	struct _optionalize<Optional<T>> {
 		using type = Optional<T>;
 	};
+	template<typename T>
+	struct _optionalize<std::optional<T>> {
+		using type = Optional<T>;
+	};
 	template<>
 	struct _optionalize<void> {
 		using type = Optional<std::nullptr_t>;
