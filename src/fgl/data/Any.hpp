@@ -163,7 +163,7 @@ namespace fgl {
 		}
 		if(_ptr->type() == typeid(std::any)) {
 			auto derived = static_cast<Derived<std::any>*>(_ptr);
-			return std::any_cast<U>(derived->value);
+			return std::any_cast<U&>(derived->value);
 		}
 		if constexpr(is_optional_v<T>) {
 			using ValueType = typename Optionalized<T>::value_type;
@@ -196,7 +196,7 @@ namespace fgl {
 		}
 		if(_ptr->type() == typeid(std::any)) {
 			auto derived = static_cast<Derived<std::any>*>(_ptr);
-			return std::move(std::any_cast<U>(derived->value));
+			return std::move(std::any_cast<U&>(derived->value));
 		}
 		if constexpr(is_optional_v<T>) {
 			using ValueType = typename Optionalized<T>::value_type;
@@ -229,7 +229,7 @@ namespace fgl {
 		}
 		if(_ptr->type() == typeid(std::any)) {
 			auto derived = static_cast<Derived<std::any>*>(_ptr);
-			return std::any_cast<U>(derived->value);
+			return std::any_cast<const U&>(derived->value);
 		}
 		if constexpr(is_optional_v<T>) {
 			using ValueType = typename Optionalized<T>::value_type;
@@ -300,7 +300,7 @@ namespace fgl {
 		if(_ptr->type() == typeid(std::any)) {
 			auto derived = static_cast<Derived<std::any>*>(_ptr);
 			try {
-				return std::ref(std::any_cast<U>(derived->value));
+				return std::ref(std::any_cast<U&>(derived->value));
 			} catch(const std::bad_cast&) {
 				return std::nullopt;
 			}
@@ -337,7 +337,7 @@ namespace fgl {
 		if(_ptr->type() == typeid(std::any)) {
 			auto derived = static_cast<Derived<std::any>*>(_ptr);
 			try {
-				return std::ref(std::any_cast<U>(derived->value));
+				return std::ref(std::any_cast<const U&>(derived->value));
 			} catch(const std::bad_cast&) {
 				return std::nullopt;
 			}
