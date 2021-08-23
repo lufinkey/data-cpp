@@ -99,6 +99,7 @@ namespace fgl {
 		inline void popFront();
 		inline T extractFront();
 		inline LinkedList<T> extractListFront(size_t count = 1);
+		inline LinkedList<T> extractListFront(const_iterator end);
 		
 		inline void pushBack(const T& value);
 		inline void pushBack(T&& value);
@@ -110,6 +111,7 @@ namespace fgl {
 		inline void pop_back();
 		inline T extractBack();
 		inline LinkedList<T> extractListBack(size_t count = 1);
+		inline LinkedList<T> extractListBack(const_iterator start);
 		
 		size_type removeEqual(const T& value);
 		inline bool removeFirstEqual(const T& value);
@@ -276,6 +278,17 @@ namespace fgl {
 		}
 		return extracted;
 	}
+
+	template<typename T>
+	LinkedList<T> LinkedList<T>::extractListFront(const_iterator end) {
+		LinkedList<T> extracted;
+		while(begin() != end && size() > 0) {
+			auto value = std::move(front());
+			pop_front();
+			extracted.pushBack(value);
+		}
+		return extracted;
+	}
 	
 	
 	
@@ -326,6 +339,21 @@ namespace fgl {
 			auto value = std::move(back());
 			pop_back();
 			extracted.pushFront(value);
+		}
+		return extracted;
+	}
+
+	template<typename T>
+	LinkedList<T> LinkedList<T>::extractListBack(const_iterator start) {
+		LinkedList<T> extracted;
+		while(size() > 0) {
+			bool lastItem = (std::prev(end(), 1) == start);
+			auto value = std::move(back());
+			pop_back();
+			extracted.pushFront(value);
+			if(lastItem) {
+				break;
+			}
 		}
 		return extracted;
 	}
