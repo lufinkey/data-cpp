@@ -165,12 +165,12 @@ namespace fgl {
 			auto adjustedFormat = formatString.substring(0, (token.string.end() - formatString.data()));
 			if(const char* endParse = strptime(dateString.c_str(), adjustedFormat.c_str(), &timeTm)) {
 				String fracSecStr;
-				size_t maxDigits = 3;
+				size_t maxDigits = 6;
 				fracSecStr.reserve(maxDigits);
 				// TODO set number of digits by possible specified size of %S input token (ex: %6S)
 				size_t fracSecOffset = 0;
 				if(endParse[fracSecOffset] == '.') {
-					// parse no more than 3 digits
+					// parse no more than 6 digits
 					fracSecOffset++;
 					while(char c = endParse[fracSecOffset]) {
 						if(!std::isdigit(c)) {
