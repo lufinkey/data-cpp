@@ -42,6 +42,9 @@ namespace fgl {
 		static Date fromISOString(String dateString, TimeZone timeZone = TimeZone(0));
 		static Optional<Date> maybeFromISOString(String dateString, TimeZone timeZone = TimeZone(0));
 		
+		static Date parse(String dateString);
+		static Optional<Date> maybeParse(String dateString);
+		
 		inline bool isEpoch() const;
 		inline TimeInterval timeSinceEpoch() const;
 		

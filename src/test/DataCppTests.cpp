@@ -136,7 +136,7 @@ namespace fgl_data_cpp_tests {
 		optionalizedTypeString = stringify_type<Optionalized<String>>();
 		println("Optionalized type name: "+optionalizedTypeString);
 		
-		std::map<String,Any> anyMap = {
+		Map<String,Any> anyMap = {
 			{ "hello", String("world") },
 			{ "test", "what" }
 		};

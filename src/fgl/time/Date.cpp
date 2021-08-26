@@ -72,6 +72,56 @@ namespace fgl {
 
 
 
+	Optional<Date> Date::maybeParse(String dateString) {
+		ArrayList<DateFormatter> formatters = {
+			DateFormatter{
+				.format = "%Y-%m-%dT%H:%M:%S%z",
+				.timeZone = TimeZone::gmt()
+			},
+			DateFormatter{
+				.format = "%Y-%m-%dT%H:%M:%S",
+				.timeZone = TimeZone::currentAlways()
+			},
+			DateFormatter{
+				.format = "%a, %b %d %Y %H:%M:%S %Z",
+				.timeZone = TimeZone::gmt()
+			},
+			DateFormatter{
+				.format = "%a, %b %d %Y %H:%M:%S",
+				.timeZone = TimeZone::currentAlways()
+			},
+			DateFormatter{
+				.format = "%a %b %d %Y %H:%M:%S %Z",
+				.timeZone = TimeZone::gmt()
+			},
+			DateFormatter{
+				.format = "%a %b %d %Y %H:%M:%S",
+				.timeZone = TimeZone::currentAlways()
+			},
+			DateFormatter{
+				.format = "%b %d %Y %H:%M:%S %Z",
+				.timeZone = TimeZone::gmt()
+			},
+			DateFormatter{
+				.format = "%b %d %Y %H:%M:%S",
+				.timeZone = TimeZone::currentAlways()
+			}
+		};
+		for(auto& formatter : formatters) {
+			if(auto date = formatter.dateFromString(dateString)) {
+				return date.value();
+			}
+		}
+		return std::nullopt;
+	}
+
+	Date Date::parse(String dateString) {
+		return maybeParse(dateString)
+			.valueOrThrow(std::invalid_argument("Invalid date string "+dateString));
+	}
+
+
+
 	struct tm Date::toGmTm() const {
 		time_t timeVal = std::chrono::system_clock::to_time_t(timePoint);
 		struct tm timeTm;

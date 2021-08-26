@@ -71,15 +71,41 @@ namespace fgl {
 			return (prefix == 0);
 		}
 		
-		std::chrono::seconds offsetSeconds() const {
+		long offsetSeconds() const {
 			if(prefix == 'Z' || prefix == 0) {
-				return std::chrono::seconds(0);
+				return 0;
 			}
 			long mult = 1;
 			if(prefix == '-') {
 				mult = -1;
 			}
-			return std::chrono::seconds(mult * (hours * 3600) + (minutes * 60));
+			return mult * (hours * 3600) + (minutes * 60);
+		}
+		
+		const char* parse(const char* str) {
+			if(str[0] != '-' && str[0] != '+') {
+				return nullptr;
+			}
+			char prefix = str[0];
+			str += 1;
+			String digits;
+			digits.reserve(4);
+			for(size_t i=0; i<4; i++) {
+				char c = str[0];
+				if(std::isdigit(c)) {
+					digits += c;
+				} else {
+					break;
+				}
+				str++;
+			}
+			if(digits.length() < 4) {
+				return nullptr;
+			}
+			this->prefix = prefix;
+			this->hours = digits.substring(0, 2).toArithmeticValue<long>();
+			this->minutes = digits.substring(2, 2).toArithmeticValue<long>();
+			return str;
 		}
 	};
 
@@ -113,10 +139,7 @@ namespace fgl {
 		return std::nullopt;
 	}
 
-	Optional<struct tm> DateFormatter_tmFromFormat(String dateString, String formatString, String* fracSecs, DateStringTZ* tzInfo) {
-		struct tm timeTm;
-		std::memset(&timeTm, 0, sizeof(timeTm));
-		timeTm.tm_isdst = -1;
+	Optional<struct tm> DateFormatter_tmFromFormat(String dateString, String formatString, String* fracSecs, Optional<TimeZone>* tzInfo) {
 		// parse fractional seconds if specified
 		if(auto tokenOpt = DateFormatter_findTokenInFormat(formatString, 'f')) {
 			// parse fractional seconds %f token
@@ -130,7 +153,8 @@ namespace fgl {
 			}
 			// parse up before the f token, then manually parse fractional seconds
 			auto adjustedFormat = formatString.substring(0, (token.string.begin() - formatString.data()));
-			if(const char* endParse = strptime(dateString.c_str(), adjustedFormat.c_str(), &timeTm)) {
+			struct tm tmpTm;
+			if(const char* endParse = strptime(dateString.c_str(), adjustedFormat.c_str(), &tmpTm)) {
 				String fracSecStr;
 				fracSecStr.reserve(9);
 				const char* parseIt = endParse;
@@ -163,7 +187,8 @@ namespace fgl {
 			auto& token = tokenOpt.value();
 			// parse up to S character, then parse fractional seconds
 			auto adjustedFormat = formatString.substring(0, (token.string.end() - formatString.data()));
-			if(const char* endParse = strptime(dateString.c_str(), adjustedFormat.c_str(), &timeTm)) {
+			struct tm tmpTm;
+			if(const char* endParse = strptime(dateString.c_str(), adjustedFormat.c_str(), &tmpTm)) {
 				String fracSecStr;
 				size_t maxDigits = 6;
 				fracSecStr.reserve(maxDigits);
@@ -198,52 +223,65 @@ namespace fgl {
 			auto& token = tokenOpt.value();
 			// parse up before the z token, then manually parse the time zone
 			auto adjustedFormat = formatString.substring(0, (token.string.begin() - formatString.data()));
-			if(const char* endParse = strptime(dateString.c_str(), adjustedFormat.c_str(), &timeTm)) {
+			struct tm tmpTm;
+			if(const char* endParse = strptime(dateString.c_str(), adjustedFormat.c_str(), &tmpTm)) {
 				const char* endTZ = endParse;
 				if(endParse[0] == 'Z') {
 					endTZ += 1;
 					if(tzInfo != nullptr) {
-						*tzInfo = DateStringTZ{
-							.prefix = 'Z',
-							.hours = 0,
-							.minutes = 0
-						};
-					}
-				}
-				else if(endParse[0] == '-' || endParse[0] == '+') {
-					char prefix = endParse[0];
-					endTZ += 1;
-					String digits;
-					digits.reserve(4);
-					for(size_t i=0; i<4; i++) {
-						char c = endTZ[0];
-						if(std::isdigit(c)) {
-							digits += c;
-						} else {
-							break;
-						}
-						endTZ++;
-					}
-					if(digits.length() < 4) {
-						return std::nullopt;
-					}
-					if(tzInfo != nullptr) {
-						*tzInfo = DateStringTZ{
-							.prefix = prefix,
-							.hours = digits.substring(0, 2).toArithmeticValue<long>(),
-							.minutes = digits.substring(2, 2).toArithmeticValue<long>()
-						};
+						*tzInfo = TimeZone::gmt();
 					}
 				}
 				else {
-					return std::nullopt;
+					DateStringTZ tokenVal;
+					endTZ = tokenVal.parse(endParse);
+					if(endTZ == nullptr) {
+						return std::nullopt;
+					}
+					if(tzInfo != nullptr) {
+						*tzInfo = TimeZone(tokenVal.offsetSeconds());
+					}
 				}
 				// remove time zone from date string
 				dateString = dateString.substring(0, (endParse - dateString.data())) + endTZ;
 				formatString = formatString.substring(0, (token.string.begin() - formatString.data())) + token.string.end();
 			}
 		}
+		// parse time zone name or abbreviation if specified
+		if(auto tokenOpt = DateFormatter_findTokenInFormat(formatString, 'Z')) {
+			// parse time zone name %Z
+			auto& token = tokenOpt.value();
+			// parse up before the z token, then manually parse the time zone
+			auto adjustedFormat = formatString.substring(0, (token.string.begin() - formatString.data()));
+			struct tm tmpTm;
+			if(const char* endParse = strptime(dateString.c_str(), adjustedFormat.c_str(), &tmpTm)) {
+				const char* endTZ = endParse;
+				if(endParse[0] == 'G' && endParse[1] == 'M' && endParse[2] == 'T') {
+					endTZ += 3;
+					auto timeZone = TimeZone::gmt();
+					// parse potential offset
+					if(endTZ[0] == '+' || endTZ[0] == '-') {
+						DateStringTZ tokenVal;
+						auto newEndTZ = tokenVal.parse(endParse);
+						if(newEndTZ != nullptr) {
+							endTZ = newEndTZ;
+							timeZone = TimeZone(tokenVal.offsetSeconds());
+						}
+					}
+					if(tzInfo != nullptr) {
+						*tzInfo = timeZone;
+					}
+				}
+				else {
+					// TODO support other time zones
+					return std::nullopt;
+				}
+			}
+		}
 		// parse raw string
+		struct tm timeTm;
+		std::memset(&timeTm, 0, sizeof(timeTm));
+		timeTm.tm_isdst = -1;
 		if(strptime(dateString.c_str(), formatString.c_str(), &timeTm) == nullptr) {
 			return std::nullopt;
 		}
@@ -317,8 +355,6 @@ namespace fgl {
 		auto secDiff = date.timePoint - std::chrono::system_clock::from_time_t(date.toCTime());
 		// get tm time
 		struct tm timeTm;
-		std::memset(&timeTm, 0, sizeof(timeTm));
-		timeTm.tm_isdst = -1;
 		if(timeZone.isCurrentAlways()) {
 			timeTm = date.toLocalTm();
 		} else if(secondsFromGMT == 0) {
@@ -333,25 +369,26 @@ namespace fgl {
 
 	Optional<Date> DateFormatter::dateFromString(String dateString) const {
 		String fracSecs;
-		DateStringTZ tzInfo;
-		auto timeTm = DateFormatter_tmFromFormat(dateString, format, &fracSecs, &tzInfo);
+		Optional<TimeZone> parsedTimeZone;
+		auto timeTm = DateFormatter_tmFromFormat(dateString, format, &fracSecs, &parsedTimeZone);
 		if(!timeTm) {
 			return std::nullopt;
 		}
 		Date date = ([&]() {
 			// parse based on time zone
-			if(tzInfo.empty()) {
+			if(parsedTimeZone.hasValue()) {
+				// parse based on string time zone
+				auto date = Date::fromGmTm(timeTm.value());
+				// TODO handle different offset based on date
+				date.timePoint -= std::chrono::seconds(parsedTimeZone->getSecondsFromGMT());
+				return date;
+			} else {
 				// parse based on timeZone property
 				if(timeZone.isCurrentAlways()) {
 					return Date::fromLocalTm(timeTm.value());
 				} else {
 					return Date::fromGmTm(timeTm.value());
 				}
-			} else {
-				// parse based on string time zone
-				auto date = Date::fromGmTm(timeTm.value());
-				date.timePoint -= tzInfo.offsetSeconds();
-				return date;
 			}
 		})();
 		// attach fractional seconds
