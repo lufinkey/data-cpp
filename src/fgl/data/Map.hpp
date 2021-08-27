@@ -66,6 +66,9 @@ namespace fgl {
 		Map& operator=(const BaseType&);
 		Map& operator=(BaseType&&) noexcept;
 		
+		inline T& get(const Key& key, T& val);
+		inline const T& get(const Key& key, const T& val) const;
+		
 		inline Optional<T> maybeAt(const Key& key) const;
 		inline OptionalRef<T> maybeRefAt(const Key& key);
 		inline OptionalRef<const T> maybeRefAt(const Key& key) const;
@@ -125,6 +128,24 @@ namespace fgl {
 	}
 
 
+
+	template<typename K,typename T,typename C,typename A>
+	T& Map<K,T,C,A>::get(const K& key, T& val) {
+		auto it = find(key);
+		if(it == end()) {
+			return val;
+		}
+		return *it;
+	}
+
+	template<typename K,typename T,typename C,typename A>
+	const T& Map<K,T,C,A>::get(const K& key, const T& val) const {
+		auto it = find(key);
+		if(it == end()) {
+			return val;
+		}
+		return *it;
+	}
 
 	template<typename K,typename T,typename C,typename A>
 	Optional<T> Map<K,T,C,A>::maybeAt(const K& key) const {
