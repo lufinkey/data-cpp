@@ -555,7 +555,7 @@ namespace fgl {
 	#ifdef NODE_API_MODULE
 	template<typename BaseClass>
 	template<typename Transform>
-	Napi::Array toNapiArray(napi_env env, Transform transform) {
+	Napi::Array BasicList<BaseClass>::toNapiArray(napi_env env, Transform transform) {
 		auto array = Napi::Array::New(env, size());
 		auto pushFunc = array.Get("push").As<Napi::Function>();
 		size_t i=0;
@@ -568,7 +568,7 @@ namespace fgl {
 
 	template<typename BaseClass>
 	template<typename Transform>
-	Napi::Array toNapiArray(napi_env env, Transform transform) const {
+	Napi::Array BasicList<BaseClass>::toNapiArray(napi_env env, Transform transform) const {
 		auto array = Napi::Array::New(env, size());
 		auto pushFunc = array.Get("push").As<Napi::Function>();
 		size_t i=0;
