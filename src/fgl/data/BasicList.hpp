@@ -146,6 +146,13 @@ namespace fgl {
 		jobjectArray toJavaObjectArray(JNIEnv* env, jclass objectClass, Transform transform) const;
 		#endif
 		
+		#ifdef NODE_API_MODULE
+		template<typename Transform>
+		Napi::Array toNapiArray(napi_env env, Transform transform);
+		template<typename Transform>
+		Napi::Array toNapiArray(napi_env env, Transform transform) const;
+		#endif
+		
 		
 		template<typename Mapper>
 		auto toMap(Mapper mapper) const;
@@ -541,5 +548,35 @@ namespace fgl {
 		return javaArray;
 	}
 
+	#endif
+
+
+
+	#ifdef NODE_API_MODULE
+	template<typename BaseClass>
+	template<typename Transform>
+	Napi::Array toNapiArray(napi_env env, Transform transform) {
+		auto array = Napi::Array::New(env, size());
+		auto pushFunc = array.Get("push").As<Napi::Function>();
+		size_t i=0;
+		for(reference item : *this) {
+			pushFunc.Call(array, { transform(env, item) });
+			i++;
+		}
+		return array;
+	}
+
+	template<typename BaseClass>
+	template<typename Transform>
+	Napi::Array toNapiArray(napi_env env, Transform transform) const {
+		auto array = Napi::Array::New(env, size());
+		auto pushFunc = array.Get("push").As<Napi::Function>();
+		size_t i=0;
+		for(const_reference item : *this) {
+			pushFunc.Call(array, { transform(env, item) });
+			i++;
+		}
+		return array;
+	}
 	#endif
 }
