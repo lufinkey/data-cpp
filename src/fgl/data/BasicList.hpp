@@ -557,7 +557,7 @@ namespace fgl {
 	template<typename Transform>
 	Napi::Array BasicList<BaseClass>::toNapiArray(napi_env env, Transform transform) {
 		auto array = Napi::Array::New(env, size());
-		auto pushFunc = array.Get("push").As<Napi::Function>();
+		auto pushFunc = array.Get("push").template As<Napi::Function>();
 		size_t i=0;
 		for(reference item : *this) {
 			pushFunc.Call(array, { transform(env, item) });
@@ -570,7 +570,7 @@ namespace fgl {
 	template<typename Transform>
 	Napi::Array BasicList<BaseClass>::toNapiArray(napi_env env, Transform transform) const {
 		auto array = Napi::Array::New(env, size());
-		auto pushFunc = array.Get("push").As<Napi::Function>();
+		auto pushFunc = array.Get("push").template As<Napi::Function>();
 		size_t i=0;
 		for(const_reference item : *this) {
 			pushFunc.Call(array, { transform(env, item) });
