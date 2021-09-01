@@ -9,9 +9,10 @@
 #pragma once
 
 #include <fgl/data/Common.hpp>
-#include <fgl/data/Optional.hpp>
 #include <fgl/data/BasicString.hpp>
 #include <fgl/data/Traits.hpp>
+#include <fgl/data/Optional.hpp>
+#include <fgl/data/Variant.hpp>
 #include <list>
 
 namespace fgl {
@@ -65,7 +66,7 @@ namespace fgl {
 
 	template<typename T>
 	String stringify(const T& obj) {
-		using Type = typename std::remove_cv<typename std::remove_reference<T>::type>::type;
+		using Type = std::remove_cvref_t<T>;
 		if constexpr(std::is_same<T,std::nullptr_t>::value) {
 			return "nullptr_t";
 		}
@@ -74,6 +75,14 @@ namespace fgl {
 		   || std::is_same<std::wstring,Type>::value || std::is_same<const wchar_t*,Type>::value
 		   || std::is_same<wchar_t*,Type>::value || std::is_same<wchar_t,Type>::value) {
 			return (String)obj;
+		}
+		else if constexpr(is_variant<Type>::value) {
+			if(obj.valueless_by_exception()) {
+				return "Variant{ ##INVALID## }";
+			}
+			return String::join("Variant{ ",std::visit([](auto& val) {
+				return stringify(val);
+			}, obj)," }");
 		}
 		else if constexpr(is_optional<Type>::value) {
 			return obj ? String::join({"Optional{ ",stringify(obj.value())," }"}) : "Optional{}";
