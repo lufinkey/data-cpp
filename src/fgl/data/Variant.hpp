@@ -13,10 +13,167 @@
 
 namespace fgl {
 	template<typename... Types>
-	using Variant = std::variant<Types...>;
+	class Variant;
 
 	template<typename T>
 	struct is_variant: std::false_type {};
 	template<typename... T>
 	struct is_variant<std::variant<T...>>: std::true_type {};
+	template<typename... T>
+	struct is_variant<Variant<T...>>: std::true_type {};
+
+	template<typename... Types>
+	class Variant: public std::variant<Types...> {
+	public:
+		using BaseType = std::variant<Types...>;
+		
+		using BaseType::BaseType;
+		
+		Variant(BaseType&&);
+		Variant(const BaseType&);
+		
+		operator BaseType&() &;
+		operator BaseType&&() &&;
+		operator const BaseType&() const&;
+		
+		template<typename Visitor>
+		inline decltype(auto) visit(Visitor&& visitor);
+		template<typename Visitor>
+		inline decltype(auto) visit(Visitor&& visitor) const;
+		
+		template<typename T>
+		inline bool is() const;
+		
+		template<typename T>
+		inline T& get() &;
+		template<typename T>
+		inline T&& get() &&;
+		template<typename T>
+		inline const T& get() const&;
+		
+		template<typename T>
+		inline T& getOr(T&);
+		template<typename T>
+		inline T&& getOr(T&&) &&;
+		template<typename T>
+		inline const T& getOr(const T&) const&;
+		
+		template<typename T>
+		inline Optional<T> maybeGet() const;
+		
+		template<typename T>
+		inline OptionalRef<T> maybeGetRef();
+		template<typename T>
+		inline OptionalRef<const T> maybeGetRef() const;
+	};
+
+
+
+	#pragma mark Variant implementation
+
+	template<typename... Types>
+	Variant<Types...>::Variant(BaseType&& v): BaseType(v) {
+		//
+	}
+
+	template<typename... Types>
+	Variant<Types...>::Variant(const BaseType& v): BaseType(v) {
+		//
+	}
+
+	template<typename... Types>
+	Variant<Types...>::operator BaseType&() & {
+		return (BaseType&)*this;
+	}
+
+	template<typename... Types>
+	Variant<Types...>::operator BaseType&&() && {
+		return (BaseType&&)*this;
+	}
+
+	template<typename... Types>
+	Variant<Types...>::operator const BaseType&() const & {
+		return (const BaseType&)*this;
+	}
+
+	template<typename... Types>
+	template<typename Visitor>
+	decltype(auto) Variant<Types...>::visit(Visitor&& visitor) {
+		return std::visit(visitor, *this);
+	}
+
+	template<typename... Types>
+	template<typename Visitor>
+	decltype(auto) Variant<Types...>::visit(Visitor&& visitor) const {
+		return std::visit(visitor, *this);
+	}
+
+	template<typename... Types>
+	template<typename T>
+	bool Variant<Types...>::is() const {
+		return std::holds_alternative<T>(*this);
+	}
+
+	template<typename... Types>
+	template<typename T>
+	T& Variant<Types...>::get() & {
+		return std::get<T>(*this);
+	}
+
+	template<typename... Types>
+	template<typename T>
+	T&& Variant<Types...>::get() && {
+		return (T&&)std::get<T>(*this);
+	}
+
+	template<typename... Types>
+	template<typename T>
+	const T& Variant<Types...>::get() const& {
+		return std::get<T>(*this);
+	}
+
+	template<typename... Types>
+	template<typename T>
+	T& Variant<Types...>::getOr(T& defaultVal) {
+		return std::holds_alternative<T>(*this) ? std::get<T>(*this) : defaultVal;
+	}
+
+	template<typename... Types>
+	template<typename T>
+	T&& Variant<Types...>::getOr(T&& defaultVal) && {
+		return std::holds_alternative<T>(*this) ? std::get<T>(*this) : defaultVal;
+	}
+
+	template<typename... Types>
+	template<typename T>
+	const T& Variant<Types...>::getOr(const T& defaultVal) const& {
+		return std::holds_alternative<T>(*this) ? std::get<T>(*this) : defaultVal;
+	}
+
+	template<typename... Types>
+	template<typename T>
+	Optional<T> Variant<Types...>::maybeGet() const {
+		if(std::holds_alternative<T>(*this)) {
+			return std::get<T>(*this);
+		}
+		return std::nullopt;
+	}
+
+	template<typename... Types>
+	template<typename T>
+	OptionalRef<T> Variant<Types...>::maybeGetRef() {
+		if(std::holds_alternative<T>(*this)) {
+			return std::ref(std::get<T>(*this));
+		}
+		return std::nullopt;
+	}
+
+	template<typename... Types>
+	template<typename T>
+	OptionalRef<const T> Variant<Types...>::maybeGetRef() const {
+		if(std::holds_alternative<T>(*this)) {
+			return std::ref(std::get<T>(*this));
+		}
+		return std::nullopt;
+	}
 }
