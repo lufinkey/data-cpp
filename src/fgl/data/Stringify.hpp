@@ -78,7 +78,7 @@ namespace fgl {
 		}
 		else if constexpr(is_variant<Type>::value) {
 			if(obj.valueless_by_exception()) {
-				return "Variant{ ##INVALID## }";
+				return "Variant{##INVALID##}";
 			}
 			return String::join("Variant{ ",std::visit([](auto& val) {
 				return stringify(val);
@@ -127,6 +127,9 @@ namespace fgl {
 				ss << stringify_type<U>() << " @ 0x" << std::setfill('0') << std::setw(sizeof(obj)*2) << std::hex << ((uintptr_t)obj);
 				return ss.str();
 			}
+		}
+		else if constexpr(std::is_same<bool,Type>::value && !std::is_same<unsigned char,Type>::value) {
+			return obj ? "true" : "false";
 		}
 		else if constexpr(std::is_arithmetic<Type>::value) {
 			return std::to_string(obj);
