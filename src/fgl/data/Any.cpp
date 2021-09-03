@@ -135,9 +135,6 @@ namespace fgl {
 	}
 
 	String Any::typeName() const {
-		if(_ptr == nullptr) {
-			return String();
-		}
-		return _ptr->typeName();
+		return stringify_type(_ptr->type());
 	}
 }

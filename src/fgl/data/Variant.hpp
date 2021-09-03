@@ -10,6 +10,7 @@
 
 #include <fgl/data/Common.hpp>
 #include <variant>
+#include <typeinfo>
 
 namespace fgl {
 	template<typename... Types>
@@ -21,6 +22,8 @@ namespace fgl {
 	struct is_variant<std::variant<T...>>: std::true_type {};
 	template<typename... T>
 	struct is_variant<Variant<T...>>: std::true_type {};
+
+	String stringify_type(const std::type_info&);
 
 	template<typename... Types>
 	class Variant: public std::variant<Types...> {
@@ -63,6 +66,9 @@ namespace fgl {
 		inline OptionalRef<T> maybeGetRef();
 		template<typename T>
 		inline OptionalRef<const T> maybeGetRef() const;
+		
+		const std::type_info& type() const;
+		String typeName() const;
 	};
 
 
@@ -173,5 +179,17 @@ namespace fgl {
 			return std::ref(std::get<T>(*this));
 		}
 		return std::nullopt;
+	}
+
+	template<typename... Types>
+	const std::type_info& Variant<Types...>::type() const {
+		return std::visit([](auto& val) {
+			return typeid(val);
+		});
+	}
+
+	template<typename... Types>
+	String Variant<Types...>::typeName() const {
+		return stringify_type(type());
 	}
 }

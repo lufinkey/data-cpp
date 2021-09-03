@@ -26,7 +26,6 @@ namespace fgl {
 			virtual String toString() const = 0;
 			virtual std::any toStdAny() const = 0;
 			virtual const std::type_info& type() const = 0;
-			virtual String typeName() const = 0;
 		};
 		
 		template<typename T>
@@ -41,7 +40,6 @@ namespace fgl {
 			virtual String toString() const override;
 			virtual std::any toStdAny() const override;
 			virtual const std::type_info& type() const override;
-			virtual String typeName() const override;
 		};
 		
 		Base* cloneBase() const;
@@ -53,7 +51,7 @@ namespace fgl {
 		Any(std::nullptr_t);
 		Any(Any&&);
 		Any(const Any&);
-		template<typename U, typename = std::enable_if_t<(!std::is_same_v<std::decay_t<U>,Any>)>>
+		template<typename U, typename = std::enable_if_t<!(std::is_same_v<std::decay_t<U>,Any> || std::is_same_v<std::decay_t<U>,std::any>)>>
 		Any(U&&);
 		~Any();
 		
@@ -140,11 +138,6 @@ namespace fgl {
 	const std::type_info& Any::Derived<T>::type() const {
 		return typeid(T);
 	}
-
-	template<typename T>
-	String Any::Derived<T>::typeName() const {
-		return fgl::stringify_type<T>();
-	}
 	
 	template<typename U, typename _>
 	Any::Any(U&& value): _ptr(new Derived<typename std::decay<U>::type>(value)) {
@@ -173,13 +166,11 @@ namespace fgl {
 			}
 		}
 		if(_ptr->type() == typeid(Optional<T>)) {
-			if(_ptr->type() == typeid(Optional<T>)) {
-				auto derived = static_cast<Derived<Optional<T>>*>(_ptr);
-				if(!derived->value.has_value()) {
-					throw std::bad_any_cast();
-				}
-				return derived->value.value();
+			auto derived = static_cast<Derived<Optional<T>>*>(_ptr);
+			if(!derived->value.has_value()) {
+				throw std::bad_any_cast();
 			}
+			return derived->value.value();
 		}
 		throw std::bad_any_cast();
 	}

@@ -64,6 +64,11 @@ namespace fgl {
 	}
 
 
+	inline String stringify_type(const std::type_info& type) {
+		return demangled_type(type.name());
+	}
+
+
 	template<typename T>
 	String stringify(const T& obj) {
 		using Type = std::remove_cvref_t<T>;
