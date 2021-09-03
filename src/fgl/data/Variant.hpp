@@ -54,6 +54,11 @@ namespace fgl {
 		template<typename T>
 		inline const T& get() const&;
 		
+		template<typename T>
+		inline T* getIf();
+		template<typename T>
+		inline const T* getIf() const;
+		
 		template<typename T, typename U>
 		inline T& getOr(U&&);
 		template<typename T, typename U>
@@ -134,6 +139,18 @@ namespace fgl {
 	template<typename T>
 	const T& Variant<Types...>::get() const& {
 		return std::get<T>(*this);
+	}
+
+	template<typename... Types>
+	template<typename T>
+	T* Variant<Types...>::getIf() {
+		return std::get_if<T>(*this);
+	}
+
+	template<typename... Types>
+	template<typename T>
+	const T* Variant<Types...>::getIf() const {
+		return std::get_if<T>(*this);
 	}
 
 	template<typename... Types>
