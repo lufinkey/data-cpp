@@ -202,7 +202,7 @@ namespace fgl {
 	const std::type_info& Variant<Types...>::type() const {
 		return std::visit([](auto& val) -> const std::type_info& {
 			return typeid(val);
-		});
+		}, *this);
 	}
 
 	template<typename... Types>
