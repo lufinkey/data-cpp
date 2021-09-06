@@ -135,7 +135,7 @@ namespace fgl {
 		if(it == end()) {
 			return val;
 		}
-		return *it;
+		return it->second;
 	}
 
 	template<typename K,typename T,typename C,typename A>
@@ -144,7 +144,7 @@ namespace fgl {
 		if(it == end()) {
 			return val;
 		}
-		return *it;
+		return it->second;
 	}
 
 	template<typename K,typename T,typename C,typename A>
@@ -153,7 +153,7 @@ namespace fgl {
 		if(it == end()) {
 			return std::nullopt;
 		}
-		return *it;
+		return it->second;
 	}
 
 	template<typename K,typename T,typename C,typename A>
@@ -162,7 +162,7 @@ namespace fgl {
 		if(it == end()) {
 			return std::nullopt;
 		}
-		return std::ref(*it);
+		return std::ref(it->second);
 	}
 
 	template<typename K,typename T,typename C,typename A>
@@ -171,7 +171,7 @@ namespace fgl {
 		if(it == end()) {
 			return std::nullopt;
 		}
-		return std::ref(*it);
+		return std::ref(it->second);
 	}
 
 
