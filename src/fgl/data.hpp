@@ -13,6 +13,7 @@
 #include <fgl/data/LinkedList.hpp>
 #include <fgl/data/Map.hpp>
 #include <fgl/data/String.hpp>
+#include <fgl/data/Data.hpp>
 #include <fgl/data/Stringify.hpp>
 #include <fgl/data/Optional.hpp>
 #include <fgl/data/Iterator.hpp>
