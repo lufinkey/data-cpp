@@ -718,6 +718,28 @@ namespace fgl {
 		FGL_ASSERT(str != nullptr, "find cannot be null");
 		return rfind(str, startIndex);
 	}
+
+	template<typename Char>
+	bool BasicString<Char>::contains(Char c) const noexcept {
+		return find(c) != npos;
+	}
+
+	template<typename Char>
+	bool BasicString<Char>::contains(const std::basic_string<Char>& str) const noexcept {
+		return find(str) != npos;
+	}
+
+	template<typename Char>
+	bool BasicString<Char>::contains(const Char* str) const {
+		return find(str) != npos;
+	}
+
+	template<typename Char>
+	template<typename Predicate>
+	bool BasicString<Char>::containsWhere(Predicate predicate) const {
+		auto endIt = end();
+		return std::find_if(begin(), endIt, predicate) != endIt;
+	}
 	
 	template<typename Char>
 	bool BasicString<Char>::startsWith(const Char* str, size_type str_length) const {
@@ -1030,18 +1052,6 @@ namespace fgl {
 			newStr.append(1,(Char)std::toupper<UTFChar>((UTFChar)BaseType::operator[](i), locale));
 		}
 		return newStr;
-	}
-
-	template<typename Char>
-	bool BasicString<Char>::isDigits(std::locale locale) const {
-		size_t len = length();
-		for(size_t i=0; i<len; i++) {
-			Char c = (*this)[i];
-			if(!std::isdigit<Char>(c, locale)) {
-				return false;
-			}
-		}
-		return false;
 	}
 	
 	template<typename Char>

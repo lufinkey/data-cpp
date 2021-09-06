@@ -45,6 +45,8 @@ namespace fgl {
 		static const size_type NOT_FOUND = BaseType::npos;
 		
 		using BaseType::BaseType;
+		using BaseType::begin;
+		using BaseType::end;
 		using BaseType::assign;
 		using BaseType::operator=;
 		using BaseType::append;
@@ -309,6 +311,12 @@ namespace fgl {
 		inline size_type lastIndexOf(const std::basic_string<Char>& find, size_type startIndex = npos) const noexcept;
 		inline size_type lastIndexOf(const Char* find, size_type startIndex = npos) const;
 		
+		inline bool contains(Char find) const noexcept;
+		inline bool contains(const std::basic_string<Char>& find) const noexcept;
+		inline bool contains(const Char* find) const;
+		template<typename Predicate>
+		inline bool containsWhere(Predicate) const;
+		
 		bool startsWith(const Char* str, size_type length) const;
 		inline bool startsWith(const Char* str) const;
 		inline bool startsWith(const std::basic_string<Char>& str) const;
@@ -345,8 +353,6 @@ namespace fgl {
 			typename BasicStringUtils::is_same<_Char,Char>::null_type = nullptr,
 			typename BasicStringUtils::can_convert_string_type<_Char>::null_type = nullptr>
 		BasicString<Char> toUpperCase(const std::locale& locale = std::locale()) const;
-		
-		bool isDigits(std::locale locale = std::locale()) const;
 		
 		template<typename Num,
 			typename BasicStringUtils::string_type_convertable_with_number<Char,Num>::null_type = nullptr>
