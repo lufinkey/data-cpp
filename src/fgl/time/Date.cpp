@@ -146,6 +146,14 @@ namespace fgl {
 		return *tmPtr;
 	}
 
+	double Date::secondsSince1970() const {
+		auto date1970 = Date::fromISOString("1970-01-01T00:00:00Z");
+		auto timeSince1970 = *this - date1970;
+		auto secondsSince1970 = std::chrono::duration_cast<std::chrono::seconds>(timeSince1970).count();
+		auto remainder = timeSince1970 - std::chrono::seconds(secondsSince1970);
+		return ((double)secondsSince1970) + ((double)remainder.count() / (double)decltype(remainder)::period::den);
+	}
+
 
 	String Date::toString() const {
 		return toISOString();

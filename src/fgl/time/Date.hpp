@@ -29,6 +29,7 @@ namespace fgl {
 		friend bool operator>=(const Date&, const Date&);
 		friend Date operator+(const Date&, const TimeInterval&);
 		friend Date operator-(const Date&, const TimeInterval&);
+		friend TimeInterval operator-(const Date&, const Date&);
 	public:
 		inline Date(TimePoint timePoint);
 		
@@ -47,6 +48,7 @@ namespace fgl {
 		
 		inline bool isEpoch() const;
 		inline TimeInterval timeSinceEpoch() const;
+		double secondsSince1970() const;
 		
 		struct tm toGmTm() const;
 		struct tm toLocalTm() const;
@@ -144,5 +146,9 @@ namespace fgl {
 
 	inline Date operator-(const Date& left, const TimeInterval& right) {
 		return Date(left.timePoint - right);
+	}
+
+	inline TimeInterval operator-(const Date& left, const Date& right) {
+		return left.timePoint - right.timePoint;
 	}
 }
