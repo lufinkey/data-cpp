@@ -19,15 +19,19 @@
 namespace fgl {
 	class Data: public std::vector<uint8_t> {
 	public:
+		using byte = uint8_t;
+		
 		using vector::vector;
 		using vector::begin;
 		using vector::end;
 		
+		// TODO pass explicit string encoding
 		explicit Data(const String&);
 		#ifdef __OBJC__
 		Data(NSData* data);
 		#endif
 		
+		// TODO specify explicit string encoding
 		String toString() const;
 		#ifdef __OBJC__
 		NSData* toNSData() const;
