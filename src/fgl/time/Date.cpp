@@ -8,6 +8,7 @@
 
 #include <fgl/time/Date.hpp>
 #include <fgl/time/DateFormatter.hpp>
+#include <fgl/data/Number.hpp>
 #include <fgl/util/PlatformChecks.hpp>
 #include <cmath>
 #include <cstring>
@@ -17,6 +18,40 @@
 #endif
 
 namespace fgl {
+	inline Date Date_1970() {
+		if(Date::epochIs1970()) {
+			return Date::epoch();
+		} else {
+			return Date::fromISOString("1970-01-01T00:00:00Z");
+		}
+	}
+
+	Optional<bool> Date_epochIs1970 = std::nullopt;
+	bool Date::epochIs1970() {
+		if(Date_epochIs1970.hasValue()) {
+			return Date_epochIs1970.value();
+		}
+		if(Date::epoch().timePoint == Date::fromISOString("1970-01-01T00:00:00Z").timePoint) {
+			Date_epochIs1970 = true;
+			return true;
+		} else {
+			Date_epochIs1970 = false;
+			return false;
+		}
+	}
+
+	Date Date::fromTimeSince1970(TimeInterval timeSince1970) {
+		return Date_1970() + timeSince1970;
+	}
+
+	Date Date::fromSecondsSince1970(double secsSince1970) {
+		auto date1970 = Date_1970();
+		auto flatSecsSince1970 = numeric_cast<long long>(secsSince1970);
+		auto remainder = secsSince1970 - numeric_cast<double>(flatSecsSince1970);
+		auto remainderUnits = numeric_cast<long long>(remainder * numeric_cast<double>(TimeInterval::period::den));
+		return date1970 + std::chrono::seconds(flatSecsSince1970) + TimeInterval(remainderUnits);
+	}
+
 	Date Date::fromGmTm(struct tm timeVal) {
 		#ifdef _WIN32
 			return Date::fromCTime(_mkgmtime(&timeVal));
@@ -146,9 +181,13 @@ namespace fgl {
 		return *tmPtr;
 	}
 
+	TimeInterval Date::timeSince1970() const {
+		return timePoint - Date_1970().timePoint;
+	}
+
 	double Date::secondsSince1970() const {
-		auto date1970 = Date::fromISOString("1970-01-01T00:00:00Z");
-		auto timeSince1970 = *this - date1970;
+		auto date1970 = Date_1970();
+		auto timeSince1970 = timePoint - date1970.timePoint;
 		auto secondsSince1970 = std::chrono::duration_cast<std::chrono::seconds>(timeSince1970).count();
 		auto remainder = timeSince1970 - std::chrono::seconds(secondsSince1970);
 		return ((double)secondsSince1970) + ((double)remainder.count() / (double)decltype(remainder)::period::den);

@@ -36,6 +36,8 @@ namespace fgl {
 		inline static Date now();
 		inline static Date epoch();
 		inline static Date fromCTime(time_t);
+		static Date fromTimeSince1970(TimeInterval timeSince1970);
+		static Date fromSecondsSince1970(double secsSince1970);
 		static Date fromGmTm(struct tm);
 		static Date fromLocalTm(struct tm);
 		static Date fromGmtString(String dateString, String format);
@@ -46,8 +48,11 @@ namespace fgl {
 		static Date parse(String dateString);
 		static Optional<Date> maybeParse(String dateString);
 		
+		static bool epochIs1970();
+		
 		inline bool isEpoch() const;
 		inline TimeInterval timeSinceEpoch() const;
+		TimeInterval timeSince1970() const;
 		double secondsSince1970() const;
 		
 		struct tm toGmTm() const;
