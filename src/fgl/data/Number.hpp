@@ -20,6 +20,9 @@ namespace fgl {
 	template<typename To, typename From>
 	To numeric_cast(From);
 
+	template<typename FloatType>
+	bool floatIsIntegral(FloatType);
+
 
 
 	#pragma mark Number implementation
@@ -95,5 +98,34 @@ namespace fgl {
 			}
 			return newValue;
 		}
+	}
+
+	template<typename FloatType>
+	bool floatIsIntegral(FloatType value) {
+		static_assert(std::is_integral_v<FloatType> || std::is_floating_point_v<FloatType>, "Type must be integral or floating point");
+		if constexpr(std::is_integral_v<FloatType>) {
+			return true;
+		}
+		// get classification of floating point value
+		auto fpType = std::fpclassify(value);
+		if(fpType == FP_INFINITE) {
+			return false;
+		} else if(fpType == FP_NAN) {
+			return false;
+		} else if(fpType == FP_ZERO) {
+			return true;
+		}
+		if(value < 0) {
+			// ensure that rounding our value up is the same as the value
+			if(std::ceil(value) == value) {
+				return true;
+			}
+		} else {
+			// ensure that rounding our value down is the same as the value
+			if(std::floor(value) == value) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
