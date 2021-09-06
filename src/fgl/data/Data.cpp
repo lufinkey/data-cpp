@@ -10,8 +10,8 @@
 #include <fgl/data/String.hpp>
 
 namespace fgl {
-	Data Data::fromString(const String& str) {
-		return Data(str.begin(), str.end());
+	Data::Data(const String& str): vector(str.begin(), str.end()) {
+		//
 	}
 
 	String Data::toString() const {

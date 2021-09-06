@@ -23,8 +23,7 @@ namespace fgl {
 		using vector::begin;
 		using vector::end;
 		
-		Data fromString(const String&);
-		
+		explicit Data(const String&);
 		#ifdef __OBJC__
 		Data(NSData* data);
 		#endif
