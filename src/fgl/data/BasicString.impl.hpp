@@ -1031,6 +1031,18 @@ namespace fgl {
 		}
 		return newStr;
 	}
+
+	template<typename Char>
+	bool BasicString<Char>::isDigits(std::locale locale) const {
+		size_t len = length();
+		for(size_t i=0; i<len; i++) {
+			Char c = (*this)[i];
+			if(!std::isdigit<Char>(c, locale)) {
+				return false;
+			}
+		}
+		return false;
+	}
 	
 	template<typename Char>
 	template<typename Num,

@@ -346,6 +346,8 @@ namespace fgl {
 			typename BasicStringUtils::can_convert_string_type<_Char>::null_type = nullptr>
 		BasicString<Char> toUpperCase(const std::locale& locale = std::locale()) const;
 		
+		bool isDigits(std::locale locale = std::locale()) const;
+		
 		template<typename Num,
 			typename BasicStringUtils::string_type_convertable_with_number<Char,Num>::null_type = nullptr>
 		Num toArithmeticValue(const std::locale& locale = std::locale()) const;
