@@ -20,6 +20,14 @@ namespace fgl {
 		using vector::end;
 		
 		Data fromString(const String&);
+		
+		#ifdef __OBJC__
+		Data(NSData* data);
+		#endif
+		
 		String toString() const;
+		#ifdef __OBJC__
+		NSData* toNSData() const;
+		#endif
 	};
 }
