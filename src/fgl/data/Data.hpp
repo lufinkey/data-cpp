@@ -12,6 +12,10 @@
 #include <fgl/data/BasicString.hpp>
 #include <vector>
 
+#ifdef __OBJC__
+#import <Foundation/Foundation.h>
+#endif
+
 namespace fgl {
 	class Data: public std::vector<uint8_t> {
 	public:
