@@ -69,6 +69,10 @@ namespace fgl {
 	using IsCollectionOf = typename std::enable_if<
 		(is_collection_v<Collection> && std::is_same_v<T,typename Collection::value_type>), Collection>::type;
 
+	template<typename T, typename Collection>
+	using IsCollectionNotOf = typename std::enable_if<
+		(is_collection_v<Collection> && !std::is_same_v<T,typename Collection::value_type>), Collection>::type;
+
 
 
 

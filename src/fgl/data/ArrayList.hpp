@@ -77,7 +77,9 @@ namespace fgl {
 		
 		ArrayList(const BaseType&);
 		ArrayList(BaseType&&);
-		template<typename Collection, typename Transform, typename = IsCollection<std::remove_reference_t<Collection>>>
+		template<typename Collection, typename = IsCollectionOf<T,std::decay_t<Collection>>>
+		ArrayList(Collection&& collection);
+		template<typename Collection, typename Transform, typename = IsCollectionNotOf<T,std::decay_t<Collection>>>
 		ArrayList(Collection&& collection, Transform transform);
 		
 		#ifdef __OBJC__
@@ -108,10 +110,14 @@ namespace fgl {
 		inline void pushBack(T&& value);
 		inline void pushBackList(const ArrayList& list);
 		inline void pushBackList(ArrayList&& list);
-		template<typename Collection, typename = IsCollectionOf<T,std::remove_reference_t<Collection>>>
+		inline void pushBackList(std::initializer_list<T> items);
+		template<typename Collection, typename = IsCollectionOf<T,std::decay_t<Collection>>>
 		inline void pushBackList(Collection&& list);
 		inline void popBack();
 		inline T extractBack();
+		
+		ArrayList<T> concat(std::initializer_list<T> items) const&;
+		ArrayList<T> concat(std::initializer_list<T> items) &&;
 		
 		inline iterator removeAt(size_type pos);
 		inline iterator removeAt(size_type pos, size_type count);
@@ -172,6 +178,12 @@ namespace fgl {
 
 	template<typename T>
 	ArrayList<T>::ArrayList(BaseType&& list): BasicList<BaseType>(list) {
+		//
+	}
+
+	template<typename T>
+	template<typename Collection, typename _>
+	ArrayList<T>::ArrayList(Collection&& collection): BasicList<BaseType>(collection.begin(), collection.end()) {
 		//
 	}
 
@@ -310,6 +322,17 @@ namespace fgl {
 	void ArrayList<T>::pushBackList(ArrayList<T>&& list) {
 		insert(end(), std::make_move_iterator(list.begin()), std::make_move_iterator(list.end()));
 	}
+
+	template<typename T>
+	void ArrayList<T>::pushBackList(std::initializer_list<T> list) {
+		insert(end(), std::make_move_iterator(list.begin()), std::make_move_iterator(list.end()));
+	}
+
+	template<typename T>
+	template<typename Collection, typename _>
+	void ArrayList<T>::pushBackList(Collection&& collection) {
+		insert(end(), collection.begin(), collection.end());
+	}
 	
 	template<typename T>
 	void ArrayList<T>::popBack() {
@@ -323,6 +346,22 @@ namespace fgl {
 		auto value = std::move(back());
 		pop_back();
 		return value;
+	}
+
+
+
+	template<typename T>
+	ArrayList<T> ArrayList<T>::concat(std::initializer_list<T> list) const& {
+		auto newList = *this;
+		newList.pushBackList(list);
+		return newList;
+	}
+
+	template<typename T>
+	ArrayList<T> ArrayList<T>::concat(std::initializer_list<T> list) && {
+		auto newList = std::move(*this);
+		newList.pushBackList(list);
+		return std::move(newList);
 	}
 	
 	
