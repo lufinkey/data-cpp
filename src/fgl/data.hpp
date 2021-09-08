@@ -19,6 +19,7 @@
 #include <fgl/data/Optional.hpp>
 #include <fgl/data/Iterator.hpp>
 #include <fgl/data/Variant.hpp>
+#include <fgl/data/SharedPtr.hpp>
 #include <fgl/crypto/MD5.hpp>
 #include <fgl/error/Error.hpp>
 #include <fgl/time/Date.hpp>

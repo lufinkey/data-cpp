@@ -41,6 +41,7 @@
 		A5BA4A1D26E660F700139269 /* Number.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A5BA4A1B26E660F700139269 /* Number.cpp */; };
 		A5BA4A1E26E660F700139269 /* Number.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A5BA4A1B26E660F700139269 /* Number.cpp */; };
 		A5BA4A1F26E660F700139269 /* Number.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A5BA4A1C26E660F700139269 /* Number.hpp */; };
+		A5BA4A7826E96EE900139269 /* SharedPtr.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A5BA4A7526E96EE900139269 /* SharedPtr.hpp */; };
 		A5C6D3F925AF6BAF00596878 /* Map.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A5C6D3F825AF6BAF00596878 /* Map.hpp */; };
 		A5D9EEC3255A597C00E4762A /* Date.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A5D9EEC1255A597C00E4762A /* Date.cpp */; };
 		A5D9EEC4255A597C00E4762A /* Date.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A5D9EEC1255A597C00E4762A /* Date.cpp */; };
@@ -111,6 +112,7 @@
 		A5BA4A1826E5AC6300139269 /* Data.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Data.mm; sourceTree = "<group>"; };
 		A5BA4A1B26E660F700139269 /* Number.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Number.cpp; sourceTree = "<group>"; };
 		A5BA4A1C26E660F700139269 /* Number.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Number.hpp; sourceTree = "<group>"; };
+		A5BA4A7526E96EE900139269 /* SharedPtr.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = SharedPtr.hpp; sourceTree = "<group>"; };
 		A5C6D3F825AF6BAF00596878 /* Map.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Map.hpp; sourceTree = "<group>"; };
 		A5D9EEC1255A597C00E4762A /* Date.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Date.cpp; sourceTree = "<group>"; };
 		A5D9EEC2255A597C00E4762A /* Date.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Date.hpp; sourceTree = "<group>"; };
@@ -188,6 +190,7 @@
 				A5E360C724072CEC00840E28 /* Stringify.cpp */,
 				A502AF0824C3A8B10081FB6E /* Iterator.hpp */,
 				A5BA49D726E01E9E00139269 /* Variant.hpp */,
+				A5BA4A7526E96EE900139269 /* SharedPtr.hpp */,
 			);
 			path = data;
 			sourceTree = "<group>";
@@ -296,6 +299,7 @@
 				A5BA49D826E01E9E00139269 /* Variant.hpp in Headers */,
 				A5D9EEC5255A597C00E4762A /* Date.hpp in Headers */,
 				A5133AD0234A5C44006DDCB4 /* ObjectiveCpp.h in Headers */,
+				A5BA4A7826E96EE900139269 /* SharedPtr.hpp in Headers */,
 				A5E360C524071C4600840E28 /* Stringify.hpp in Headers */,
 				A5AE3F0E247C10D700FB9AFF /* Any.hpp in Headers */,
 				A5133AD8234A5C4D006DDCB4 /* BasicString.impl.hpp in Headers */,
