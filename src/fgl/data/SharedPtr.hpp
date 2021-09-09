@@ -83,12 +83,12 @@ namespace fgl {
 	};
 
 	template<typename T>
-	SharedPtr<T> _$(const std::shared_ptr<T>& ptr) {
+	$<T> _$(const std::shared_ptr<T>& ptr) {
 		return ptr;
 	}
 
 	template<typename T>
-	WeakPtr<T> _$(const std::weak_ptr<T>& ptr) {
+	w$<T> _$(const std::weak_ptr<T>& ptr) {
 		return ptr;
 	}
 
