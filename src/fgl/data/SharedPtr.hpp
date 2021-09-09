@@ -82,6 +82,16 @@ namespace fgl {
 		using content_type = T;
 	};
 
+	template<typename T>
+	SharedPtr<T> _$(const std::shared_ptr<T>& ptr) {
+		return ptr;
+	}
+
+	template<typename T>
+	WeakPtr<T> _$(const std::weak_ptr<T>& ptr) {
+		return ptr;
+	}
+
 
 
 	#pragma mark SharedPtr implementation
