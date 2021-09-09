@@ -17,17 +17,17 @@ namespace fgl {
 	public:
 		using std::shared_ptr<T>::shared_ptr;
 		
-		SharedPtr(std::shared_ptr<T>&&);
-		SharedPtr(const std::shared_ptr<T>&);
+		inline SharedPtr(std::shared_ptr<T>&&);
+		inline SharedPtr(const std::shared_ptr<T>&);
 		
-		operator std::shared_ptr<T>&() &;
-		operator std::shared_ptr<T>&&() &&;
-		operator const std::shared_ptr<T>&() const&;
+		inline operator std::shared_ptr<T>&() &;
+		inline operator std::shared_ptr<T>&&() &&;
+		inline operator const std::shared_ptr<T>&() const&;
 		
 		template<typename U>
-		SharedPtr<U> as() const;
+		inline SharedPtr<U> as() const;
 		template<typename U>
-		SharedPtr<U> staticAs() const;
+		inline SharedPtr<U> forceAs() const;
 	};
 
 
@@ -36,14 +36,14 @@ namespace fgl {
 	public:
 		using std::weak_ptr<T>::weak_ptr;
 		
-		WeakPtr(std::weak_ptr<T>&&);
-		WeakPtr(const std::weak_ptr<T>&);
+		inline WeakPtr(std::weak_ptr<T>&&);
+		inline WeakPtr(const std::weak_ptr<T>&);
 		
-		operator std::weak_ptr<T>&() &;
-		operator std::weak_ptr<T>&&() &&;
-		operator const std::weak_ptr<T>&() const&;
+		inline operator std::weak_ptr<T>&() &;
+		inline operator std::weak_ptr<T>&&() &&;
+		inline operator const std::weak_ptr<T>&() const&;
 		
-		SharedPtr<T> lock() const noexcept;
+		inline SharedPtr<T> lock() const noexcept;
 	};
 
 
@@ -55,6 +55,32 @@ namespace fgl {
 	$<T> new$(Args&&... args) {
 		return std::make_shared<T>(args...);
 	}
+
+	template<typename T>
+	struct is_ptr_container: std::false_type {};
+	template<typename T>
+	struct is_ptr_container<std::shared_ptr<T>>: std::true_type {
+		using content_type = T;
+	};
+	template<typename T>
+	struct is_ptr_container<SharedPtr<T>>: std::true_type {
+		using content_type = T;
+	};
+	template<typename T>
+	struct is_ptr_container<std::unique_ptr<T>>: std::true_type {
+		using content_type = T;
+	};
+
+	template<typename T>
+	struct is_weak_ptr: std::false_type {};
+	template<typename T>
+	struct is_weak_ptr<std::weak_ptr<T>>: std::true_type {
+		using content_type = T;
+	};
+	template<typename T>
+	struct is_weak_ptr<WeakPtr<T>>: std::true_type {
+		using content_type = T;
+	};
 
 
 
@@ -93,7 +119,7 @@ namespace fgl {
 
 	template<typename T>
 	template<typename U>
-	SharedPtr<U> SharedPtr<T>::staticAs() const {
+	SharedPtr<U> SharedPtr<T>::forceAs() const {
 		return std::static_pointer_cast<U>(*this);
 	}
 

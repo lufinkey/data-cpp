@@ -75,25 +75,6 @@ namespace fgl {
 
 
 
-
-	template<typename T>
-	struct is_ptr_container: std::false_type {};
-	template<typename T>
-	struct is_ptr_container<std::shared_ptr<T>>: std::true_type {
-		using content_type = T;
-	};
-	template<typename T>
-	struct is_ptr_container<std::unique_ptr<T>>: std::true_type {
-		using content_type = T;
-	};
-	
-	template<typename T>
-	struct is_weak_ptr: std::false_type {};
-	template<typename T>
-	struct is_weak_ptr<std::weak_ptr<T>>: std::true_type {
-		using content_type = T;
-	};
-
 	template<typename T>
 	struct is_pair: std::false_type {};
 	template<typename T, typename U>

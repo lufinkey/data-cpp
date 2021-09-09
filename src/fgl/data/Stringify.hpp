@@ -13,6 +13,7 @@
 #include <fgl/data/Traits.hpp>
 #include <fgl/data/Optional.hpp>
 #include <fgl/data/Variant.hpp>
+#include <fgl/data/SharedPtr.hpp>
 #include <list>
 
 namespace fgl {
