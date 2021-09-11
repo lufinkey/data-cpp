@@ -13,12 +13,26 @@
 
 namespace fgl {
 	template<typename T>
+	class SharedPtr;
+	template<typename T>
+	class WeakPtr;
+
+
+	template<typename T>
 	class SharedPtr: public std::shared_ptr<T> {
 	public:
 		using std::shared_ptr<T>::shared_ptr;
 		
 		inline SharedPtr(std::shared_ptr<T>&&);
 		inline SharedPtr(const std::shared_ptr<T>&);
+		template<typename U>
+		inline SharedPtr(const SharedPtr<U>&);
+		template<typename U>
+		inline SharedPtr(SharedPtr<U>&&);
+		template<typename U>
+		inline SharedPtr(const WeakPtr<U>&);
+		template<typename U>
+		inline SharedPtr(WeakPtr<U>&&);
 		
 		inline operator std::shared_ptr<T>&() &;
 		inline operator std::shared_ptr<T>&&() &&;
@@ -103,6 +117,30 @@ namespace fgl {
 
 	template<typename T>
 	SharedPtr<T>::SharedPtr(const std::shared_ptr<T>& ptr): std::shared_ptr<T>(ptr) {
+		//
+	}
+
+	template<typename T>
+	template<typename U>
+	SharedPtr<T>::SharedPtr(const SharedPtr<U>& ptr): std::shared_ptr<T>((const std::shared_ptr<U>&)ptr) {
+		//
+	}
+
+	template<typename T>
+	template<typename U>
+	SharedPtr<T>::SharedPtr(SharedPtr<U>&& ptr): std::shared_ptr<T>((std::shared_ptr<U>&&)ptr) {
+		//
+	}
+
+	template<typename T>
+	template<typename U>
+	SharedPtr<T>::SharedPtr(const WeakPtr<U>& ptr): std::shared_ptr<T>((const std::weak_ptr<U>&)ptr) {
+		//
+	}
+
+	template<typename T>
+	template<typename U>
+	SharedPtr<T>::SharedPtr(WeakPtr<U>&& ptr): std::shared_ptr<T>((std::weak_ptr<U>&&)ptr) {
 		//
 	}
 
