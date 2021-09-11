@@ -25,13 +25,13 @@ namespace fgl {
 		
 		inline SharedPtr(std::shared_ptr<T>&&);
 		inline SharedPtr(const std::shared_ptr<T>&);
-		template<typename U>
+		template<typename U, typename = std::enable_if_t<std::is_convertible_v<T*, U*>>>
 		inline SharedPtr(const SharedPtr<U>&);
-		template<typename U>
+		template<typename U, typename = std::enable_if_t<std::is_convertible_v<T*, U*>>>
 		inline SharedPtr(SharedPtr<U>&&);
-		template<typename U>
+		template<typename U, typename = std::enable_if_t<std::is_convertible_v<T*, U*>>>
 		inline SharedPtr(const WeakPtr<U>&);
-		template<typename U>
+		template<typename U, typename = std::enable_if_t<std::is_convertible_v<T*, U*>>>
 		inline SharedPtr(WeakPtr<U>&&);
 		
 		inline operator std::shared_ptr<T>&() &;
@@ -121,25 +121,25 @@ namespace fgl {
 	}
 
 	template<typename T>
-	template<typename U>
+	template<typename U, typename _>
 	SharedPtr<T>::SharedPtr(const SharedPtr<U>& ptr): std::shared_ptr<T>((const std::shared_ptr<U>&)ptr) {
 		//
 	}
 
 	template<typename T>
-	template<typename U>
+	template<typename U, typename _>
 	SharedPtr<T>::SharedPtr(SharedPtr<U>&& ptr): std::shared_ptr<T>((std::shared_ptr<U>&&)ptr) {
 		//
 	}
 
 	template<typename T>
-	template<typename U>
+	template<typename U, typename _>
 	SharedPtr<T>::SharedPtr(const WeakPtr<U>& ptr): std::shared_ptr<T>((const std::weak_ptr<U>&)ptr) {
 		//
 	}
 
 	template<typename T>
-	template<typename U>
+	template<typename U, typename _>
 	SharedPtr<T>::SharedPtr(WeakPtr<U>&& ptr): std::shared_ptr<T>((std::weak_ptr<U>&&)ptr) {
 		//
 	}
