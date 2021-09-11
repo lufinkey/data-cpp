@@ -25,13 +25,13 @@ namespace fgl {
 		
 		inline SharedPtr(std::shared_ptr<T>&&);
 		inline SharedPtr(const std::shared_ptr<T>&);
-		template<typename U, typename = std::enable_if_t<std::is_convertible_v<T*, U*>>>
+		template<typename U, typename = std::enable_if_t<std::is_convertible_v<U*, T*>>>
 		inline SharedPtr(const SharedPtr<U>&);
-		template<typename U, typename = std::enable_if_t<std::is_convertible_v<T*, U*>>>
+		template<typename U, typename = std::enable_if_t<std::is_convertible_v<U*, T*>>>
 		inline SharedPtr(SharedPtr<U>&&);
-		template<typename U, typename = std::enable_if_t<std::is_convertible_v<T*, U*>>>
+		template<typename U, typename = std::enable_if_t<std::is_convertible_v<U*, T*>>>
 		inline SharedPtr(const WeakPtr<U>&);
-		template<typename U, typename = std::enable_if_t<std::is_convertible_v<T*, U*>>>
+		template<typename U, typename = std::enable_if_t<std::is_convertible_v<U*, T*>>>
 		inline SharedPtr(WeakPtr<U>&&);
 		
 		inline operator std::shared_ptr<T>&() &;
