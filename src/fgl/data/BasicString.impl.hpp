@@ -1063,7 +1063,21 @@ namespace fgl {
 		Num numVal = 0;
 		convert >> numVal;
 		if(convert.fail()) {
-			throw std::logic_error("BasicString does not represent an arithmetic value");
+			throw std::logic_error("string does not represent an arithmetic value");
+		}
+		return numVal;
+	}
+
+	template<typename Char>
+	template<typename Num,
+		typename BasicStringUtils::string_type_convertable_with_number<Char,Num>::null_type>
+	Optional<Num> BasicString<Char>::maybeToArithmeticValue(const std::locale& locale) const {
+		std::basic_istringstream<Char> convert(*this);
+		convert.imbue(locale);
+		Num numVal = 0;
+		convert >> numVal;
+		if(convert.fail()) {
+			return std::nullopt;
 		}
 		return numVal;
 	}

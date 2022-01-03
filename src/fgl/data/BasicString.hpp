@@ -10,6 +10,7 @@
 
 #include <fgl/data/Common.hpp>
 #include <fgl/data/BasicStringUtils.hpp>
+#include <fgl/data/Optional.hpp>
 #include <fgl/data/Traits.hpp>
 #include <initializer_list>
 #include <list>
@@ -357,6 +358,10 @@ namespace fgl {
 		template<typename Num,
 			typename BasicStringUtils::string_type_convertable_with_number<Char,Num>::null_type = nullptr>
 		Num toArithmeticValue(const std::locale& locale = std::locale()) const;
+		
+		template<typename Num,
+			typename BasicStringUtils::string_type_convertable_with_number<Char,Num>::null_type = nullptr>
+		Optional<Num> maybeToArithmeticValue(const std::locale& locale = std::locale()) const;
 		
 		
 		
