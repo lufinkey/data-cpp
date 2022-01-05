@@ -705,7 +705,7 @@ namespace fgl {
 	}
 
 	void URL::setPathParts(const ArrayList<String>& parts, bool relative) {
-		_path = (relative ? "" : "/") + String::join(parts.map([](auto& part) { return encodePathPart(part); }));
+		_path = (relative ? "" : "/") + String::join(parts.map([](auto& part) { return encodePathPart(part); }), "/");
 	}
 
 
