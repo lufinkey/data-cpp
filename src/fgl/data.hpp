@@ -15,6 +15,7 @@
 #include <fgl/data/String.hpp>
 #include <fgl/data/Data.hpp>
 #include <fgl/data/Number.hpp>
+#include <fgl/data/URL.hpp>
 #include <fgl/data/Stringify.hpp>
 #include <fgl/data/Optional.hpp>
 #include <fgl/data/Iterator.hpp>
