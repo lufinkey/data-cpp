@@ -171,6 +171,10 @@ namespace fgl {
 		return decodeComponent(begin, end);
 	}
 
+	String URL::decodeUserComponent(const std::string& str) {
+		return decodeUserComponent(str.data(), str.data()+str.length());
+	}
+
 
 	String URL::encodePathPart(const std::string& str) {
 		return encodeComponent(str, [](char c) { return is_char(c, 0x0F) || c == '/'; });
@@ -178,6 +182,10 @@ namespace fgl {
 
 	String URL::decodePathPart(const char* begin, const char* end) {
 		return decodeComponent(begin, end);
+	}
+
+	String URL::decodePathPart(const std::string& str) {
+		return decodePathPart(str.data(), str.data()+str.length());
 	}
 
 
@@ -196,6 +204,10 @@ namespace fgl {
 		});
 	}
 
+	String URL::decodeQueryKey(const std::string& str) {
+		return decodeQueryKey(str.data(), str.data()+str.length());
+	}
+
 
 	String URL::encodeQueryValue(const std::string& str) {
 		return encodeComponent(str, [](char c) {
@@ -210,6 +222,10 @@ namespace fgl {
 		return decodeComponent(begin, end, {
 			{ '+', ' ' }
 		});
+	}
+
+	String URL::decodeQueryValue(const std::string& str) {
+		return decodeQueryValue(str.data(), str.data()+str.length());
 	}
 
 

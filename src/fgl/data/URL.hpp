@@ -51,15 +51,19 @@ namespace fgl {
 		
 		static String encodeUserComponent(const std::string& str);
 		static String decodeUserComponent(const char* begin, const char* end);
+		static String decodeUserComponent(const std::string& str);
 		
 		static String encodePathPart(const std::string& str);
 		static String decodePathPart(const char* begin, const char* end);
+		static String decodePathPart(const std::string& str);
 		
 		static String encodeQueryKey(const std::string& str);
 		static String decodeQueryKey(const char* begin, const char* end);
+		static String decodeQueryKey(const std::string& str);
 		
 		static String encodeQueryValue(const std::string& str);
 		static String decodeQueryValue(const char* begin, const char* end);
+		static String decodeQueryValue(const std::string& str);
 		
 		static bool isSchemeValid(const char* begin, const char* end);
 		static bool isSchemeValid(const std::string&);
