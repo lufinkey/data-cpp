@@ -913,10 +913,15 @@ namespace fgl {
 
 	template<typename Char>
 	BasicStringView<Char> BasicString<Char>::viewSubstring(size_type startIndex, size_type count) const {
-		FGL_ASSERT(startIndex <= size(), "startIndex must be within the range of the string");
-		auto start = std::next(this->begin(), startIndex);
-		auto end = ((startIndex + count) >= size()) ? this->end() : std::next(start, count);
-		return BasicStringView<Char>(start, end);
+		if(startIndex > size()) {
+			throw std::out_of_range("startIndex must be within the range of the string");
+		}
+		auto start = this->data() + startIndex;
+		size_t adjustedCount = this->length() - startIndex;
+		if(adjustedCount > count) {
+			adjustedCount = count;
+		}
+		return BasicStringView<Char>(start, adjustedCount);
 	}
 	
 	template<typename Char>
