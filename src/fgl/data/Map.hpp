@@ -75,6 +75,9 @@ namespace fgl {
 		template<typename Predicate>
 		inline const_iterator findLastWhere(Predicate predicate) const;
 		
+		template<typename Predicate>
+		inline bool containsWhere(Predicate predicate) const;
+		
 		inline T& get(const Key& key, T& val);
 		inline const T& get(const Key& key, const T& val) const;
 		
@@ -174,6 +177,12 @@ namespace fgl {
 		auto retIt = it.base();
 		retIt--;
 		return retIt;
+	}
+
+	template<typename K,typename T,typename C,typename A>
+	template<typename Predicate>
+	bool Map<K,T,C,A>::containsWhere(Predicate predicate) const {
+		return findWhere(predicate) != end();
 	}
 
 
