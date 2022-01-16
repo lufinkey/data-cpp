@@ -66,6 +66,15 @@ namespace fgl {
 		Map& operator=(const BaseType&);
 		Map& operator=(BaseType&&) noexcept;
 		
+		template<typename Predicate>
+		inline iterator findWhere(Predicate predicate);
+		template<typename Predicate>
+		inline const_iterator findWhere(Predicate predicate) const;
+		template<typename Predicate>
+		inline iterator findLastWhere(Predicate predicate);
+		template<typename Predicate>
+		inline const_iterator findLastWhere(Predicate predicate) const;
+		
 		inline T& get(const Key& key, T& val);
 		inline const T& get(const Key& key, const T& val) const;
 		
@@ -125,6 +134,46 @@ namespace fgl {
 	Map<K,T,C,A>& Map<K,T,C,A>::operator=(BaseType&& other) noexcept {
 		BaseType::operator=(other);
 		return *this;
+	}
+
+
+
+	template<typename K,typename T,typename C,typename A>
+	template<typename Predicate>
+	typename Map<K,T,C,A>::iterator Map<K,T,C,A>::findWhere(Predicate predicate) {
+		return std::find_if(begin(), end(), predicate);
+	}
+
+	template<typename K,typename T,typename C,typename A>
+	template<typename Predicate>
+	typename Map<K,T,C,A>::const_iterator Map<K,T,C,A>::findWhere(Predicate predicate) const {
+		return std::find_if(begin(), end(), predicate);
+	}
+
+	template<typename K,typename T,typename C,typename A>
+	template<typename Predicate>
+	typename Map<K,T,C,A>::iterator Map<K,T,C,A>::findLastWhere(Predicate predicate) {
+		auto rendVal = rend();
+		auto it = std::find_if(rbegin(), rendVal, predicate);
+		if(it == rendVal) {
+			return end();
+		}
+		auto retIt = it.base();
+		retIt--;
+		return retIt;
+	}
+
+	template<typename K,typename T,typename C,typename A>
+	template<typename Predicate>
+	typename Map<K,T,C,A>::const_iterator Map<K,T,C,A>::findLastWhere(Predicate predicate) const {
+		auto rendVal = rend();
+		auto it = std::find_if(rbegin(), rendVal, predicate);
+		if(it == rendVal) {
+			return end();
+		}
+		auto retIt = it.base();
+		retIt--;
+		return retIt;
 	}
 
 

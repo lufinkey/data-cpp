@@ -323,8 +323,9 @@ namespace fgl {
 	template<typename BaseClass>
 	template<typename Predicate>
 	typename BasicList<BaseClass>::iterator BasicList<BaseClass>::findLastWhere(Predicate predicate) {
-		auto it = std::find_if(rbegin(), rend(), predicate);
-		if(it == rend()) {
+		auto rendVal = rend();
+		auto it = std::find_if(rbegin(), rendVal, predicate);
+		if(it == rendVal) {
 			return end();
 		}
 		auto retIt = it.base();
@@ -335,8 +336,9 @@ namespace fgl {
 	template<typename BaseClass>
 	template<typename Predicate>
 	typename BasicList<BaseClass>::const_iterator BasicList<BaseClass>::findLastWhere(Predicate predicate) const {
-		auto it = std::find_if(rbegin(), rend(), predicate);
-		if(it == rend()) {
+		auto rendVal = rend();
+		auto it = std::find_if(rbegin(), rendVal, predicate);
+		if(it == rendVal) {
 			return end();
 		}
 		auto retIt = it.base();
