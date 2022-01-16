@@ -37,7 +37,7 @@ namespace fgl {
 		return currentSecondsFromGMT(Date::now());
 	}
 
-	long TimeZone::currentSecondsFromGMT(const Date& date) {
+	long TimeZone::currentSecondsFromGMT(const Date& currentDate) {
 		struct tm lcl;
 		memset(&lcl, 0, sizeof(lcl));
 		lcl.tm_isdst = -1;
@@ -46,7 +46,7 @@ namespace fgl {
 		memset(&gmt, 0, sizeof(gmt));
 		gmt.tm_isdst = -1;
 		
-		time_t now = std::chrono::system_clock::to_time_t(date.getTimePoint());
+		time_t now = std::chrono::system_clock::to_time_t(currentDate.getTimePoint());
 		lcl = *localtime_r(&now, &lcl);
 		gmt = *gmtime_r(&now, &gmt);
 		time_t lcl_total = mktime(&lcl);

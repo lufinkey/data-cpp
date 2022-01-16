@@ -28,7 +28,7 @@ namespace fgl {
 		static String timeZoneDataVersion();
 		
 		static long currentSecondsFromGMT();
-		static long currentSecondsFromGMT(const Date&);
+		static long currentSecondsFromGMT(const Date& currentDate);
 		static String gmtOffsetString(long gmtOffsetSeconds);
 		
 		//TimeZone(const std::chrono::time_zone*);
