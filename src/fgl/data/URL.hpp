@@ -96,6 +96,8 @@ namespace fgl {
 		const Optional<String>& query() const;
 		const Optional<String>& fragment() const;
 		
+		Components components() const;
+		
 		
 		LinkedList<QueryItem> queryItems() const;
 		void setQueryItems(const ArrayList<QueryItem>& queryItems);

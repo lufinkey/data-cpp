@@ -617,6 +617,20 @@ namespace fgl {
 	}
 
 
+	URL::Components URL::components() const {
+		return Components{
+			.scheme = _scheme,
+			.username = _username,
+			.password = _password,
+			.host = _host,
+			.port = _port,
+			.path = _path,
+			.query = _query,
+			.fragment = _fragment
+		};
+	}
+
+
 	LinkedList<URL::QueryItem> URL::queryItems() const {
 		auto items = LinkedList<QueryItem>();
 		if(!_query || _query->empty()) {
@@ -649,6 +663,7 @@ namespace fgl {
 			_query = makeQueryString(queryItems);
 		}
 	}
+
 
 
 	bool URL::pathIsRelative() const {
