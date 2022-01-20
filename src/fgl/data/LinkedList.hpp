@@ -223,26 +223,20 @@ namespace fgl {
 		if(offset >= size()) {
 			return LinkedList<T>();
 		}
-		const_iterator startIt;
+		const_iterator it;
 		size_t offsetFromEnd = (size() - offset);
 		if(offset < offsetFromEnd) {
-			startIt = std::next(begin(), offset);
+			it = std::next(begin(), offset);
 		} else {
-			startIt = std::prev(end(), offsetFromEnd);
+			it = std::prev(end(), offsetFromEnd);
 		}
-		const_iterator endIt;
-		if(offsetFromEnd <= count) {
-			endIt = end();
-		} else {
-			size_t endIndex = offset + count;
-			size_t endOffsetFromEnd = size() - endIndex;
-			if(count < endOffsetFromEnd) {
-				endIt = std::next(startIt, count);
-			} else {
-				endIt = std::prev(end(), endOffsetFromEnd);
-			}
+		auto endIt = end();
+		LinkedList<T> sublist;
+		while(it != endIt && sublist.size() < count) {
+			sublist.pushBack(*it);
+			it++;
 		}
-		return LinkedList<T>(startIt, endIt);
+		return sublist;
 	}
 
 
