@@ -69,6 +69,8 @@ namespace fgl {
 		using BaseType::splice;
 		using BaseType::sort;
 		
+		static constexpr size_type npos = (size_type)-1;
+		
 		LinkedList(const BaseType&);
 		LinkedList(BaseType&&);
 		template<typename Collection, typename Transform, typename = IsCollection<std::remove_reference_t<Collection>>>
@@ -86,6 +88,8 @@ namespace fgl {
 		
 		LinkedList& operator=(const BaseType&);
 		LinkedList& operator=(BaseType&&);
+		
+		LinkedList<T> slice(size_type offset, size_type count = npos) const;
 		
 		inline iterator insert(const_iterator pos, const std::list<T>& list);
 		inline iterator insert(const_iterator pos, std::list<T>&& list);
@@ -210,6 +214,35 @@ namespace fgl {
 	LinkedList<T>& LinkedList<T>::operator=(BaseType&& list) {
 		BaseType::operator=(list);
 		return *this;
+	}
+
+
+
+	template<typename T>
+	LinkedList<T> LinkedList<T>::slice(size_type offset, size_type count) const {
+		if(offset >= size()) {
+			return LinkedList<T>();
+		}
+		const_iterator startIt;
+		size_t offsetFromEnd = (size() - offset);
+		if(offset < offsetFromEnd) {
+			startIt = std::next(begin(), offset);
+		} else {
+			startIt = std::prev(end(), offsetFromEnd);
+		}
+		const_iterator endIt;
+		if(offsetFromEnd <= count) {
+			endIt = end();
+		} else {
+			size_t endIndex = offset + count;
+			size_t endOffsetFromEnd = size() - endIndex;
+			if(count < endOffsetFromEnd) {
+				endIt = std::next(startIt, count);
+			} else {
+				endIt = std::prev(end(), endOffsetFromEnd);
+			}
+		}
+		return LinkedList<T>(startIt, endIt);
 	}
 
 
