@@ -1091,6 +1091,11 @@ namespace fgl {
 	
 	
 	template<typename Char>
+	bool BasicString<Char>::isNullOrEmpty(const Optional<BasicString<Char>>& str) {
+		return !str.hasValue() || str->empty();
+	}
+	
+	template<typename Char>
 	template<typename Collection, typename _>
 	BasicString<Char> BasicString<Char>::join(Collection&& collection, const BasicString<Char>& separator) {
 		if(collection.size() == 0) {

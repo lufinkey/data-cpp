@@ -365,6 +365,8 @@ namespace fgl {
 		
 		
 		
+		static bool isNullOrEmpty(const Optional<BasicString<Char>>& str);
+		
 		template<typename Collection, typename = IsCollectionOf<BasicString<Char>,std::remove_reference_t<Collection>>>
 		static BasicString<Char> join(Collection&& collection, const BasicString<Char>& separator = BasicString<Char>());
 		static BasicString<Char> join(std::initializer_list<BasicString<Char>> list, const BasicString<Char>& separator = BasicString<Char>());
