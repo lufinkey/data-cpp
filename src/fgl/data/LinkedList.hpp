@@ -112,7 +112,6 @@ namespace fgl {
 		template<typename Collection, typename = IsCollectionOf<T,std::remove_reference_t<Collection>>>
 		inline void pushBackList(Collection&& list);
 		inline void popBack();
-		inline void pop_back();
 		inline T extractBack();
 		inline LinkedList<T> extractListBack(size_t count = 1);
 		inline LinkedList<T> extractListBack(const_iterator start);
