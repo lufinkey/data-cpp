@@ -142,6 +142,11 @@ namespace fgl_data_cpp_tests {
 		};
 		
 		println("current date ISO string: "+Date::now().toISOString());
+		
+		auto url = URL("https://www.last.fm/music/AC%2FDC?hello=this+is+legal+right");
+		println("URL: "+url.toString());
+		println("URL.pathParts: "+url.pathParts().toString());
+		println("URL.queryItems: "+url.queryItems().toString());
 
 		println("Finished running data-cpp tests");
 	}
